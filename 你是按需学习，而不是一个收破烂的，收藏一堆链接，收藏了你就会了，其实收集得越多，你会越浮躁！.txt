@@ -1,0 +1,34 @@
+input的样式
+font-size可以控制input大小，border:none outline:none去掉边框  caret-color:red可以更改光标颜色
+一般是这种样式： 验证码 文本框 获取验证码
+
+checkbox的样式
+一般是这种样式：圆形选框 xxx协议
+
+登录 短信验证码
+城市级联
+文章分段如何处理
+
+json.key   这个key不能是变量，得是一个字符串
+json[key]  这个key可以是变量也可以是字符串
+
+
+nginx配置  /etc/nginx/conf.d/default.conf  -> root: 前端文件地址  例: /root/dist/
+		   /etc/nginx/nginx.conf  顶部添加 user root; 注释掉user nginx;    解决权限不足的问题，不过这样做始终觉得不太好
+		   
+		   
+mysql 服务端  存储数据和提供查询操作数据的接口(就是sql语句)
+mysql 客户端 连接服务端和利用提供的接口操作服务端上的数据
+
+
+勾选 i accept the license terms
+选择Custom
+添加MySQL Server 8.0和application下workbench    到右边窗口
+点击execute
+点击next 进入mysql server 的配置界面 ->一步next直到需要设置root密码的地方设置一下，一路next就可以了
+
+sc delete 服务名(你在服务里看到的名字) 可以解决mysql删除后服务名依旧挂在那里
+如果提示失败5:拒绝访问，，需要你到c\windows\system32\cmd  使用管理员打开就好了
+
+
+https  ssl     proxy_pass   rewrite   server和location匹配  
