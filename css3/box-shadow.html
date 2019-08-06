@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        div{
+            float: left;
+            margin: 0 10px
+        }
+        .div1{  /* 外部投影 */
+            width: 100px;
+            height: 100px;
+            border: 2px solid black;
+            box-shadow: 10px 10px 5px  red ; 
+            /*  x轴偏移量(正值往右),y轴偏移量(正值往下),阴影模糊半径(其值只能为正，为负则整个阴影都不会生效了),
+             *  阴影扩展半径(相当于增大x,y轴偏移量，正负都可以),阴影颜色(默认为黑色)
+             *  投影方式(不写默认为外部投影，写inset指定为内部投影，外部投影从右下角开始，内部投影从左上角开始)
+             */
+        }
+        .div2{  /* 内部投影 */
+            width: 100px;
+            height: 100px;
+            border: 2px solid black;
+            box-shadow: 10px 10px 5px 5px red inset;
+        }
+    </style>
+</head>
+<body>
+    <div class="div1"></div>
+    <div class="div2"></div>
+</body>
+</html>

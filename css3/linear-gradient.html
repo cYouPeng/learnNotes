@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        div{
+            width: 100px;
+            height: 100px;
+            border: 1px solid black;  
+            float: left;
+            margin: 0 10px;  
+        }
+        .div1{
+            
+            background: linear-gradient(315deg,red,blue,green)
+            /* 线性渐变，参数1(渐变方向，可写数字+deg，也可以写英文，默认为180deg，也就是从to bottom，从上往下) 
+                0deg    to top            从下往上
+                45deg   to top right      从左下角到右上角
+                90deg   to right          从左往右
+                135deg  to bottom right   从左上角到右下角
+                180deg  to bottom         从上到下           默认值
+                225deg  to left bottom    从右上角到左下角
+                270deg  to left           从右往左
+                315deg  to top left       从右下角到左上角
+            
+                参数2：颜色的起始点。
+                参数3：颜色的结束点（可以有多个）
+            */
+        }
+        .div2{
+            background: radial-gradient(circle,red,blue,green,pink)
+            /* 径向渐变，从内往外，circle先写死 */
+        }
+        .div3{
+            background:rgba(0,0,0,0.2);
+            /* rgba()在rgb的基础上增加了控制透明度的参数，从0到1，0为完全透明，1为完全不透明 
+                rgba()和opacity的区别
+                    rgba()设置颜色透明度，opacity设置元素透明度
+                    rgba()样式不能不继承，opacity可以继承
+            */
+        }
+    </style>
+</head>
+<body>
+    <div class="div1"></div>
+    <div class="div2"></div>
+    <div class="div3"></div>
+</body>
+</html>

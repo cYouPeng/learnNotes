@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        div{
+            width: 50px;
+            height: 50px;
+            float: left;
+            margin: 0 10px;
+            border: 1px solid black;
+            padding: 5px;
+        }
+        .span3{
+            display: block;
+            width: 0;
+            height: 0;
+            border-width: 25px 25px 25px 25px;
+            border-color: red blue blueviolet green;
+            border-style: solid;
+        }
+        .span1{
+            display: block;
+            width: 0;
+            height: 0;
+            border-width: 0 25px 50px 25px;
+            border-color: pink pink red pink;
+            border-style: solid;
+        }
+        .span2{
+            display: block;
+            width: 0;
+            height: 0;
+            border-width: 25px 0 25px 50px;
+            border-color: pink pink pink red ;
+            border-style: solid;
+        }
+        .div1{
+            position: relative;
+        }
+        .span4{
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin-top: -25px;
+            margin-left: -12.5px;
+            display: block;
+            width: 0;
+            height: 0;
+            border-width: 25px 0 25px 25px;
+            border-color: transparent transparent transparent red ;
+            border-style: solid;
+        }
+        .span5{
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin-top: -25px;
+            margin-left: -15.5px;
+            display: block;
+            width: 0;
+            height: 0;
+            border-width: 25px 0 25px 25px;
+            border-color: transparent transparent transparent white ;
+            border-style: solid;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <span class="span3"></span>
+    </div>
+    <div>
+        <span class="span1"></span>
+    </div>
+    <div>
+        <span class="span2"></span>
+    </div>
+    <div class="div1">
+        <span class="span4"></span>
+        <span class="span5"></span>
+    </div>
+</body>
+</html>

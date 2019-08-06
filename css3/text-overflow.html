@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        div{
+            width: 100px;
+            text-overflow: ellipsis;  /* text-overflow当文本溢出时是clip(默认值，减掉溢出的部分)，还是ellipsis(显示省略标记) */
+            white-space: nowrap;
+            overflow: hidden;  
+            /* 只有这四个属性一起配合使用，才能处理文本的溢出，缺一不可 */
+
+            height: 100px;
+            border: 1px solid black;
+            
+
+        }
+        /* whtie-space 处理文本的格式及换行
+                    是否保留文字的换行    是否合并文字间空白为一个空格      碰到边界是否换行        
+           normal         否                       是                        是
+           pre            是                       否                        否
+           pre-wrap       是                       否                        是
+           pre-line       是                       是                        是
+           nowrap         否                       是                        否
+        */
+        @font-face{
+            font-family: hello;
+            src: url(./Asphalts_Brush.ttf);
+            
+        }
+        /*  
+            font-family: 设置文本的字体名称。
+            src： 设置自定义字体的相对路径或者绝对路径，注意，此属性只能在@font-face规则里使用。 
+        */
+        .myFont{
+            width: 100%;
+            font-family: hello;
+            
+            font-style: italic;
+            font-weight: bolder;
+            /* 
+                font-style：  normal/italic/oblique 设置文本样式。
+                font-variant：normal/small-caps(小型大写) 设置文本是否大小写。
+                font-weight： normal/bold/bolder/lighter  100到900(400等同于normal，而700等同于bold) 设置文本的粗细。
+                font-size： 设置文本字体大小。
+            */
+        }
+    </style>
+</head>
+<body>
+    <div>哈      哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈11111
+        哈哈哈哈哈哈哈哈哈哈
+        哈
+        哈哈
+        哈哈哈
+        哈哈哈哈哈哈哈</div>
+    <div class="myFont">Full authentication is required to access this resource</div>
+</body>
+</html>

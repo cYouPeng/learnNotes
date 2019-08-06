@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        div{
+            display: inline-block;
+            border:1px solid #6baabb;
+            width:40px;
+            height:40px;
+            float:left;
+            margin:0px 10px;
+        }
+        a{
+            display: inline-block;
+            width:40px;
+            height:40px;
+            background: #6baabb;
+        }
+        .Round{/*圆*/
+            border-radius:20px;
+            
+        }
+        .LeftRound{/*左半圆*/
+            width:20px;
+            border-radius:20px 0px 0px 20px;
+        }
+        .RightRound{/*右半圆*/
+            width:20px;
+            border-radius:0px 20px 20px 0px;
+        }
+        .TopRound{/*上半圆*/
+            height:20px;
+            border-radius:20px 20px 0px 0px;
+        }
+        .BottomRound{/*下半圆*/
+            height:20px;
+            border-radius:0px 0px 20px 20px;
+        }
+
+        .LeftTopHalfRound{
+            border-radius: 40px 0 0 0;
+        }
+        .LeftRightHalfRound{
+            border-radius:  0 40px 0 0;
+        }
+        .RightBottomHalfRound{
+            border-radius:  0 0 40px 0;
+        }
+        .LeftBottomHalfRound{
+            border-radius:  0 0 0 40px;
+        }
+        .a1{
+            border-radius:20px;
+            border:1px solid #6baabb;
+            text-align: center;
+            line-height: 40px;
+            background:linear-gradient(to top, #fff 0%, #fff 45% ,#6baabb 50%,#6baabb); /*上半圆*/
+        }
+        .a2{
+            border-radius:20px;
+            border:1px solid #6baabb;
+            text-align: center;
+            line-height: 40px;
+            background:linear-gradient(to bottom, #fff 0%, #fff 45% ,#6baabb 50%,#6baabb); /*下半圆*/
+        }
+        .a3{
+            border-radius:20px;
+            border:1px solid #6baabb;
+            text-align: center;
+            line-height: 40px;
+            background:linear-gradient(to bottom,#6baabb); /*全圆*/
+        }
+    </style>
+</head>
+<body>
+        <div><a class="Round"></a></div>
+        <div><a class="LeftRound"></a></div>
+        <div><a class="RightRound"></a></div>
+        <div><a class="TopRound"></a></div>
+        <div><a class="BottomRound"></a></div>
+        <div><a class="LeftTopHalfRound"></a></div>
+        <div><a class="LeftRightHalfRound"></a></div>
+        <div><a class="RightBottomHalfRound"></a></div>
+        <div><a class="LeftBottomHalfRound"></a></div>
+        <a class="a1">12</a>
+        <a class="a2">12</a>
+        <a class="a3">12</a>
+</body>
+</html>
