@@ -1,0 +1,367 @@
+十一，强制类型转换
+	-指将一个数据类型强制转换为其它的数据类型
+	-类型转换主要指，将其他的数据类型转换为 String,Number,Boolean (转为Null和Undefined没有意义)
+	将其他的数据类型转换为String
+		方式一：
+			-调用被转换数据类型的toString()方法
+			-该方法不会影响到原变量，他会将转换的结果返回
+			-但是注意：Null和Undefined这两种数据类型没有toString()方法，如果调用的话，会报错。toString()方法只适用于
+				String,Number,Boolean    //String数据类型也是有toString()方法的
+				
+				var a = 123;   //调用a的toString()方法，调用xxx的yyy()方法，就是xxx.yyy()
+				a = a.toString();
+				console.log(typeof a);  => string
+				console.log(a);		=> 123(字符串)
+				
+				var b = true;
+				b = b.toString();
+				console.log(typeof b);  => string
+				console.log(b);		=> true(字符串)
+				
+				var c = null; 
+				//c = c.toString();  //报错
+				
+				var d = undefined; 
+				//d = d.toString();  //报错
+			
+		方式二：
+			-调用String()函数(调用xxx()函数，直接写xxx()就行了)，并将被转换的数据作为参数传递给函数
+			-使用String()函数做强制类型转换时
+				对于Number和Boolean实际上就是调用的toString()方法
+				但是对于Null和Undefined，就不会调用toString()方法了，他会将null直接转换为"null"，
+					将undefined直接转换为"undefined"
+					
+				var a = 123;
+				a = String(a);
+				console.log(typeof a);  => string
+				console.log(a);		=> 123(字符串)
+				
+				var b = true;
+				b = String(b);
+				console.log(typeof b);  => string
+				console.log(b);		=> true(字符串)
+				
+				var c = null;
+				c = String(c);
+				console.log(typeof c);  => string
+				console.log(c);		=> null(字符串)
+				
+				var d = undefined;
+				d = String(a);
+				console.log(typeof d);  => string
+				console.log(d);		=> undefined(字符串)
+				
+十二，转换为Number
+	将其他的数据类型转换为Number
+		方式一：	
+			使用Number()函数
+				字符串 --> 数字
+					1,如果是纯数字的字符串，则直接将其转换为数字
+					2,如果字符串中有非数字的内容，则转换为NaN(3除外)
+					3,如果字符串是一个空串或者是一个全是空格的字符串，则转换为0
+				布尔 --> 数字
+					true 转成1
+					false 转成0
+				Null --> 数字  0
+				Undefined --> NaN
+						var a = "123";
+						a = Number(1);
+						console.log(typeof a);  => number
+						console.log(a);			=> 123(数值)
+						
+						a = "123abc"/"abc";
+						~  
+						~	=> number
+						~	=> NaN
+						
+						a = ""(空串)/"  "(空格);
+						~
+						~	=> number
+						~	=> 0
+				
+					布尔 --> 数字
+						a = true;
+						a = Number(a);
+						~	=> number
+						~	=> 1 
+					Null --> 数字
+						a = null;
+						~
+						~	=> number
+						~	=> 0
+					Undefined --> 数字
+						a = undefined;
+						~
+						~	=> number
+						~	=> NaN
+		
+		方式二：
+			-这种方式专门用来对付字符串
+			-parseInt()函数把一个字符串转换为一个整数
+			-parseFloat()函数把一个字符串转换为一个浮点数
+			
+				/*			 
+				 * parseInt()可以将一个字符串中的有效的整数内容取出来，然后转换为Number
+				 * 	需要注意的是：它是从左往右的提取有效数字，一旦遇到非数字字符立即停止
+				 */
+				var a = "123abc";
+				a = parseInt(a);
+				console.log(typeof a); =>number
+				console.log(a); => 123(数值)
+				
+				a = ""/" "/"a123"/"abc"/null/undefined/true;
+				~
+				~	=>number
+				~	=>NaN     //这几种情况都会转换成NaN
+				
+				/*
+				 *	parseFloat()作用和parseInt()类似，不同的是它可以获取有效的小数
+				 */
+				a = "123.456";   //如果a为123，使用parseFloat()转换之后也是123，不会给你加俩0
+				~
+				~	=> number
+				~	=> 123.456
+				
+				//如果对非String使用parseInt()或parseFloat()他会先将其转换为String，然后再操作
+				
+十三，其它进制的数字
+	在js中，如果需要表示16进制的数字，则需要以ox开头
+		var a = ox10;
+		console.log(a); //输出十进制16
+		
+	如果需要表示八进制的数字，则需要以0开头
+		a = 070;
+		console.log(a); //输出十进制56
+		
+		注意：像"070"这种字符串，有些浏览器会当成8进制解析，有些会当成10进制解析
+			解决：a = parseInt(a, 10); //可以在parseInt()中传递第二个参数，来指定数字的进制
+	如果要表示二进制数字，则需要以0b开头，但不是所有浏览器都支持(例IE)
+		a = 0b10 => 2
+		
+十四，转换为Boolean
+	将其他的数据类型转换为Boolean
+		-使用Boolean()函数
+			-数字 --> 布尔	
+				除了0和NaN,其余的都是true			
+					var a = 123;
+					a = Boolean(a);
+					console.log(typeof a); =>boolean
+					console.log(a); =>true
+			-字符串 --> 布尔
+				除了空串，其余的都是true
+			-Null和Undefined都会转换为false
+			-对象也会转换为true
+			
+			也就是说 0 NaN "" null undefined都是false
+		方式2(隐式类型转换)
+			-为任意的数据类型做两次非运算，即可将其转换为布尔值
+			-例子
+				var a = "hello";
+				a = !!a; //true
+				
+			
+十五，运算符
+	运算符也叫操作符
+		通过运算符可以对一个值或多个值进行运算，并获取运算结果
+		比如：typeof就是运算符，可以来获得一个值的类型，它会将该值的类型以字符串的形式返回
+		
+		算术运算符
+			当对非Number类型的值进行运算时，会将这些值转化为Number，然后再运算(除了字符串的+)
+			任何值和NaN做运算都得NaN
+			
+			+
+				+可以对两个值进行加法运算，并将结果返回
+				如果对两个字符串进行加法运算，则会做拼接操作，会将两个字符串拼接为一个字符串，并返回
+				一对双引号必需得在同一行
+				任何的值和字符串做加法运算，都会先转换为字符串，然后再和字符串做拼串的操作
+					我们可以利用这一点，来将一个任意的数据类型转换为String
+					我们只需要为任意的数据类型加一个 ""，即可将其转换为String
+					这是一种隐式的类型转换，由浏览器自动完成，实际上他也是调用的String()函数
+						var a = 123 + "";
+						console.log(typeof a); =>string
+						
+						var result = 1 + 2 + "3"; => 33
+						result = "1" + 2 + 3; =>123
+			-
+				-可以对两个值进行减法运算，并将结果返回
+					除了字符串的加法，其它运算都是转成Number
+						result = 100 - "1"; => 99
+						result = 100 - true; => 99
+						result = 100 - null; => 100
+						result = 100 - undefined; =>NaN
+			*
+				*可以对两个值进行乘法运算
+					result = 2 * 2; =>4
+					result = 2 * "8"; =>16
+					result = 2 * null(或0); =>0
+					result = 2 * undefined; =>NaN
+			/
+				/可以对两个值进行除法运算
+					result = 4 / 2; =>2
+					result = 3 / 2; =>1.5
+					result = 4 / null(或0); => Infinity
+					result = 4 / undefined; =>NaN
+			/*			
+			 *	任何值做 - * /运算时都会自动转换为Number
+			 *	我们可以利用这一特点，做隐式的类型转换，可以通过一个值 -0,*1,/1 来将其转换为Number
+			 *	原理和Number()函数一样，使用起来更加简单
+			 */
+			var a = "123" - 0; => Number
+			a = "123" * 1; => Number
+			a = "123" / 1; => Number
+			
+			%
+				%取模运算(取余数)
+					result = 9 % 3; =>0
+					result = 9 % "2"; => 1
+					result = 9 % true; => 0
+					result = 9 % null(或0) => NaN
+					result = 9 % undefined => NaN
+					
+<<---------	任何的数据类型做+ - * / %运算都会转化为Number，但只有String的+除外，它是转为String，做拼串操作 ------->>>>	
+
+十六，一元运算符
+	一元运算符，只需要一个操作数
+	+ 正号
+		正号不会对数值产生任何影响
+	-负号
+		负号可以对数字进行符号的取反
+	对于非Number类型的值，他会先转换为Number，然后再运算
+		利用这一特点，可以对任意一个其它类型的数据使用+，将其转换为Number，它的原理和Number()函数一样(适用于任意数据类型，比 +0 *1方便的多，属于隐式的类型转换)
+			var a = true;
+			console.log(typeof a +"  "+ -a); //number -1
+			a = "123";
+			console.log(typeof a +"  "+ -a); //number -123
+			
+			a = +a;
+			console.log(typeof a +"  "+ a); //number 123
+			
+十七，自增和自减
+	自增 ++
+		通过自增可以使变量在自身的基础上增加1
+		对一个变量自增以后，原变量的值会立即自增1
+		自增分成两种：后++(a++) 和 前++(++a)
+			无论是a++还是++a，都会立即使原变量的值自增1
+			不同的是a++ 和 ++a的值不同
+				a++的值等于原变量的值(自增前的值)     
+				++a的值等于新值(自增后的值)
+					a => 代表变量
+					a++ => 代表表达式
+					
+					var d = 20;
+					//console.log(d++); //20
+					//console.log(++d); //21
+						         20     22   22
+					var result = d++ + ++d + d; =>64
+					
+					d = d++; 等同于 var e = d++; d = e;   //输出20
+					执行完d++，d马上变成了21，然后把d++的值20赋给d，d又从21变成了20，，其实只需要看d++的值是多少就ok了
+	自减 --
+		通过自减可以使变量在自身的基础上减1
+		自减分为两种：后--(a--) 和 前--(--a)
+			无论是a--还是--a，都会立即使原变量的使自减1
+			不同的是a--和--a的值不同
+				a--是变量的原值(自减前的值)
+				--a是新值(自减后的值)
+					var a = 20;
+					//console.log(a--); //20
+					console.log(--a); //19
+					
+十九，逻辑运算符
+	js中为我们提供了三种逻辑运算符
+		!非
+			-!可以用来对一个值进行非运算
+			-所谓非运算就是指对一个布尔值进行取反操作
+				true变false  false变true
+			-如果对一个值进行两次取反，他不会变化
+			-如果对非布尔值进行运算，则会将其转换为布尔值，然后再取反
+				所以我们可以利用以上两个特点，来将一个其他的数据类型转换为布尔值。
+				可以为一个任意数据类型取两次反来将其转换为布尔值，原理和Boolean()一样
+					var a = 123;
+					a = !!a; =>true
+				
+		&&与
+			-&&可以对符号两侧的值进行与运算并返回结果
+			-运算规则
+				-两个值中只要有一个值为false就返回false
+				   只有两个值都为true时，才会返回true
+				-js中的"与"属于短路的与
+					如果第一个值为false，则不会看第二个值
+						
+						true && alert(); //第一个值为true，会检查第二个值
+						false && alert(); //第一个值为false，不会检查第二个值
+		
+		||或
+			-||可以对符号两侧的值进行或运算并返回结果
+			-运算规则
+				-两个值中只要有一个true，就返回true
+					如果两个值都为false，才返回false
+				-js中的"或"属于短路的或
+					如果第一个值为true，则不会检查第二个值
+						true || alert(); //第一个值为true，不会检查第二个值
+						false || alert(); //第一个值为false，会检查第二个值
+						
+二十，非布尔值的与或运算
+
+	与运算找false    或运算找true
+
+	&& || 非布尔值的情况
+		-对于非布尔值进行与或运算时
+			会先将其转换为布尔值，然后再运算，并且返回原值
+		-与运算
+			-如果第一个值为true，则必然返回第二个值
+			-如果第一个值为false，则直接返回第一个值
+				var result = 5 && 6; =>6
+				result = 2 && 0; =>0
+				
+				result = 0 && 2; =>0
+				result = NaN && 0; =>NaN
+				result = 0 && NaN; =>0
+				
+		-或运算
+			-如果第一个值为true，则直接返回第一个值
+			-如果第一个值为false，则返回第二个值
+				result = 2 || 5; =>2
+				result = 2 || NaN; =>2
+				result = -1 || 0; =>-1
+				
+				result = NaN || 3; =>3
+				result = "" || "hello"; =>hello
+						
+			
+		
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+				
+				
+				
+				
