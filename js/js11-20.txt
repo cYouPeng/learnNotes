@@ -109,7 +109,7 @@
 				console.log(typeof a); =>number
 				console.log(a); => 123(数值)
 				
-				a = ""/" "/"a123"/"abc"/null/undefined/true;
+				a = ""/" "/"a123"/"abc"/null/undefined/true;   //也就是说只要你这个字符串打头的不是字符串，直接NaN
 				~
 				~	=>number
 				~	=>NaN     //这几种情况都会转换成NaN
@@ -126,7 +126,7 @@
 				
 十三，其它进制的数字
 	在js中，如果需要表示16进制的数字，则需要以ox开头
-		var a = ox10;
+		var a = ox10;  //是数字0和小写字母x
 		console.log(a); //输出十进制16
 		
 	如果需要表示八进制的数字，则需要以0开头
@@ -203,7 +203,7 @@
 					result = 4 / undefined; =>NaN
 			/*			
 			 *	任何值做 - * /运算时都会自动转换为Number
-			 *	我们可以利用这一特点，做隐式的类型转换，可以通过一个值 -0,*1,/1 来将其转换为Number
+			 *	我们可以利用这一特点，做隐式的类型转换，可以通过一个值 -0,*1,/1 来将其转换为Number(+0也行，但注意不能有String)
 			 *	原理和Number()函数一样，使用起来更加简单
 			 */
 			var a = "123" - 0; => Number
