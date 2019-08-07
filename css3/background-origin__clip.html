@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        div{
+            float: left;
+            margin: 0 10px;
+            width: 200px;
+            height: 200px;
+            padding: 20px;
+            border: 20px solid rgba(0,0,0,.2);
+            background-image: url("./2.jpeg");
+            background-repeat: no-repeat;
+        }
+        .BorderBox{
+            background-origin: border-box  /* 从border区域开始显示 */
+        }
+        .PaddingBox{
+            background-origin: padding-box  /* 从padding区域开始显示，默认就是此值 */
+        }
+        .ContentBox{
+            background-origin: content-box  /* 从content区域开始显示 */
+        }
+        p{
+            clear: both;
+            text-align: center
+        }
+        .ClipBorderBox{
+            background-origin: border-box;  
+            background-clip: border-box    /* 默认值 */
+        }
+        .ClipPaddingBox{
+            background-origin: border-box;  
+            background-clip: padding-box   
+        }
+        .ClipContentBox{
+            background-origin: border-box;  
+            background-clip: content-box
+        }
+    </style>
+</head>
+<body>
+    <p>background-origin 设置背景图片的起始位置</p>
+    <div class="BorderBox">border-box</div>
+    <div class="PaddingBox">padding-box默认值</div>
+    <div class="ContentBox">content-box</div>
+    <p>background-clip 从什么地方开始裁剪(以下的background-origin都为border-box)</p>
+    <div class="ClipBorderBox">border-box，border以外的区域都剪掉(跟没剪一样)，为默认值</div>
+    <div class="ClipPaddingBox">padding-box，padding以外的区域都剪掉</div>
+    <div class="ClipContentBox">content-box，content以外的区域都剪掉</div>
+</body>
+</html>

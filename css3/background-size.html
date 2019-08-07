@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        div{
+            float: left;
+            margin: 0 10px;
+            width: 500px;
+            height: 500px;
+            border: 1px solid black;
+            background-repeat: no-repeat;
+            /* background-size: 400px 100px; */     /*这样写，宽高可以任意揉捏 */
+            /* background-size: 400px; */   /*   这样写，400px代表width，高度为auto(会跟随宽度的缩放比例等比例缩放) 
+                                             *   就是说你宽度放大了这个比例，那我高度也放大这个比例，缩小亦如此
+                                             */
+            /*background-size: auto;*/   /*auto表示按背景图片的真实大小进行显示 */
+        }
+        .big{
+            background-image: url("./b.jpg");
+            background-size: contain;   
+        }
+        .small{
+            background-image: url("./3.jpg");
+            background-size: contain;   
+        }
+        .cover{
+            background-image: url("./3.jpg");
+            background-size: cover;   
+        }
+        .overandover{
+            background: url('./3.jpg') no-repeat padding-box padding-box, url('./6.jpg') no-repeat padding-box padding-box, url('./2.jpeg') no-repeat padding-box padding-box 
+             
+            /*
+             *  可以利用background实现多重背景重叠，写在越前边的优先级优先级越高
+             *  background ： [background-color] | [background-image] | [background-position][/background-size] 
+             *  | [background-repeat] | [background-attachment] | [background-clip] | [background-origin],...
+             */
+        }
+    </style>
+</head>
+<body>
+    <p>background-size的值为contain时小图与大图的区别，就是他们都会努力的去适配容器的大小，就像桌面背景的适配大小一样，确保不会变形，背景图像始终被包含在容器内。 因此，有可能出现空白。</p>
+    <div class="big"></div>
+    <div class="small"></div>
+    <p style="clear:both;text-align: center">background-size的值为cover时,图片会完全覆盖整个容器，因此，背景图像有可能超出容器。
+    <br/>contain与cover的区别:<br/>
+        contain：图像始终被包含在容器内，你可以看到图像的所有内容，但可能会有空白<br/>
+        cover：图像覆盖整个容器，你可能看不到图片的所有内容
+    </p>
+    <div class="cover"></div>
+    <div class="overandover"></div>
+</body>
+</html>
