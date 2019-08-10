@@ -1,0 +1,570 @@
+四十六，对象的简介
+	js中数据类型
+		-String 字符串
+		-Number 数值
+		-Boolean 数值
+		-Null 空值
+		-Undefined 未定义
+			-以上这五种类型属于基本数据类型，以后我们看到的值，只要不是上述的5种，全都是对象
+		-Object 对象
+	基本数据类型都是单一的值 "hello" 123 true
+	值和值之间没有任何的联系
+	
+	在js中表示一个人的信息(name, ageder, age)
+		var name = "孙悟空";
+		var gender = "男";
+		var age = "18";
+	如果使用基本数据类型的数据，我们所创建的变量都是独立的，不能成为一个整体
+	对象属于一种复合的数据类型，在对象中可以保存多个不同数据类型的属性
+	
+	对象的分类
+		1，内建对象
+			-由es标准定义的对象，在任何的es的实现中都可以使用
+			-比如，Math,String,Number,Boolean,Function,Object
+		2，宿主对象
+			-由js的运行环境提供的对象，目前来讲主要指由浏览器提供的对象
+			-比如，BOM  DOM
+		3，自定义对象
+			-由开发人员自己创建的对象
+			
+四十七，对象的基本操作
+	//创建对象
+	/*
+	 *	使用new关键字调用的函数，是构造函数constructor
+	 *	构造函数是专门用来创建对象的函数
+	 *	使用typeof检查一个对象时，会返回object
+	 */
+		var obj = new Object();
+	
+	/*
+	 *	在对象中保存的值称为属性
+	 *	向对象中添加属性
+	 *		语法：对象.属性名 = 属性值
+	 */
+	 
+		 //向obj中添加一个name属性
+		 obj.name = "孙悟空";
+		 //向obj中添加一个gender属性
+		 obj.gender = "男";
+		 //向obj中添加一个age属性
+		 obj.age = 18;
+		 
+		 console.log(obj);
+		 
+	/*
+	 *	读取对象中的属性
+	 *		语法：对象.属性名
+	 *	如果读取对象中没有的属性，不会报错，而是会返回undefined
+	 */
+		console.log(obj.name);  //孙悟空
+		console.log(obj.hello);  //undefined
+		
+	/*
+	 *	修改对象的属性值
+	 *		语法：对象.属性名 = 新值
+	 */
+		obj.name = "Tom";
+		console.log(obj.name);  //Tom
+		
+	/*
+	 *	删除对象的属性
+	 *		语法：delete 对象.属性名
+		delete obj.name;
+		console.log(obj.name);  //undefined
+		
+四十八，属性名和属性值
+	
+	 向对象中添加属性
+		属性名：
+			-对象的属性名不强制要求遵守标识符的规范
+				什么乱七八糟的名字都可以使用
+			-但是我们使用时，还是尽量按照标识符的规范去做
+		如果要使用特殊的属性名，不能采用 . 的方式来操作
+			需要使用另一种方式
+				语法：对象["属性名"] = 属性值
+			读取时也需要采用这种方式
+		使用[]这种形式去操作属性，更加的灵活
+			在[]中可以直接传递一个变量，这样变量值是多少就会读取哪个变量
+				
+				obj.123 = "hello";
+				console.log(obj.123);  //报错
+				
+				obj["123"] = 789;
+				console.log(obj["123"]); //789
+		
+				obj["^&*^%$#*(哈哈"] = "你好";
+				console.log(obj["^&*^%$#*(哈哈"])  //你好,不推荐
+				
+				obj["123"] = 789;
+				obj["hello"] = "你好";
+				var n = "123";
+				console.log(obj["123"]); //789
+				console.log(obj[n]);     //789
+				
+		属性值：
+			js对象的属性值，可以是任意的数据类型的值，甚至也可以是一个对象
+			
+				//创建一个对象
+				var obj2 = new Object();
+				obj2.name = "猪八戒";
+				//将obj2设置为obj的属性
+				obj.test = obj2;
+				console.log(obj);
+				console.log(obj.test);
+				console.log(obj.test.name);  //猪八戒
+				
+			in 运算符
+				-通过该运算符可以检查一个对象中是否含有指定的属性
+					如果有则返回true，没有则返回false
+				-语法
+					"属性名" in 对象
+						//检查obj对象中是否含有test2这个属性
+						console.log("test2" in obj);  //false
+						console.log("name" in obj);  //true
+						
+四十九，基本数据类型和引用数据类型
+	基本数据类型
+		String Number Boolean Null Undefined
+	引用数据类型
+		Object
+	js中的变量都是保存到栈内存中的
+		基本数据类型的值直接在栈内存中存储
+		值与值之间是独立存在，修改一个变量不会影响其它的变量
+		
+		对象是保存到堆内存中的，每创建一个新的对象，就会在堆内存中开辟出一个新的空间
+		而变量保存的是对象的内存地址(对象的引用)，如果两个变量保存的是同一个对象的引用
+		当通过一个变量修改属性时，另一个也会受到影响
+			var a = new Object();			
+			a.name = "hello";
+			var b = a;
+			b.name = "123";
+			console.log(a.name);  //123
+		
+		
+			var obj = new Object();
+			var obj2 = new Object();
+			obj.name = "123";
+			obj2.name = "123";
+			//当我们比较两个基本数据类型时，就是比较值
+			//而比较两个引用数据类型时，它是比较对象的内存地址
+			//即使两个对象是一模一样的，但是地址不同，它也会返回false
+			console.log(obj == obj2);  //false
+			
+			
+			//主要一句话：基本类型保存的是值，引用类型保存的是地址
+			
+五十，对象字面量
+	//创建一个对象
+	//var obj = new Object();
+	//使用对象字面量来创建一个对象
+	var obj = {};    //二者没有本质区别
+	
+	使用对象字面量，可以在创建对象时，直接指定对象中的属性
+		语法：{属性名: 属性值, 属性名: 属性值...}
+		对象字面量的属性名可以加引号也可以不加，建议不加(属性名本质上就是一个字符串)
+		如果要使用一些特殊的名字，则必须加引号
+			var obj = {
+				name: "tom",
+				"!@$%%^": "123"   //可以，但不推荐
+			}
+		属性名和属性值是一组一组的名值对结构
+			名和值之间使用 : 连接，多个名值对之间使用 , 隔开
+			如果一个属性之后没有其他的属性了，就不要写 , 了
+				var a = {
+					name: "tom",
+					age: 12    //此处就不要写 , 了
+				}
+				var b = {
+					name: "tom",
+					test: {name: "jack"}  //属性的值可以是一个对象
+				}
+				
+五十一，函数的简介
+	函数function
+		-函数也是一个对象
+		-函数中可以封装一些功能(代码)，在需要时可以执行这些功能(代码)
+		-使用typeof检查一个函数对象时，会返回function
+				
+		//可以将要封装的代码以字符串的形式传递给构造函数		
+		var fun = new Function("console.log('123');");
+		
+		//封装到函数中的代码不会立即执行
+		//函数中的代码会在函数调用的时候执行
+		//调用函数语法：函数对象()
+		//当调用函数时，函数中封装的代码会按照顺序执行		
+		fun();
+		
+		//函数对象具有普通对象所有的功能
+			fun.hello = 123;
+			console.log(fun.hello);  //123
+		
+		//我们在实际开发中很少使用构造函数来创建一个函数对象
+		
+		/*
+		 *	使用函数声明来创建一个函数
+		 *	语法：
+				function 函数名([形参1,形参2...形参N]){
+					语句...
+				}
+					
+				function fun2(){
+					console.log(123);
+				}
+				fun2();  //123
+				
+		/*
+		 *	使用函数表达式来创建一个函数
+		 *  语法：
+		 *		var 函数名 = function([形参1,形参2...形参N]){
+					语句...
+				}
+				
+				var fun3 = function(){   //匿名函数，把函数对象赋给fun3
+					console.log(123);
+				};  //因为整个儿是一赋值语句，所以最好加上 ;
+				fun3();  //123
+				
+五十二，函数的参数
+	/*
+	 *	定义一个用来求两个数和的函数
+	 *	可以在函数的()中来指定一个或多个形参(形式参数)
+		多个形参之间使用 , 隔开，声明形参就相当于在函数内部声明了对应的变量，但是并不赋值
+			function sum(a,b){
+				console.log(a+b);
+			}
+		在调用函数时，可以在()中指定实参(实际参数)
+		实参将会赋值给函数中对应的形参
+			sum(2,3);  //5
+			
+	/*
+	 *	调用函数时，解析器不会检查实参的类型
+	 *	所以要注意，是否有可能会接收到非法的参数，如果有可能则需要对参数进行类型的检查
+	 *	函数的实参可以是任意的数据类型
+	 *	sum(123,"hello");  //123hello
+	 *	sum(true,false);  //1
+	 */
+	 
+	/*
+	 *	调用函数时，解析器也不会检查实参的数量，多余实参不会被解析
+	 *	如果实参的数量少于形参的数量，则没有对应实参的形参将是undefiend
+	 *	sum(123);  //NaN
+	 *	sum(123,5,"hello",true,null);  //128
+	 */
+	 
+五十三，函数的返回值
+	/*
+	 *	创建一个函数，用来计算三个数的和
+	 *	可以使用return来设置函数的返回值
+	 *	语法：
+	 *		return 值
+	    return后的值将会作为函数的执行结果返回
+			可以定义一个变量来接收该结果
+		在函数中return后的语句都不会执行
+		如果return语句后不跟任何值就相当于返回一个undefiend
+		如果函数中不写return，则也会返回undefined
+		return后可以跟任意类型的值
+		
+			function sum(a,b,c){
+				var d = a + b + c;
+				return d;
+			}
+			//调用函数
+			//变量result的值就是函数的执行结果
+			//函数返回什么result的值就是什么
+			var result = sum(3,2,5);
+			
+五十四，实参可以是任何值
+	/*
+	 *	定义一个函数，判断一个数字是不是偶数，如果是返回true，否则返回false
+	 */
+	 
+	function isOU(num){
+		if(num%2 == 0){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	或：
+	function isOU(num){
+		return num%2 == 0;
+	}
+	
+	/*
+	 *	定义一个函数，可以根据半径计算一个圆的面积，并返回计算结果
+	 */
+	function mianji(r){
+		return 3.14*r*r;
+	}
+	
+	/*
+	 *	创建一个函数，可以在控制台中输出一个人的信息
+	 *	实参可以是任意的数据类型，也可以是一个对象，当我们的参数过多时，可以将参数封装到一个对象中，然后通过对象传递
+	 */
+	function sayHello(o){
+		console.log("我是"+o.name+" 今年"+o.age+"岁","住在"+o.addr);
+	}
+	var obj = {
+		name: "tom",
+		age: 12,
+		addr: "shanghai"
+	}
+	sayHello(obj);
+	
+	/*
+	 *	实参可以是一个对象，也可以是一个函数
+	 */
+	function fun2(a){
+		a(obj);
+	}
+	fun2(sayHello);
+	//fun2(sayHello());  //把sayHello的返回值当做参数
+	
+	mianji()
+		-调用函数
+		-相当于使用函数的返回值
+	mianji
+		-函数对象
+		-相当于直接使用函数对象
+		
+五十五，返回值的类型
+	function fun(){
+		alert("开始");
+		for(var i=0; i<5; i++){
+			if(i == 2){
+				//使用break可以退出当前的循环
+				//break;
+				
+				//使用continue可以跳过当次循环
+				//continue;
+				
+				//使用return可以结束整个函数
+				return;
+			}
+			
+		}
+		alert("结束");
+	}
+	
+	/*
+	 *	返回值可以是任意的数据类型
+	 *	也可以是一个对象，也可以是一个函数
+	 */
+	function fun2(){
+		var obj = {name: "123"};
+		return obj;
+		或:
+		return {name: "123"};
+	}
+	var a = fun2();
+	console.log(a);
+	
+	function fun3(){
+		//在函数内部再声明一个函数
+		function fun4(){
+			alert(222);
+		}
+		//将fun4函数对象作为返回值返回
+		return fun4;
+	}
+	a = fun3();
+	a();
+	或:
+	fun3()();  //和a()是一样的，但一般不这么用
+	
+五十六，立即执行函数
+	函数定义完，立即被调用，这种函数叫立即执行函数
+	立即执行函数往往只会执行一次
+		(function(a,b){
+			console.log(a+b);
+		})(12,88);    //100
+		
+五十七，方法
+	对象的属性值可以是任何的数据类型，也可以是一个函数
+		
+		/*
+		 *	函数也可以成为对象的属性
+		 *		如果一个函数作为一个对象的属性保存
+		 *		那么我们称这个函数是这个对象的方法
+		 *		调用函数就说调用这个对象的方法(method)
+		 *
+		 *	但是它只是名称上的区别，没有其他的区别
+		 
+		var obj = new Object();
+		obj.sayName = function(){
+			console.log(123);
+		}
+		function fun(){
+			console.log(456);
+		}
+		obj.sayName(); //123 调用方法
+		fun(); //456 调用函数
+		
+		var obj2 = {
+			name: "tom",
+			sayName: function(){
+				console.log(789);
+			}
+		}
+		obj2.sayName();
+		
+	枚举对象中的属性
+	使用for...in语句
+	语法：
+		for(var 变量 in 对象){
+		
+		｝
+	for...in语句对象中有几个属性，循环体就会先执行几次
+		每次执行时，会将对象中一个属性的名字赋值给变量
+			for(var n in obj){
+				console.log("属性名 "+n);
+				console.log("属性值 "+obj[n]);
+			}
+			
+五十八，全局作用域
+	作用域
+		-指一个变量的作用的范围
+		-在js中一共有两种作用域
+			1，全局作用域
+			2，函数作用域
+		全局作用域：
+			-直接编写在script标签中的js代码，都在全局作用域中
+			-全局作用域在页面打开时创建，在页面关闭时销毁
+			-在全局作用域中有一个全局对象window，它代表的是一个浏览器的窗口，它由浏览器创建，我们可以直接使用
+			-在全局作用域中
+				创建的变量都会作为window对象的属性保存
+					var a = 10;
+					console.log(a); //10
+					console.log(window.a); //10
+					
+					console.log(c); //报错
+					console.log(window.c); //undefined
+				创建的函数都会作为window对象的方法保存
+					function fun(){
+						console.log(123);
+					}
+					fun(); //123
+					window.fun(); //123
+					
+					alert(); == window.alert(); //我们所谓的函数其实就是window对象的方法
+			-全局作用域中的变量都是全局变量
+				在页面的任意部分都可以访问的到
+				
+		变量的声明提前
+			-使用var关键字声明的变量，会在所有的代码执行之前被声明(但是不会赋值)
+				<script>
+					console.log(a); //undefined
+					var a = 123;
+				</script>
+				相当于
+				<script>
+					var a;
+					console.log(a); //undefined
+					a = 123;
+				</script>
+			-但是如果声明变量不使用var关键字，则变量不会被声明提前
+				console.log(a); //报错 a is not defined
+				a = 123;
+					
+		函数的声明提前
+			-使用函数声明形式创建的函数：function 函数名(){}
+				他会在所有的代码执行之前就被创建，所以我们可以在函数声明前来调用函数
+			-使用函数表达式创建的函数，不会被声明提前，所以不能在声明前调用
+				
+				//函数声明，会被提前创建
+				function fun(){
+					console.log(123);
+				}
+				//函数表达式，不会被提前创建
+				var fun2 = function(){
+					console.log(456);
+				};
+				
+五十九，函数作用域
+	-调用函数时创建函数作用域，函数执行完毕以后，函数作用域被销毁
+	-每调用一次函数就会创建一个新的函数作用域，他们之间是互相独立的
+	-在函数作用域中可以访问到全局作用域的变量
+		在全局作用域中无法访问到函数作用域的变量
+	-当在函数作用域操作一个变量时，它会先在自身作用域中寻找，如果有就直接使用
+		如果没有则向上一级作用域中寻找，直到找到全局作用域
+		如果全局作用域中依然没有找到，则会报错
+	-在函数中要访问全局变量可以使用window对象
+		var a = 10;
+		function fun(){
+			var a = 20;
+			console.log(a);
+			function fun2(){
+				console.log(a);
+				console.log(window.a);
+			}
+		}
+		fun(); // 20 20 10
+		
+	在函数作用域中也有声明提前的特性
+		使用var关键字声明的变量，会在函数中所有的代码执行之前被声明
+			function fun(){
+				console.log(a);
+				var a = 10;
+			}
+			fun(); //undefined
+			相当于
+			function fun(){
+				var a;
+				console.log(a);
+				a = 10;
+			}
+			fun(); //undefined
+			
+		函数声明也会在函数中所有的代码执行之前执行
+			function fun(){
+				fun4();
+				function fun4(){
+					alert(123);
+				}
+			}
+			fun(); //123
+			
+		在函数中，不使用var声明的变量都会成为全局变量
+			function fun(){
+				d = 100; //d没有使用var关键字，则会设置为全局变量。相当于 window.d = 100;
+			}
+			fun();
+			console.log(d);  //100
+			
+			=>>>>>>>>>>>>>>>
+			
+			var e = 23;
+			function fun(e){  //定义形参就相当于在函数作用域中声明了变量
+				alert(e);
+			}
+			fun(); //undefined
+			
+			
+六十，debug
+	测试代码：
+		alert(d);
+		var a = 10;
+		var b = "hello";
+		c = true;
+		function fun(){
+			alert("hello");
+		}
+		var d = 35;
+	
+	chrome  f12 -> sources -> 添加断点(添加后，需刷新一下) -> f10(单步跳过)    选择某个变量右键添加监控
+			
+		
+	 		
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
