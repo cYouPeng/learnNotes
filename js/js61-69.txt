@@ -1,0 +1,347 @@
+六十一，六十二，this
+	解析器在调用函数时每次都会向函数内部传递进一个隐含的参数
+		这个隐含的参数就是this，this指向的是一个对象
+		这个对象我们称为函数执行的上下文对象
+		根据函数的调用方式的不同，this会指向不同的对象
+			1，以函数的形式调用时，this永远都是window
+			2，以方法的形式调用时，this就是调用方法的那个对象   (说了两条其实就是一条，以函数形式调用，其实就是window.xxx())
+				function fun(a,b){
+					//console.log(a+"  "+b);   //this就是一个参数，和a、b没啥区别，只不过它是由浏览器传进来的
+					console.log(this);
+					console.log(this.name);  //谁调用的就输入谁的name
+				}
+				//创建一个对象
+				var obj = {
+					name: "孙悟空",
+					sayName: fun
+				};
+				var obj2 = {
+					name: "猪八戒",
+					sayName: fun
+				};
+				
+				var name = "全局的name属性";
+				//以函数形式调用，this是window
+				fun(); //window对象   全局的name属性
+				//以方法形式调用，this是调用方法的对象
+				obj.sayName();  //  {name: "孙悟空", sayName: ƒ}   孙悟空
+				obj2.sayName();  // {name: "猪八戒", sayName: ƒ}   猪八戒
+				
+				加点难度...
+					function fun(){
+						console.log(this);
+						fun2();
+						function fun2(){
+							console.log(this);
+						}						
+					}
+					然后其它和上面一样
+					obj.sayName();  //输出 ---> obj对象(因为fun是以方法形式调用) window对象(因为fun2是以函数形式调用)
+					
+					
+六十三，使用工厂方法创建对象
+	懒 -> 把重复的提取出来
+	/*
+	 *	创建一个对象
+	 */
+	var obj = {
+		name: "孙悟空",
+		age: 18,
+		gender: "男",
+		sayName: function(){
+			console.log(this.name);
+		}
+	}
+	/*
+	 *	使用工厂方法创建一个对象
+	 */
+	function createPerson(name, age, gender){
+		//创建一个新的对象
+		var obj = new Object();
+		//向对象中添加属性
+		obj.name = name;
+		obj.age = age;
+		obj.gender = gender;
+		obj.sayName = function(){
+			alert(this.name);
+		};
+		//将新的对象返回
+		return obj;
+	}
+	var obj2 = createPerson("孙悟空", 18, "男");
+	var obj3 = createPerson("嫦娥", 28, "女");
+	obj2.sayName(); //孙悟空
+	obj3.sayName(); //嫦娥
+	
+六十四，构造函数
+	/*
+	 *	使用工厂方法创建的对象，使用的构造函数都是Object
+	 *	所以创建的对象都是Object这个类型
+	 *	就导致我们无法区分出多种不同类型的对象
+	 */
+	 
+	/*
+	 *	创建一个构造函数，专门用来创建person对象
+	 *		构造函数就是一个普通的函数，创建方式和普通函数没有区别
+	 *		不同的是构造函数习惯上首字母大写
+	 *		构造函数和普通函数的区别就是调用方式的不同
+	 *			普通函数是直接调用，而构造函数需要使用new关键字来调用
+	 *	构造函数的执行流程：
+	 *		1，立刻创建一个新的对象
+	 *		2，将新建的对象设置为函数中this，在构造函数中可以使用this来引用新建的对象
+	 *		3，逐行执行函数中的代码(只有这步需要我们参与，其它3步都由浏览器来弄)
+	 *		4，将新建的对象作为返回值返回
+	 *		(补充：当函数以构造函数形式调用的时候，this就是新创建的这个对象)
+	 			function Person(name, age, gender){
+	 				this.name = name;
+	  				this.age = age;
+	 				this.gender = gender;
+	 				this.sayName = function(){
+	 					alert(this.name);
+	 				}
+	 			}
+	 			var per = new Person("唐僧", 30, "男");
+	 			var per2 = new Person("国王", 28, "女");
+				console.log(per); //Person {name: "唐僧", age: 30, gender: "男", sayName: ƒ}
+				console.log(per2); //Person {name: "国王", age: 28, gender: "女", sayName: ƒ}
+				
+				function Dog(){
+				
+				}
+				var dog = new Dog();
+				console.log(dog); //Dog {}
+				
+	 *	使用同一个构造函数创建的对象，我们称为一类对象，也将一个构造函数称为一个类
+	 *		我们将通过一个构造函数创建的对象，称为是该类的实例
+	 *	this的情况：
+	 *		1，当以函数的形式调用时，this是window
+	 *		2，当以方法的形式调用时，谁调用方法this就是谁
+	 *		3，当以构造函数的形式调用时，this就是新创建的那个对象
+	 */
+	 
+	/*
+	 *	使用instanceof 可以检查一个对象是否是某个类的实例
+	 *	语法：
+	 *		对象 instanceof 构造函数
+	 *	如果是，则返回true，否则返回false
+	 */
+		console.log(per instanceof Person);  //true
+		
+	/*
+	 *	所有对象都是Object的后代
+	 *	所以任何的对象和Object做instanceof检查时，都会返回true
+	 */
+		console.log(dog instanceof Object); //true
+		
+六十五，构造函数修改
+	/*
+	 *	创建一个Person构造函数
+	 *		-在Person构造函数中，为每一个对象都添加了一个sayName方法
+	 *			目前我们的方法是在构造函数内部创建的，也就是构造函数每执行一次就会创建一个sayName方法
+	 *			也就是所有实例的sayName方法都是唯一的
+	 *			这样就导致了构造函数执行一次就会创建一个新的方法
+	 *			执行一万次就会创建一万个新的方法，而一万个方法都是一模一样的
+	 */			这是完全没有必要的，完全可以使所有的对象共享同一个方法
+					function Person(name, age, gender){
+						this.name = name;
+						this.age = age;
+						this.gender = gender;
+						this.sayName = fun;							
+					}
+					//将sayName方法在全局作用域中定义
+					function fun(){
+						alert(this.name);
+					}
+					var per = new Person("唐僧", 30, "男");
+					var per2 = new Person("国王", 28, "女");
+					//console.log(per.sayName == per2.sayName); //false  sayName写在构造函数里
+					//console.log(per.sayName == per2.sayName); //true  sayName写在全局作用域里
+					
+		一开始我们使用new Object()或对象字面量var obj = {}创建对象，但是创建多个对象得一个一个写太麻烦
+			于是有了工厂方法function createPerson(name, age, gender){
+								//创建一个新的对象
+								var obj = new Object();
+								//向对象中添加属性
+								obj.name = name;
+								obj.age = age;
+								obj.gender = gender;
+								obj.sayName = function(){
+									alert(this.name);
+								};
+								//将新的对象返回
+								return obj;
+							}  但是工厂方法无法区分不同类型的对象，因为他们都是Object类型的
+			于是有了构造函数function Person(name, age, gender){
+								this.name = name;
+								this.age = age;
+								this.gender = gender;
+								this.sayName = function(){
+									alert(this.name);
+								}
+							}  这样就可以区分不同类型的对象了，但是创建多个对象就要创建多个相同的方法，浪费内存
+				以上都是创建的对象的方式，只不过更加的方便和安全
+			于是有了原型对象function Person(name, age, gender){
+								this.name = name;
+								this.age = age;
+								this.gender = gender;														
+							}
+							Person.prototype.sayName = function(){
+								alert(this.name);
+							}  这样可以使多个对象共享一个方法，提升性能
+					
+六十六，原型对象
+	/*
+	 *	将函数定义在全局作用域，污染了全局作用域的命名空间
+	 *		而且定义在全局作用域中也很不安全
+	 */
+	 
+	/*
+	 *	原型prototype
+	 *	我们所创建的每一个函数，解析器都会向函数中添加一个属性prototype
+	 *		这个属性对应着一个对象，这个对象就是我们所谓的原型对象
+	 *			function MyClass(){
+				}
+				function sayName(){
+				}
+				console.log(Person.prototype == sayName.prototype); //false 每个函数都有自己的prototype
+				
+				
+				MyClass函数对象(有一个属性叫)
+					prototype(保存内存地址)		0x123(指向堆内存中的原型对象)
+					
+				通过MyClass创建的对象mc					^
+					有一个隐含属性__proto__		0x123   |
+					
+				通过MyClass创建的对象mc2				^
+					也有一个隐含属性__proto__	0x123	|
+					
+				原型对象0x123(保存在堆内存中的原型对象)
+					a 			123
+					__proto__	0x223(该原型对象还指向一个原型对象，指向0x223这个原型) |
+																					   <
+				原型对象0x223(一直检查到Object的原型)
+				
+				
+			如果函数作为普通函数调用，prototype没有任何作用，当函数以构造函数的形式调用时，它所创建的对象中都会有一个隐含的
+			属性，指向该构造函数的原型对象，我们可以通过 __proto__(两个下划线) 来访问该属性
+				function MyClass(){
+				}
+				var mc = new MyClass();
+				console.log(mc.__proto__ == MyClass.prototype);  //true
+				
+			原型对象就相当于一个公共的区域，所有同一个类的实例都可以访问到这个原型对象
+				我们可以将对象中的相同的内容，统一设置到原型对象中
+			当我们访问对象的一个属性或方法时，它会先在对象自身中寻找，如果有则直接使用
+				如果没有则会去原型对象中寻找，如果找到则直接使用
+					function MyClass(){
+					}
+					//向MyClass的原型中添加一个属性a
+					MyClass。prototype.a = 123;
+					//向MyClass的原型中添加一个方法
+					MyClass.prototype.sayHello = function(){
+						alert(this.name);
+					}
+					var mc = new MyClass();
+				
+				    ->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+				
+					改动六十五节中的代码，取消在全局作用域中设置函数
+					function Person(name, age, gender){
+						this.name = name;
+						this.age = age;
+						this.gender = gender;
+						//this.sayName = fun;							
+					}
+					//将sayName方法在全局作用域中定义
+					//function fun(){
+						//alert(this.name);
+					//}
+					
+					//既可以确保函数只有一个，又不会影响到全局作用域
+					Person.prototype.sayName = function(){
+						alert(this.name);
+					}
+					
+					var per = new Person("唐僧", 30, "男");
+					var per2 = new Person("国王", 28, "女");
+					//console.log(per.sayName == per2.sayName); //false  sayName写在构造函数里
+					//console.log(per.sayName == per2.sayName); //true  sayName写在全局作用域里
+					//console.log(per.sayName == per2.sayName); //true  sayName写在原型里
+			
+			以后我们创建构造函数时，可以将这些对象共有的属性和方法，同意添加到构造函数的原型对象中		
+				这样不用分别为每一个对象添加(指构造函数中)，也不会影响到全局作用域(指全局作用域中)，就可以使每个对象都具有这些属性和方法了
+				
+六十七，原型对象2
+	//创建一个构造函数
+	function MyClass(){
+	}
+	
+	//向MyClass的原型中添加一个name属性
+	MyClass.prototype.name = "我是原型中的名字";
+	
+	var mc = new MyClass();
+	//console.log(mc.name); //我是原型中的名字
+	
+	//使用in检查对象中是否含有某个属性时，如果对象中没有但是原型中有，也会返回true
+	console.log("name" in mc); //true
+	
+	/*
+	 *	可以使用对象的hasOwnProperty()方法来检查对象自身中是否含有该属性
+	 *		使用该方法只有当对象自身中含有该属性时，才会返回true
+	 */
+	console.log(mc.hasOwnProperty("name")); //false
+	mc.name = "Jack";
+	console.log(mc.hasOwnProperty("name")); //true
+	
+	console.log(mc.hasOwnProperty("hasOwnProperty")); //false  自身没有该属性
+	console.log(mc.__proto__.hasOwnProperty("hasOwnProperty")); //false 所指向的原型对象中也没有
+	console.log(mc.__proto__.__proto__.hasOwnProperty("hasOwnProperty")); //true 一直找到了Object原型中，找到了
+	console.log(mc.__proto__.__proto____proto__); //null Object再往上就没有原型了，但是它也有一个__proto__属性，
+		这个属性的值就是null
+		
+	/*
+	 *	原型对象也是对象，所以他也有原型
+		当我们使用一个对象的属性或方法时，会先在自身中寻找
+			自身中如果有，则直接使用
+			如果没有则去原型对象中寻找，如果原型对象中有，则使用
+			如果还是没有则去原型的原型中寻找，知道找到Object对象的原型
+			Object对象的原型没有原型，所以如果在Object中依然没有找到，则返回undefined
+	
+六十八，toString()
+	function Person(name, age, gender){
+		this.name = name;
+		this.age = age;
+		this.gender = gender;
+	}
+	//创建一个Person实例
+	var per = new Person("孙悟空", 18, "男");
+	//当我们直接在页面中打印一个对象时，实际上是输出的对象调用toString()方法的返回值
+		console.log(per);
+		console.log(per.toString());  //这二者输出都是一样的，[Object, Object]
+		
+	//如果我们希望在输出对象时不输出[Object, Object]，可以为对象添加一个toString()方法
+		console.log(per.__proto__.__proto__.hasOwnProperty("toString")); //true 所以toString定义在Object原型里
+		//修改Person原型的toString()
+		Person.prototype.toString = function(){
+			return "person[name=]"+this.name+",age="+this.age+",gender="+this.gender;
+		}
+		console.log(per); //person[name=孙悟空,age=18,gender=男]
+		
+六十九，垃圾回收
+	垃圾回收(gc)
+		-就像人生活的时间长了会产生垃圾一样，程序运行过程中也会产生垃圾
+			这些垃圾积攒过多以后，会导致程序运行的速度过慢
+			所以我们需要一个垃圾回收机制来处理程序运行过程中产生的垃圾
+		-当一个对象没有任何的变量或属性对他进行引用，此时我们将永远无法操作该对象
+			此时这种对象就是一个垃圾，这种对象过多会占用大量的内存空间，导致程序运行变慢
+			所以这种垃圾必须进行清理
+		-在js中拥有自动的垃圾回收机制，它会自动将这些垃圾对象从内存中销毁
+			我们不需要也不能进行垃圾回收的操作
+		-我们需要做的只是要将不再使用的对象设置为null即可
+			var obj = new Object();
+			//对对象进行各种操作
+			obj = null; //不写这行，不用的对象依然还有变量引用，所以gc不会进行回收；写了这行，没有变量引用该对象了，gc会进行回收
+			
+
+				
+		
