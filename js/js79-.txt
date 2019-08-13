@@ -1,0 +1,138 @@
+七十九，call和apply
+	/*
+	 *	call()和apply()
+	 *		-这两个方法都是函数对象的方法，需要通过函数对象来调用
+			-当对函数调用call()和apply()时，都会调用函数执行
+			-在调用call()和apply()时，可以将一个对象指定为第一个参数
+				此时这个对象将会成为函数执行时的this
+			-call()方法可以将实参在对象之后依次传递
+			-apply()方法需要将实参封装到一个数组中统一传递
+			-this的情况：
+				1，以函数形式调用时，this永远都是window
+				2，以方法的形式调用时，this是调用方法的对象
+				3，以构造函数形式调用时，this是新创建的那个对象
+				4，使用call()和apply()调用时，this是指定的那个对象
+				
+					function fun(){						
+						alert(this.name);
+					}
+					
+					fun();
+					fun.call();
+					fun.apply();   //这三者结果是一样的
+					
+					var obj = {name: "obj"};
+					
+					fun(); //window
+					fun.call(obj); //obj
+					fun.apply(obj); //obj    call和apply都是用来指定函数中this的
+					
+					obj = {
+						name: "obj",
+						sayName: function(){
+							alert(this.name);
+						}
+					}
+					var obj2 = {name: "obj2"};	
+					obj.sayName(); //obj
+					obj.sayName.apply(obj2); //obj2
+					
+			二者区别：
+			修改    function fun(a,b){
+						console.log(a);
+						console.log(b);
+						alert(this.name);
+					}
+					fun.call(obj,2,3); //2 3 obj
+					fun.apply(obj,[2,3]); //2 3 obj
+					
+八十，arguments
+	/*
+	 *	在调用函数时，浏览器每次都会传递进两个隐含的参数
+	 *		1，函数的上下文对象this
+	 *		2，封装实参的对象arguments
+	 *			-arguments是一个类数组对象，它也可以通过索引来操作数据，也可以获取长度 (类数组：和数组很像，但不是数组)
+				-在调用函数时，我们所传递的实参都会在arguments中保存
+				-arguments.length可以用来获取实参的个数
+				-即使不定义形参，也可以通过arguments来使用实参，只不过比较麻烦
+					arguments[0] 表示第一个实参
+					arguments[1] 表示第二个实参
+				-它里边也有一个属性叫做callee，这个属性对应一个函数对象，就是当前正在执行的函数对象
+					function fun(){
+						console.log(arguments instanceof Array); //false
+						console.log(Array.isArray(arguments)); //false
+						//以上两种方法都可以用来检查一个对象是否是数组
+						console.log(arguments.length);
+						console.log(arguments[0]);
+						console.log(arguments.callee); //当前函数对象
+						console.log(arguments.callee == fun); //true
+					}
+					
+八十一，Date对象
+	在js中使用Date对象来表示一个时间
+	//创建一个Date对象
+	//如果直接使用构造函数创建一个Date对象，则会封装为当前代码执行的时间
+	var d = new Date();
+	console.log(d);
+	
+	//创建一个指定的时间对象
+	//需要在构造函数中传递一个表示时间的字符串作为参数
+	//日期格式：月/日/年 时:分:秒
+	var d2 = new Date("12/03/2019 11:10:30");  //注意年份不要用两位数，以免有歧义
+	console.log(d2);  
+	
+	/*
+	 *	getDate()
+	 *		-获取当前日期对象是几日
+	 */
+	var date = d2.getDate();
+	console.log(date); //3
+	
+	/*
+	 *	getDay()
+	 *		-获取当前日期对象是周几
+	 *		-会返回一个0-6的值
+				0表示周日
+				1表示周一
+				 ...
+				6表示周六
+				var day = d2.getDay();
+				console.log(day); 
+				
+	/*
+	 *	getMonth()
+	 *		-获取当前时间对象的月份
+			-会返回一个0-11的值
+				0表示一月
+				1表示二月
+				11表示十二月
+				var day = d2.getMonth();
+				console.log(day); 
+	/*
+	 *	getFullYear()
+	 *		-获取当前日期对象的年份
+	 *			var year = d2.getFullYear();
+	 *			console.log(year);
+	 */
+	 
+	/*
+	 *	getTime()
+	 *		-获取当前日期对象的时间戳
+	 *		-时间戳，指的是从格林威治标准时间的1970年1月1日 0时0分0秒 到当前日期所花费的毫秒数(1秒 = 1000毫秒)
+			-计算机底层在保存时间时使用的都是时间戳
+				var d3 = new Date("1/1/1970 0:0:0");
+				console.log(d3.getTime()); //-28800000 因为采用的是东八区时区，与格林威治标准差了8个小时
+				
+				//利用时间戳来测试代码执行的性能
+				//获取当前的时间戳
+				var time = Date.now();
+				console.log(time);
+				
+				var start = Date.now();
+				for(var i=0; i<100; i++){
+					console.log(i);
+				}
+				var end = Date.now();
+				console.log(end-start); //不如time timeEnd方便
+					
+					
