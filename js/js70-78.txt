@@ -22,7 +22,7 @@
 		/*
 		 *	读取数组中的元素
 		 *	语法：数组[索引]
-		 *		如果读取不存在的索引，他不会报错而是返回undefined
+		 *		如果读取不存在的索引，不会报错而是返回undefined
 		 */
 		console.log(arr[0]); //33
 		console.log(arr[10]); //undefined
