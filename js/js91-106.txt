@@ -214,7 +214,7 @@
 		console.log(bj.innerText);   //都是北京
 		
 		
-九十八，全选练习一
+九十八，九十九，一百，全选练习
 	<form method="post" action="">
 		你爱好的运动是？<input type="checkbox" id="checkedAllBox"/>全选/全不选
 		<br/>
@@ -311,3 +311,136 @@
 			}
 		 }
 	</script>
+	
+一百零一，DOM查询的剩余方法
+	/*
+	 *	在document中有一个属性body，它保存的是body的引用
+			//var body = document.getElementById("body")[0];
+			var body = document.body;
+			
+	/*
+	 *	document.documentElement保存的是html根标签
+			var html = document.documentElement;
+			
+	/*
+	 *	document.all 代表页面中所有的元素，返回一个类数组对象
+			var all = document.all;
+			//all = document.getElementsByTagName("*");
+			for(var i=0; i<all.length; i++){
+				console.log(all[i]);
+			}
+		
+	/*
+	 *	getElementByClassName()
+	 *		根据元素的class属性查询一组元素节点对象
+			但是该方法不支持IE8及以下的浏览器
+				var div = document.getElementByClassName("box")[0]
+				
+	/*
+	 *	document.querySelector()
+			-需要一个选择器作为参数，可以根据一个css选择器来查询一个元素节点对象
+			-虽然IE8中没有getElementsByClassName()，但是可以使用querySelector()代替
+			-使用该方法总会返回唯一的一个元素，如果满足条件的元素有多个，那么它只会返回第一个
+				var div = document.querySelector(".box div");
+				
+	/*
+	 *	document.querySelectorAll()
+			-该方法和querySelector()用法类似，不同的是它会将符合条件的元素封装到一个数组中返回
+			-即使符合条件的元素只有一个，他也会返回数组
+			
+一百零二，DOM增删改
+	/*
+	 *	document.createElement()
+			可以用于创建一个元素节点对象
+			它需要一个标签名作为参数，将会根据该标签名创建元素节点对象
+			并将创建好的对象作为返回值返回
+				var li = document.createElement("li");
+	
+	/*
+	 *	document.createTextNode()
+			可以用来创建一个文本节点对象
+			需要一个文本内容作为参数，将会根据该内容创建文本节点，并将新的节点返回
+				var text = document.createTextNode();
+				
+	/*
+	 *	appendChild()
+			-向一个父节点中添加一个新的子节点
+			-用法：父节点.appendChild(子节点);
+				li.appendChild(text);
+				
+	/*
+	 *	insertBefore()
+			-可以在指定的子节点前插入新的子节点
+			-语法：
+				父节点.insertBefore(新节点，旧节点);
+					ul.insertBefore(newLi,oldLi);
+					
+	/*
+	 *	replaceChild()
+			-可以使用指定的子节点替换已有的子节点
+			-语法：父节点.replaceChild(新节点，旧节点);
+				ul.replaceChild(newLi,oldLi);
+				
+	/*
+	 *	removeChild()
+			-可以删除一个子节点
+			-语法：
+				父节点.removeChild(子节点);
+				子节点.parentNode.removeChild(子节点);
+					//假设city为bj的父节点
+					city.removeChild(bj);
+					bj.parentNode.removeChild(bj);
+					
+	/*
+	 *	使用innerHTML也可以完成DOM的增删改的相关操作
+		一般我们会两种方式结合使用(而不是使用createElement等创建大量子节点，然后再挨个添加到父节点中)
+			var li = document.createElement("li");
+			li.innerHTML = "广州";
+			ul.appendChild(li);
+			
+		其实还有一种写法：ul.innerHTML += "<li>广州</li>";  不推荐
+			这种写法会改变整个ul里的内容，而上面那种只会改变新创建的这个li，可以在火狐查看黄色区域的范围
+			
+一百零三，一百零四，一百零五，一百零六，添加删除记录(练习)
+	/*
+	 *	点击超链接以后，超链接会跳转页面，这个是超链接的默认行为
+	 *	但是此时我们不希望出现默认行为，可以通过在响应函数的最后，return false;来取消默认行为
+	 */
+	var tr = this.parentNode.parentNode;
+	tr.parentNode.removeChild(tr);
+	
+	/*
+	 *	confirm()用于弹出一个带有确认和取消按钮的提示框
+			需要一个字符串作为参数，该字符串将会作为提示文字显示出来
+			如果用户点击确认则会返回true，如果点击取消则会返回false
+			
+	/*
+	 *	var name = tr.getElementsByTagName("td")[0].innerHTML;
+	 *  或者
+	 *	name = tr.children[0].innerHTML;
+	 *	不要用
+	 *		firstElementChild 兼容性不好
+	 */
+	 
+	 
+	var a = document.createElement("a");
+	a.href = "javascript:;";
+	
+	//获取tbody
+	var tbody = table.getElementsByTagName("tbody")[0];
+	
+	//每次添加一个tr，还需要给里边的超链接绑定一个单击响应函数
+	
+	for(var i=0; i<arr.length; i++){
+		/*	for循环会在页面加载完成之后立即执行
+		 *	而响应函数会在超链接点击时才执行
+		 *	当响应函数执行时，for循环早已执行完毕
+		 arr[i].onclick = function(){
+			alert(i);  //始终都为3
+		 }
+	}
+	
+
+	
+	
+		
