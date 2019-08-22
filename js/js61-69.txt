@@ -52,6 +52,7 @@
 			console.log(this.name);
 		}
 	}
+	...
 	/*
 	 *	使用工厂方法创建一个对象
 	 */
@@ -203,7 +204,7 @@
 				}
 				function sayName(){
 				}
-				console.log(Person.prototype == sayName.prototype); //false 每个函数都有自己的prototype
+				console.log(MyClass.prototype == sayName.prototype); //false 每个函数都有自己的prototype
 				
 				
 				MyClass函数对象(有一个属性叫)
@@ -229,7 +230,7 @@
 				var mc = new MyClass();
 				console.log(mc.__proto__ == MyClass.prototype);  //true
 				
-			原型对象就相当于一个公共的区域，所有同一个类的实例都可以访问到这个原型对象
+			原型对象就相当于一个公共的区域，同一个类的所有实例都可以访问到这个原型对象
 				我们可以将对象中的相同的内容，统一设置到原型对象中
 			当我们访问对象的一个属性或方法时，它会先在对象自身中寻找，如果有则直接使用
 				如果没有则会去原型对象中寻找，如果找到则直接使用

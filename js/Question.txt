@@ -1,0 +1,5 @@
+一百零一，DOM查询的剩余方法  querySelector()
+
+//每次添加一个tr，还需要给里边的超链接绑定一个单击响应函数  103章
+
+if(window.getComputedStyle){    //此处必须要加window  109

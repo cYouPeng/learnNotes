@@ -1,0 +1,349 @@
+一百二十四，Navigator
+	/*
+	 *	BOM
+			-浏览器对象模型
+			-BOM可以使我们通过js来操作浏览器
+			-在BOM中为我们提供了一组对象，用来完成对浏览器的操作
+			-在BOM对象中
+				Window
+					-代表的是整个浏览器的窗口
+					 同时window也是网页中的全局对象
+				Navigator
+					-代表的是当前浏览器的信息
+					 通过该对象可以识别不同的浏览器
+				Location
+					-代表当前浏览器的地址栏信息
+					 通过该对象可以获取地址栏信息，或者操作浏览器跳转页面
+				History
+					-代表浏览器的历史记录，可以通过该对象来操作浏览器的历史记录
+						由于隐私原因，该对象不能获取到具体的历史记录，只能操作浏览器向前或向后翻页
+						而且该操作只在当次访问时有效
+				Screen	
+					-代表用户的屏幕的信息
+					 通过该对象可以获取到用户的显示器的相关信息
+					 
+			这些BOM对象在浏览器中都是作为window对象的属性保存的(使用时注意都是小写的)
+				可以通过window对象来使用，也可以直接使用
+					console.log(window.navigator);
+					console.log(navigator);  //二者输出一样
+					
+		/*
+		 *	Navigator
+				-代表当前浏览器的信息，通过该对象可以来识别不同的浏览器
+				-由于历史原因，Navigator对象中的大部分属性都已经不能帮助我们识别浏览器了
+				-一般我们只会使用userAgent来判断浏览器的信息，userAgent的值是一个字符串，这个字符串中包含有用来
+					描述浏览器信息的内容。不同的浏览器会有不同的userAgent
+						火狐的userAgent
+							Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:68.0) Gecko/20100101 Firefox/68.0
+						chrome的userAgent
+							Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36
+						IE8,9,10的userAgent
+							Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; WOW64; Trident/7.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; .NET4.0C; .NET4.0E)
+						IE11的userAgent
+							Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; .NET4.0C; .NET4.0E; rv:11.0) like Gecko
+								在IE11中已经将微软和IE相关的标识都去除了，所以我们基本已经不能通过userAgent来识别一个浏览器
+								是否是IE了
+								
+								如果通过userAgent不能判断，还可以通过一些浏览器中特有的对象，来判断浏览器的信息
+								比如：ActiveXObject
+									if("ActiveXObject" in window){
+										alert("我是IE");
+									}else{
+										alert("我不是IE);
+									}
+									注：不能写if(window.ActiveXObject) IE会把它转成false
+									
+									
+							var ua = navigator.userAgent;
+							if(/firefox/i.test(ua)){
+								alert("火狐");
+							}else if(/chrome/i.test(ua)){
+								alert("chrome");
+							}else if(/msie/i.test(ua)){
+								alert("IE");
+							}else if("ActiveXObject" in window){
+								alert("IE11");
+							}
+							
+一百二十五，History
+	/*
+	 *	History
+			-该对象可以用来操作浏览器向前或向后翻页
+			
+		/*
+		 *	length	
+				-属性，可以获取到当次访问的链接数量
+				 console.log(history.length);
+				 
+		/*
+		 *	back()
+				-可以用来回退到上一个页面，作用和浏览器的回退按钮一样
+					history.back();
+				
+		/*
+		 *	forward()
+				-可以跳转到下一个页面，作用和浏览器的前进按钮一样
+					history.forward();
+					
+		/*
+		 *	go()
+				-可以用来跳转到指定的页面
+				-它需要一个整数作为参数
+					1：表示向前跳转一个页面	相当于forward()
+					2：表示向前跳转两个页面
+					-1：表示向后跳转一个页面	相当于back()
+					-2：表示向后跳转两个页面
+						history.go(-2);
+						
+一百二十六，Location
+	/*
+	 * 该对象中封装了浏览器的地址栏的信息
+	 *	如果直接打印Location，则可以获取到地址栏的信息(当前页面的完整路径)
+			alert(location);
+			
+		如果直接将location属性修改为一个完整的路径，或相对路径
+		则页面会自动跳转到该路径，并且会生成相应的历史记录
+			location = "http://www.baidu.com";
+			location = "test.html";
+			
+		/*
+		 *	assign()
+				-用来跳转到其它页面，作用和直接修改location一样
+					location.assign("http://www.baidu.com");
+				也会生成历史记录(可以回退前进)
+				
+		/*
+		 *	reload()
+				-用于重新加载当前页面，作用和刷新按钮一样
+				-如果在方法中传递一个true作为参数，则会强制清空缓存刷新页面
+				-ctrl+f5 强制清空缓存刷新页面快捷键
+					location.reload();
+					location.reload(true);
+					
+		/*
+		 *	replace()
+				-可以使用一个新的页面替换当前页面，调用完毕也会跳转页面
+					不会生成历史记录，不能使用回退按钮回退
+					
+		assign()和replace()都用来跳转页面，只不过一个能生成历史记录，一个不能生成
+		
+一百二十七，定时器简介
+	<h1 id="count"></h1>
+	<script>
+		var count = document.getElementById("count");
+		//使count的内容自动切换
+		/*
+		 *	js的程序的执行速度是非常快的
+			如果希望一段程序，可以每隔一段时间执行一次，可以使用定时调用
+			
+			for(var i=0; i<10000; i++){
+				count.innerHTML = i;
+			}
+			
+		/*
+		 *	setInterval()
+				-定时调用
+				-可以将一个函数，每隔一段时间执行一次
+				-参数：
+					1，回调函数，该函数会每隔一段时间被调用一次
+					2，每次调用间隔的时间，单位毫秒
+				-返回值：
+					返回一个Number类型的数据，这个数字用来作为定时器的唯一标识
+				
+						var num = 1;
+						var timer = setInterval(function(){
+							count.innerHTML = num++;
+							if(num == 10){
+								clearInterval(timer);
+							}
+						},1000);
+						/*
+						 *	clearInterval()可以用来关闭一个定时器
+							方法中需要一个定时器的标识作为参数，这样将关闭标识对应的定时器
+						
+	</script>
+					
+一百二十八，切换图片练习
+	<img src="" />
+	<button id="btn01">开始</button>
+	<button id="btn02">暂停</button>
+	<script>
+		var img = document.getElementsByTagName("img")[0];
+		var btn01 = document.getElementById("btn01");
+		var btn02 = document.getElementById("btn02");
+		//创建一个数组，保存图片的路径
+		var imgArr = ["1.jpg","2,jpg","3.jpg","4.jpg","5.jpg"];
+		//创建一个变量，保存当前图片的索引
+		var index = 0;
+		//定义一个变量，来保存定时器的标识
+		var time;
+		//开启一个定时器，来自动切换图片
+		btn01.onclick = function(){
+			clearInterval(timer);
+			var timer = setInterval(function(){
+				//使索引自增
+				index++;
+				//判断索引是否超过最大索引
+				if(index >= imgArr.length){
+					index = 0;
+				}
+				或
+				index = index % imgArr.length; (有点难) index %= imgArr.length
+				
+			},1000)
+		}
+		btn02.onclick = function(){
+			//点击按钮以后，停止图片的自动切换，关闭定时器
+			/*
+			 *	clearInterval()可以接收任意参数，如果参数是一个有效的定时器的标识，则停止对应的定时器
+				如果参数不是一个有效的标识，则什么也不做
+			clearInterval(timer);
+		}
+		
+		/*
+		 *	目前我们每点击一次按钮，就会开启一个定时器
+			点击多次就会开启多个定时器，这就导致图片的切换速度过快
+			并且我们只能关闭最后一次开启的定时器
+			
+			可以在开启定时器之前，将当前元素上的其它定时器关闭，所以多了919行代码
+	</script>
+	
+一百二十九，修改div移动
+	请看123章
+	
+一百三十，延时调用
+	/*
+	 *	延时调用
+			一个函数不马上执行，而是隔一段时间以后再执行，而且只会执行一次
+			延时调用和定时调用的区别
+				定时调用会执行多次
+				而延时调用只会执行一次
+			延时调用和定时调用实际上是可以互相代替的，在开发中可以根据自己需要去选择
+			
+			var timer = setTimeout(function(){
+				console.log("hello");
+			},1000);
+			//使用clearTimeout()来关闭一个延时调用
+			clearTimeout(timer);
+			
+一百三十一，二，三，定时器的应用
+	<button id="btn01">点击按钮以后box1向右移动</button>
+	<button id="btn02">点击按钮以后box2向右移动</button>
+	
+	<div id="box1"></div>
+	<div id="box2"></div>
+	<div style="width:0;height:1000px;border-left:1px solid black;position:absolute;left:800px"></div>
+	
+	#box1{
+		width: 100px;
+		height: 100px;
+		background-color: red;
+		position: absolute;
+		left: 0; /* 防止IE的auto */
+	}
+	#box2{
+		width: 100px;
+		height: 100px;
+		background-color: red;
+		position: absolute;
+		left: 0; /* 防止IE的auto */
+		top: 200px;
+	}
+	<script>
+		var bton01 = document.getElementById("btn01");
+		var bton02 = document.getElementById("btn02");
+		var box1 = document.getElementById("box1");
+		var box2 = document.getElementById("box2");
+		var timer;
+		btn01.onclick = function(){
+			//关闭上一个定时器
+			clearInterval(timer);
+			timer = setInterval(){
+				//获取box1原来的left值
+				var oldValue = parseInt(getStyle(box1, "left"));
+				//在旧值的基础上增加
+				var newValue = oldValue + 19;
+				//判断newValue是否大于800
+				if(newValue > 800){
+					newValue = 800;
+				}
+				//将新值赋给box1
+				box1.style.left = newValue + "px";
+				//当元素移动到800px时，停止执行动画
+				if(newValue == 800){
+					clearInterval(timer);
+				}
+			}
+		}
+		
+	<script>
+	
+	
+	tool.js
+		/*
+		 *	尝试创建一个可以执行简单动画的函数
+			参数：
+				obj：要执行动画的对象
+				target：执行动画的目标位置
+				speed：移动的速度
+				
+				
+			function move(obj, attr, target, speed, callback){
+				//关闭上一个计时器
+				clearTimeout(obj.timer);
+				//获取元素目前的位置
+				var current = parseInt(getStyle(obj, attr));
+				
+				//判断速度的正负值
+				//如果从0向800移动，则speed为正
+				//如果从800向0移动，则speed为负
+				if(current > target){
+					//此时速度应为负值
+					speed = -speed;
+				}
+				
+				//开启一个定时器，用来执行动画效果
+				//向执行动画的对象中添加一个timer属性，用来保存它自己的定时器标识
+				obj.timer = setInterval(function(){
+					//获取box1原来的left值
+					var oldValue = parseInt(getStyle(obj, attr));
+					//在旧值的基础上增加
+					var newValue = oldValue + speed;
+					
+					//判断newValue是否大于800
+					//从800向0移动
+					//向左移动时，需要判断newValue是否小于target
+					//向右移动时，需要判断newValue是否大于target
+					if(speed < 0 && newValue < target || speed >0 && newValue > target){
+						newValue = target;
+					}
+					
+					//将新值赋给box1
+					obj.style[attr] = newValue + "px";
+					
+					//当元素移动到0px时，使其停止执行动画
+					if(newValue == target){
+						//达到目标，关闭定时器
+						clearInterval(obj.timer);
+						//动画执行完毕，调用回调函数
+						callback && callback();
+					}
+					
+				},30)
+			}
+			function getStyle()...
+			
+			
+		在其它页面引用tool.js
+			<script src="tool.js"></script>
+			
+			<script>
+				move(box2, "width", 800, 10, function(){
+					move(box2, "height", 400, 10, function(){
+						move(box2, "top", 0, 10, function(){
+							...
+						})
+					})
+				});
+			</script>
+	

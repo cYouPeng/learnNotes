@@ -1,0 +1,2 @@
+在window.onload = function(){
+里，var a = 123;此时a不再是window的属性，而是一个局部变量}

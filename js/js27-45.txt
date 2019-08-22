@@ -363,8 +363,8 @@
 		
 四十四，break和continue
 	break关键字可以用来退出switch和循环语句
-	不能再if语句中使用break和continue
-	break关键字，会立即终止理它最近的那个循环语句
+	不能在if语句中使用break和continue
+	break关键字，会立即终止离它最近的那个循环语句
 		if(a > 10){
 			break;   //报错，break不能针对if
 		}
