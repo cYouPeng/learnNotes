@@ -1,2 +1,25 @@
 在window.onload = function(){
 里，var a = 123;此时a不再是window的属性，而是一个局部变量}
+
+
+
+
+一般情况下我们用js设置元素对象的样式会使用这样的形式：
+	var div= document.getElementById(“div”);
+	div.style.width=”100px”;
+	div.style.height=”100px”;
+	div.style.backgroundColor="red";
+
+可以使用cssText同一设置
+	div.style.cssText = "width:200px;height:200px;background:red";
+
+但是如果div元素一开始就有内联样式，<div style="width:100px;height:100px"></div>
+	再像上面这么设置会覆盖原有样式
+	可以使用 +=
+		var s = div.style.cssText += "height:200px;background:red";
+		这种叠加在IE8中无效，可以在 += ";height..."(但是chrome中会有两个;，最好直接覆盖就完事得了)
+		div.style.cssText = ""; //清空内联样式
+	可以输出s的值，会输出div的全部内联样式
+		console.log(s);  //width: 100px; height: 200px;;background:red
+		但是在IE8及以下浏览器中会有不一样的结果 => HEIGHT: 200px; WIDTH: 100px;background:red   
+			原样式中的样式名大写，并且改变其书写顺序

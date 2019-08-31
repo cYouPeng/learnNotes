@@ -14,7 +14,8 @@
 		/*
 		 *	通过js读取元素的样式
 			语法：元素.style.样式名
-			通过style属性设置和读取的都是内联样式，是无法读取样式表中的样式的
+			通过style属性设置和读取的都是内联样式(如果没有设置内联样式，读取到的为空串)，是无法读取样式表中的样式的
+				console.log(div.style.left); //100px
 			
 一百零八，获取元素的样式
 	/*
@@ -22,7 +23,9 @@
 	 *	语法：元素.currentStyle.样式名
 			它可以用来读取当前元素正在显示的样式
 			如果当前元素没有设置样式，则获取到的是默认值
+			
 		currentStyle只有IE浏览器支持，其它浏览器都不支持
+		
 			alert(div.currentStyle.backgroundColor); //yellow
 			alert(div.currentStyle.width); //auto  没有设置width的情况下返回其默认值auto
 			
@@ -39,7 +42,7 @@
 		但是该方法不支持IE8及以下的浏览器												
 		通过currentStyle和getComputedStyle()读取到的样式都是只读的，不能修改。如果要修改必须通过style属性
 				alert(getComputedStyle(div, null).backgroundColor); //rgb(0,0,0) 会返回一个rgb值
-				alert(getComputedStyle(div, null).width); //1200  没有设置width情况下
+				alert(getComputedStyle(div, null).width); //1200px  没有设置width情况下
 					
 			
 			
@@ -54,7 +57,7 @@
 		function getStyle(obj, name){
 			if(window.getComputedStyle){    //此处必须要加window
 				//谷歌、火狐等浏览器的方式
-				return getComputedStyle(div, null)[name];
+				return getComputedStyle(obj, null)[name];
 			}else{
 				//IE8及以下的方式
 				return obj.currentStyle[name];
@@ -177,7 +180,7 @@
 			/*
 			 *	事件对象
 					-当事件的响应函数被触发时，浏览器每次都会将一个事件对象作为实参传递进响应函数
-						在事件对象中封装了当前事件相关的一切信息
+						在事件对象中封装了与当前事件相关的一切信息
 						比如：鼠标的坐标、键盘按键被按下、鼠标滚轮滚动...
 					但是在IE8中，响应函数被触发时，浏览器不会传递事件对象
 						在IE8及以下的浏览器中，是将事件对象作为window对象的属性保存的
@@ -229,7 +232,7 @@
 		}
 		/*
 		 *	此时执行代码看起来一切正常，但是当我把box4的body的高度改为1000px时，会出现鼠标与div分离的情况
-		 *
+		 *  
 		 *	clientX和clientY
 		 *		用于获取鼠标在当前的可见窗口的坐标
 		 *	而div的偏移量是相对于整个页面的
@@ -240,7 +243,23 @@
 		 *	但是这两个属性在IE8中不支持，所以如果需要兼容IE8，则不要使用
 		 */
 		
-		/*  (前提是我给body加了1000px的height)
+		/*
+		 *	经过验证，chrome,firefox,IE滚动条都是相对于其父元素的，如果高度超过了当前页面，则滚动条都是相对于html的
+		 *		var st = document.documentElement.scrollTop;
+		 *		box4.style.left = left + "px";
+		 *		box4.style.top = top + st + "px";
+		 */
+		
+	</script>
+	
+	
+	
+	
+	
+	
+	
+	
+		/*  (前提是我给body加了1000px的height)                                  (这段文字先持保留意见)
 		 *	chrome认为浏览器的滚动条是body的，可以通过body.scrollTop来获取
 		 *		var st = document.body.scrollTop;  在谷歌好使，IE8、火狐都是0
 		 *		body的高度是1000px，是它的父元素容不下它，才出现的滚动条。所以道理来讲，滚动条不应该是body的，
@@ -248,14 +267,19 @@
 		 *	火狐、IE浏览器认为浏览器的滚动条是html的
 		 *		var st = document.documentElement.scrollTop;
 		 *	可以这样改
-				把上边
-					box4.style.left = left + "px";
-					box4.style.top = top + "px";
-				改为
-					var st = document.body.scrollTop || document.documentElement.scrollTop;  //做兼容性处理
-					box4.style.left = left + st + "px";
-					box4.style.top = top + st + "px";
-	</script>
+		 *		把上边
+		 *			box4.style.left = left + "px";
+		 *			box4.style.top = top + "px";
+		 *		改为
+		 *			var st = document.body.scrollTop || document.documentElement.scrollTop;  //做兼容性处理
+		 *			var sl = document.body.scrollLeft || document.documentElement.scrollLeft;  //做兼容性处理
+		 *			box4.style.left = left + sl + "px";
+		 *			box4.style.top = top + st + "px";
+		 */
+	
+	
+	
+	
 	
 一百一十三，事件的冒泡
 	/*
@@ -287,7 +311,7 @@
 				alert("我是span的单击响应函数");
 				/*
 				 *	取消冒泡
-				 *	可以将事件对象的cancelBubble设置为true，即可取消冒泡
+				 *	可以将事件对象的cancelBubble设置为true，即可取消冒泡 
 				 */
 				event.cancelBubble = true;
 			};
@@ -351,10 +375,14 @@
 				/*
 				 *	target
 				 *		-event中的target表示的是触发事件的对象
+				 *		-不支持IE8及以下浏览器
+				 *			在IE8中可以使用event.srcElement来获取触发事件的对象
 				 *
-				 *	多一嘴，这里的this指的是，给谁绑定的函数，this就是谁。。而不是谁触发this就是谁
+				 *	这里的this指的是，给谁绑定的函数，this就是谁。。而不是谁触发this就是谁
 				 */
-				//alert(event.target);
+				//做event.target的兼容性处理
+				event.target = event.target || event.srcElement;
+				 
 				//如果触发事件的对象是我们期望的元素则执行，否则不执行
 				if(event.target.className == "link"){  
 					alert("我是a的单击响应函数");
@@ -402,6 +430,7 @@
 			 *			2，回调函数
 			 *		-该方法也可以同时为一个事件绑定多个响应函数
 			 *			不同的是它是后绑定先执行，执行顺序和addEventListener()正好相反
+			 *		-从IE11开始就不再支持attachEvent()了
 			 */
 			 
 						//兼容谷歌和火狐，不兼容IE8
@@ -444,7 +473,9 @@
 					/*
 					 *	把this统一为obj
 					 *		this是谁由调用方式决定
-					 *		callback.call(obj);
+					 *		callback.call(obj); 如果你直接传callback.call(obj),那你传的就不是函数对象，而是函数返回值了
+					 
+					 
 					 *	但此时，callback是由浏览器调用，所以我们无法改变其this指向
 					 *	可以改为
 					 */
@@ -566,7 +597,8 @@
 				document.onmouseup = function(){
 					//取消document的onmousemove事件
 					document.onmousemove = null;
-					//取消document的onmouseup事件
+					//取消document的onmouseup事件，不取消的话在其它处松开鼠标依然会弹出123
+					//alert(123);
 					document.onmouseup = null;
 				}
 				/*
@@ -642,7 +674,16 @@
 			 *	但是IE8不支持event.preventDefault()，如果直接调用会报错
 			 */
 					event.preventDefault && event.preventDefault();
-					return false;		}
+					return false;		
+		}
+		bind(box1, "DOMMouseScroll", box1.onmousewheel);
+		/*
+		 *	box1.addEventListener("osdjifs",function(){},false);
+		 *	box1.attachEvent("onlsjdife",function(){});
+		 *	box1.onlcjis= function(){}
+		 *	可以为元素胡乱绑定随便什么事件，浏览器是不会报错的(其实就是给对象赋值，属性名写什么都行)
+		 *  所以这也是在IE8中为box1绑定了onDOMMouseScroll事件，浏览器不会报错的原因
+        
 	</script>
 	
 一百二十二，键盘事件
@@ -745,7 +786,7 @@
 		document.onkeyup = function(){
 			//设置方向为0
 			dir = 0;
-		{
+		}
 	</script>
 	
 	

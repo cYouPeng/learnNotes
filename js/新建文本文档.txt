@@ -1,0 +1,538 @@
+
+		
+		
+一百一十二，div跟随鼠标移动
+	<div id="box4"></div>
+	
+	#box4{
+		width: 100px;
+		height: 100px;
+		background-color: red;
+		position: absolute;  /* 如果不写position的话，那么js中设置left和top都是无效的 */
+	}
+	
+	<script>
+		window.onload = function(){
+			var box4 = document.getElementById("box4");
+			//绑定鼠标移动事件
+			document.onmousemove = function(event){
+				//解决事件对象的兼容性问题
+				event = event || window.event;
+				//获取鼠标的坐标
+				var left = event.clientX;
+				var top = event.clientY;
+				//设置div的偏移量
+				box4.style.left = left + "px";
+				box4.style.top = top + "px";
+			}
+		}
+		/*
+		 *	此时执行代码看起来一切正常，但是当我把box4的body的高度改为1000px时，会出现鼠标与div分离的情况
+		 *  
+		 *	clientX和clientY
+		 *		用于获取鼠标在当前的可见窗口的坐标
+		 *	而div的偏移量是相对于整个页面的
+		 *	
+		 *	pageX和pageY可以获取鼠标相对于当前页面的坐标
+		 *		var left = event.pageX;
+		 *		var top = event.pageY;
+		 *	但是这两个属性在IE8中不支持，所以如果需要兼容IE8，则不要使用
+		 */
+		
+		/*  (前提是我给body加了1000px的height)
+		 *	chrome认为浏览器的滚动条是body的，可以通过body.scrollTop来获取
+		 *		var st = document.body.scrollTop;  在谷歌好使，IE8、火狐都是0
+		 *		body的高度是1000px，是它的父元素容不下它，才出现的滚动条。所以道理来讲，滚动条不应该是body的，
+		 *		而应该是body的父元素html的
+		 *	火狐、IE浏览器认为浏览器的滚动条是html的
+		 *		var st = document.documentElement.scrollTop;
+		 *	可以这样改
+				把上边
+					box4.style.left = left + "px";
+					box4.style.top = top + "px";
+				改为
+					var st = document.body.scrollTop || document.documentElement.scrollTop;  //做兼容性处理
+					box4.style.left = left + st + "px";
+					box4.style.top = top + st + "px";
+	</script>
+	
+	
+一百一十四，事件的委派
+	<button id="btn01">添加超链接</button>
+	<ul id="ul">
+		<li><a href="javascript:;">超链接一</a></li>
+		<li><a href="javascript:;">超链接二</a></li>
+		<li><a href="javascript:;">超链接三</a></li>
+	</ul>
+
+	<script>
+		window.onload = function(){
+			var ul = document.getElementById("ul");
+			//点击按钮以后添加超链接
+			var btn01 = document.getElementById("btn01");
+			btn01.onclick = function(){
+				var li = document.createElement("li");
+				li.innerHTML = "<a href='javascript:;'>新的超链接</a>";
+				ul.appendChild(li);
+			}
+			
+			/*	这里我们为每一个超链接都绑定了一个单击响应函数，这种操作比较麻烦
+			 *		而且这些操作只能为已有的超链接设置事件，而新添加的超链接必须重新绑定
+			 */
+			var allA = document.getElementsByTagName("a");
+			//for(var i=0; i<allA.length; i++){
+				//allA[i].onclick = function(){
+					//alert("我是a的单击响应函数");
+				//}
+			//}
+			
+			/*
+			 *	我们希望只绑定一次，即可应用到多个元素上，即使元素是后添加的
+			 *	我们可以尝试将其绑定给元素的共同的祖先元素
+			 *	
+			 *	事件委派
+			 *		-指将事件统一绑定给元素的共同的祖先元素
+			 *			这样当后代元素上的事件被触发时，会一直冒泡到祖先元素
+			 *			从而通过祖先元素的响应函数来处理事件
+			 *		-事件委派是利用了冒泡，通过委派可以减少事件绑定的次数，提高程序的性能
+			 */
+			//为ul绑定一个单击响应函数
+			ul.onclick = function(event){
+				event = event || window.event;
+				/*
+				 *	target
+				 *		-event中的target表示的是触发事件的对象
+				 *		-不支持IE8及以下浏览器
+				 *			在IE8中可以使用event.srcElement来获取触发事件的对象
+				 *
+				 *	这里的this指的是，给谁绑定的函数，this就是谁。。而不是谁触发this就是谁
+				 */
+				//做event.target的兼容性处理
+				event.target = event.target || event.srcElement;
+				 
+				//如果触发事件的对象是我们期望的元素则执行，否则不执行
+				if(event.target.className == "link"){  
+					alert("我是a的单击响应函数");
+				}
+				//此处有点问题，如果 class="link link2" 的话，是不会返回true的
+			}
+			
+		}
+	</script>
+	
+	
+/*
+			 *	做兼容性处理，定义一个函数，用来为指定元素绑定响应函数
+			 *	参数：
+			 *		obj 要绑定事件的对象
+			 *		eventStr 事件的字符串(不要on)
+			 *		callback 回调函数
+			 */
+			function bind(obj, eventStr, callback){
+				if(obj.addEventListener){
+					//大部分浏览器兼容的方式
+					obj.addEventListener(eventStr, callback, false);
+				}else{
+					//IE8及以下
+					//obj.attachEvent("on"+eventStr, callback);
+					
+					/*
+					 *	把this统一为obj
+					 *		this是谁由调用方式决定
+					 *		callback.call(obj); 如果你直接传callback.call(obj),那你传的就不是函数对象，而是函数返回值了
+					 
+					 
+					 *	但此时，callback是由浏览器调用，所以我们无法改变其this指向
+					 *	可以改为
+					 */
+					obj.attachEvent("on"+eventStr, function(){
+						//在匿名函数中调用回调函数
+						//此时浏览器调用的是匿名函数，而callback由我们来调用
+						callback.call(obj);
+					})
+					 
+				}
+			}
+			
+			
+			
+一百一十八，九，十，拖拽
+	<div id="box1"></div>
+	<div id="box2"></div>
+	#box1{
+		width: 100px;
+		height: 100px;
+		background-color: red;
+		position: absolute;
+	}
+	#box2{
+		width: 200px;
+		height: 200px;
+		background-color: blue;
+		position: absolute;
+		top: 200px;
+		left: 200px;
+	}
+	<script>
+		/*
+		 *	拖拽元素
+		 *		-拖拽的流程
+		 *			1，当鼠标在被拖拽元素上按下时，开始拖拽 onmousedown
+					2，当鼠标移动时被拖拽元素跟随鼠标移动 onmousemove
+					3，当鼠标松开时，被拖拽元素固定在当前位置 onmouseup
+					
+			var box1 = document.getElementById("box1");
+			box1.onmousedown = function(event){
+				//设置box1捕获所有鼠标按下的事件
+				box1.setCapture();
+				event = event || window.event;
+				//box1的水平偏移量
+				var ol = event.clientX - box1.offsetLeft;
+				//box1的垂直偏移量
+				var ot = event.clientY - box1.offsetTop;
+				document.onmousemove = function(event){
+					event = event || window.event;
+					//获取鼠标的坐标
+					var left = event.clientX - ol;
+					var top = event.clientY - ot;
+					//修改box1的位置
+					box1.style.left = left + "px";
+					box1.style.top = left + "px";
+				}
+				document.onmouseup = function(){
+					//取消document的onmousemove事件
+					document.onmousemove = null;
+					//取消document的onmouseup事件
+					document.onmouseup = null;
+				}
+				/*
+				 *	当我们拖拽一个网页中的内容时，浏览器会默认去搜索引擎中搜索内容
+						此时会导致拖拽功能的异常，这个是浏览器提供的默认行为
+						如果不希望发生这个行为，则可以通过return false来取消默认行为
+						但是这招对IE8不起作用
+			}
+	</script>
+	
+	
+	<button id="btn01"></button>
+	<button id="btn02"></button>
+	<script>
+		var btn01 = document.getElementById("btn01");
+		var btn02 = document.getElementById("btn02");
+		btn01.onclick = function(){
+			alert(1);
+		}
+		btn02.onclick = function(){
+			alert(2);
+		}
+		/*
+		 *	设置btn01对鼠标按下相关的事件进行捕获
+		 *	当调用一个元素的setCapture()方法以后，这个元素会把下一次所有的鼠标按下相关的事件捕获到自身上
+		btn01.setCapture();
+	</script>
+	
+	
+/*
+		 *	当鼠标滚轮向下滚动时，box1变长
+			当鼠标滚轮向上滚动时，box1变短
+		var box1 = document.getElementById("box1");
+		/*
+		 *	为box1绑定一个鼠标滚轮滚动事件
+			onmousewheel 鼠标滚轮滚动的事件，会在滚轮滚动时触发
+			但是火狐不支持该属性
+			
+			在火狐中使用 DOMMouseScroll 来绑定滚动事件
+				注意该事件需要通过addEventListener()函数来绑定
+		
+		box1.onmousewheel = function(event){
+			event = event || window.event;
+			//event.wheelDelta可以获取鼠标滚动的方向
+			//向上滚 120  向下滚 -120
+			//wheelDelta 这个值我们不看大小，只看正负
+			//wheelDelta这个属性火狐中不支持
+			//在火狐中使用event.detail来获取滚动的方向
+			//向上滚 -3 向下滚 3
+			if(event.wheelDelta > 0 || event.detail < 0){
+				//向上滚，box1变短
+				box1.style.height = box1.clientHeight - 10 + "px";
+			}else{
+				//向下滚，box1变长
+				box1.style.height = box1.clientHeight + 10 + "px";
+			}
+			/*
+			 *	当滚轮滚动时，如果浏览器有滚动条，滚动条会随之滚动
+			 *	这是浏览器的默认行为，如果不希望发生，则可以通过 return false; 取消默认行为
+			 */
+			
+			/*
+			 *	使用addEventListener()方法绑定响应函数，取消默认行为时不能使用return false;
+			 *	需要使用event来取消默认行为
+			 *		event.preventDefault();
+			 *	但是IE8不支持event.preventDefault()，如果直接调用会报错
+			 */
+					event.preventDefault && event.preventDefault();
+					return false;		}
+	</script>
+	
+	
+	
+一百二十三，键盘移动div
+	<div id="box1"></div>
+	#box1{
+		width: 100px;
+		height: 100px;
+		background-color: red;
+		position: absolute;
+	}
+	<script>                                               //修改后，没有卡顿
+		//使div可以根据不同方向键向不同方向移动
+		var box1 = document.getElementById("box1");
+		//定义一个变量，来表示移动的速度
+		var speed = 10;
+		//创建一个变量，表示方向
+		var dir = 0;
+		setInterval(function(){
+			/*
+			 *	37 左
+			 *	38 上
+			 *	39 右
+			 *	40 下
+			 */
+			switch(dir){
+				case 37:
+					box1.style.left = box1.offsetLeft - speed + "px";
+					break;
+				case 39:
+					box1.style.left = box1.offsetLeft + speed + "px";
+					break;
+				case 38:
+					box1.style.left = box1.offsetTop - speed + "px";
+					break;
+				case 40:
+					box1.style.left = box1.offsetTop + speed + "px";
+					break;
+					
+			}
+		},30)
+		document.onkeydown = function(event){
+			event = event || window.event;
+			
+			//当用户按了ctrl以后，速度加快
+			if(event.ctrlKey){
+				speed = 100;
+			}else{
+				speed = 10;
+			}
+			dir = event.keyCode;
+		}
+		//当按键松开后，div不再移动
+		document.onkeyup = function(){
+			//设置方向为0
+			dir = 0;
+		}
+	</script>
+	
+	
+	
+	<script>                                               //有卡顿
+		//使div可以根据不同方向键向不同方向移动
+		var box1 = document.getElementById("box1");
+		document.onkeydown = function(event){
+			event = event || window.event;
+			//定义一个变量，来表示移动的速度
+			var speed = 10;
+			//当用户按了ctrl以后，速度加快
+			if(event.ctrlKey){
+				speed = 100;
+			}
+			/*
+			 *	37 左
+			 *	38 上
+			 *	39 右
+			 *	40 下
+			 */
+			switch(dir){
+				case 37:
+					box1.style.left = box1.offsetLeft - speed + "px";
+					break;
+				case 39:
+					box1.style.left = box1.offsetLeft + speed + "px";
+					break;
+				case 38:
+					box1.style.left = box1.offsetTop - speed + "px";
+					break;
+				case 40:
+					box1.style.left = box1.offsetTop + speed + "px";
+					break;
+					
+			}
+		}
+	</script>
+	
+	
+一百二十八，切换图片练习
+	<img src="" />
+	<button id="btn01">开始</button>
+	<button id="btn02">暂停</button>
+	<script>
+		var img = document.getElementsByTagName("img")[0];
+		var btn01 = document.getElementById("btn01");
+		var btn02 = document.getElementById("btn02");
+		//创建一个数组，保存图片的路径
+		var imgArr = ["1.jpg","2,jpg","3.jpg","4.jpg","5.jpg"];
+		//创建一个变量，保存当前图片的索引
+		var index = 0;
+		//定义一个变量，来保存定时器的标识
+		var time;
+		//开启一个定时器，来自动切换图片
+		btn01.onclick = function(){
+			clearInterval(timer);
+			var timer = setInterval(function(){
+				//使索引自增
+				index++;
+				//判断索引是否超过最大索引
+				if(index >= imgArr.length){
+					index = 0;
+				}
+				或
+				index = index % imgArr.length; (有点难) index %= imgArr.length
+				
+			},1000)
+		}
+		//点击按钮以后，停止图片的自动切换，关闭定时器
+		btn02.onclick = function(){			
+			//clearInterval()可以接收任意参数，如果参数是一个有效的定时器的标识，则停止对应的定时器
+			//如果参数不是一个有效的标识，则什么也不做
+			clearInterval(timer);
+		}
+		
+		/*
+		 *	目前我们每点击一次按钮，就会开启一个定时器
+			点击多次就会开启多个定时器，这就导致图片的切换速度过快
+			并且我们只能关闭最后一次开启的定时器
+			
+			可以在开启定时器之前，将当前元素上的其它定时器关闭，所以多了182行代码
+	</script>
+	
+	
+一百三十一，二，三，定时器的应用
+	<button id="btn01">点击按钮以后box1向右移动</button>
+	<button id="btn02">点击按钮以后box2向右移动</button>
+	
+	<div id="box1"></div>
+	<div id="box2"></div>
+	<div style="width:0;height:1000px;border-left:1px solid black;position:absolute;left:800px"></div>
+	
+	#box1{
+		width: 100px;
+		height: 100px;
+		background-color: red;
+		position: absolute;
+		left: 0; /* 防止IE的auto */
+	}
+	#box2{
+		width: 100px;
+		height: 100px;
+		background-color: red;
+		position: absolute;
+		left: 0; /* 防止IE的auto */
+		top: 200px;
+	}
+	<script>
+		var bton01 = document.getElementById("btn01");
+		var bton02 = document.getElementById("btn02");
+		var box1 = document.getElementById("box1");
+		var box2 = document.getElementById("box2");
+		var timer;
+		btn01.onclick = function(){
+			//关闭上一个定时器
+			clearInterval(timer);
+			timer = setInterval(){
+				//获取box1原来的left值
+				var oldValue = parseInt(getStyle(box1, "left"));
+				//在旧值的基础上增加
+				var newValue = oldValue + 19;
+				//判断newValue是否大于800
+				if(newValue > 800){
+					newValue = 800;
+				}
+				//将新值赋给box1
+				box1.style.left = newValue + "px";
+				//当元素移动到800px时，停止执行动画
+				if(newValue == 800){
+					clearInterval(timer);
+				}
+			}
+		}
+		
+	<script>
+	
+	
+	tool.js
+		/*
+		 *	尝试创建一个可以执行简单动画的函数
+			参数：
+				obj：要执行动画的对象
+				attr: 要执行动画的样式，比如：left top width height
+				target：执行动画的目标位置
+				speed：移动的速度
+				callback: 回调函数，将会在动画执行完毕以后执行
+				
+			function move(obj, attr, target, speed, callback){
+				//关闭上一个计时器
+				clearInterval(obj.timer);
+				//获取元素目前的位置
+				var current = parseInt(getStyle(obj, attr));
+				
+				//判断速度的正负值
+				//如果从0向800移动，则speed为正
+				//如果从800向0移动，则speed为负
+				if(current > target){
+					//此时速度应为负值
+					speed = -speed;
+				}
+				
+				//开启一个定时器，用来执行动画效果
+				//向执行动画的对象中添加一个timer属性，用来保存它自己的定时器标识
+				obj.timer = setInterval(function(){
+					//获取box1原来的left值
+					var oldValue = parseInt(getStyle(obj, attr));
+					//在旧值的基础上增加
+					var newValue = oldValue + speed;
+					
+					//判断newValue是否大于800
+					//从800向0移动
+					//向左移动时，需要判断newValue是否小于target
+					//向右移动时，需要判断newValue是否大于target
+					if(speed < 0 && newValue < target || speed >0 && newValue > target){
+						newValue = target;
+					}
+					
+					//将新值赋给box1
+					obj.style[attr] = newValue + "px";
+					
+					//当元素移动到0px时，使其停止执行动画
+					if(newValue == target){
+						//达到目标，关闭定时器
+						clearInterval(obj.timer);
+						//动画执行完毕，调用回调函数
+						callback && callback();
+					}
+					
+				},30)
+			}
+			function getStyle()...
+			
+			
+		在其它页面引用tool.js
+			<script src="tool.js"></script>
+			
+			<script>
+				move(box2, "width", 800, 10, function(){
+					move(box2, "height", 400, 10, function(){
+						move(box2, "top", 0, 10, function(){
+							...
+						})
+					})
+				});
+			</script>

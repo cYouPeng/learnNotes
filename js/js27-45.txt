@@ -130,7 +130,7 @@
 	}
 	
 	练习题
-		对于成绩，大于60位及格，小于60分为不及格
+		对于成绩，大于60分为及格，小于60分为不及格
 			switch(parseInt(score/10)){    //利用parseInt()对浮点数取整
 				case 10:
 				case 9:
@@ -272,7 +272,7 @@
 				var shi = parseInt((i-bai*100)/10);
 				//获取个位数字
 				var ge = i % 10;
-				if(bai*bai*bai + shi*shi*shi + ge*ge*ge){
+				if(bai*bai*bai + shi*shi*shi + ge*ge*ge === i){
 					console.log(i);
 				}
 			}
@@ -301,39 +301,33 @@
 			}
 		}
 		
-四十，四十一，嵌套的for循环
-	//外层循环控制高度
-	for(var i=0; i<5; i++){
-		//内层循环控制宽度
-		for(var j=0; j<i+1; j++){
-			console.log("*");
-		}
-	}
-	*
-	**
-	***
-	****
-	*****
+四十，四十一，四十二，四十三，嵌套的for循环	
 
-四十二，
-    //外层循环控制高度
-	for(var i=0; i<5; i++){
-		//内层循环控制宽度
-		for(var j=0; j<5-i; j++){
-			console.log("*");
+	for(var i=0; i<5; i++){         //外层循环控制高度		
+		for(var j=0; j<i+1; j++){   //内层循环控制宽度
+			document.write("*");
 		}
+		document.write("<br/>");
+	}
+	*
+	**
+	***
+	****
+	*****
+   
+	for(var i=0; i<5; i++){		
+		for(var j=0; j<5-i; j++){
+			document.write("*");
+		}
+		document.write("<br/>");
 	}
 	*****
 	****
 	***
 	**
-	*
+	*			
 	
-	1，打印99乘法表
-	2，打印出1-100之间所有的质数
-	
-四十三，
-	乘法表
+	打印99乘法表
 		//外层循环控制高度
 		for(var i=1; i<=9; i++){
 			//内层循环控制宽度
@@ -348,7 +342,8 @@
 				width: 80px;
 			}
 		</style>
-	质数
+		
+	打印出1-100之间所有的质数
 		for(var i=2; i<=100; i++){
 			var flag = true;
 			for(var j=2; j<i; j++){

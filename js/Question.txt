@@ -3,3 +3,16 @@
 //每次添加一个tr，还需要给里边的超链接绑定一个单击响应函数  103章
 
 if(window.getComputedStyle){    //此处必须要加window  109
+
+112章里，chrome的scrollTop和其它浏览器到底有区别没？  都是相对于其父元素的
+
+117 事件的传播
+
+118 //取消document的onmouseup事件   document.onmouseup = null;
+
+一百二十一，滚轮的事件
+
+106 添加删除
+
+一百二十三，键盘移动div  最好重看一遍
+					

@@ -109,7 +109,7 @@
 				console.log(typeof a); =>number
 				console.log(a); => 123(数值)
 				
-				a = ""/" "/"a123"/"abc"/null/undefined/true;   //也就是说只要你这个字符串打头的不是字符串，直接NaN
+				a = ""/" "/"a123"/"abc"/null/undefined/true;   //也就是说只要你这个字符串打头的不是数字，直接NaN
 				~
 				~	=>number
 				~	=>NaN     //这几种情况都会转换成NaN
@@ -229,9 +229,9 @@
 	对于非Number类型的值，他会先转换为Number，然后再运算
 		利用这一特点，可以对任意一个其它类型的数据使用+，将其转换为Number，它的原理和Number()函数一样(适用于任意数据类型，比 +0 *1方便的多，属于隐式的类型转换)
 			var a = true;
-			console.log(typeof a +"  "+ -a); //number -1
+			console.log(typeof a +"  "+ -a); //boolean -1
 			a = "123";
-			console.log(typeof a +"  "+ -a); //number -123
+			console.log(typeof a +"  "+ -a); //string -123
 			
 			a = +a;
 			console.log(typeof a +"  "+ a); //number 123
