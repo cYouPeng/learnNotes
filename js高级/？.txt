@@ -1,0 +1,6 @@
+function aa(callback){
+	var data = xxx;
+	callback(xxx);    //我只想知道这个callback到底是不是闭包
+}
+
+aa(function(){a}{})  
