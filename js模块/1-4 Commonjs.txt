@@ -1,0 +1,180 @@
+1，入门介绍
+
+2，模块进化史
+	1，一个页面需要引入多个js文件
+	2，问题：
+		1，请求过多
+		2，依赖模糊
+		3，难以维护
+	3，这些问题可以通过现代模块化编码和项目构建来解决
+	
+	写多个<script src="xxx.js">就会发送多个请求
+	每个js文件可能会依赖其它js文件
+	
+3，commonjs基于服务器端(node)应用
+	CommonJS   node基于CommonJS
+	AMD
+	CMD(阿里写的，不重要)
+	ES6
+	
+	
+	CommonJS
+		规范：
+			说明：
+				http://wiki.commonjs.org/wiki/Modules/1.1
+				每个文件都可当做一个模块
+				在服务器端：模块的加载是运行时同步加载的
+				在浏览器端：模块需要提前编译打包处理
+			基本语法：
+				暴露模块：
+					module.exports = value(可以是任意数据类型)
+					exports.xxx = value
+						/*
+						 *module.exports = value不能继续暴露，相当于覆盖了
+						 *exports可以继续暴露，只是给对象里添加属性而已
+						 *
+					问题：暴露的模块到底是什么？
+						一开始是  module.exports = {}  后来你另赋值为value
+						exports对象添加属性/方法
+						所以暴露的本质就是exports对象
+						
+				引入模块：
+					require(xxx)
+						第三方模块：xxx为模块名(包名)
+						自定义模块：xxx为模块文件路径
+						
+		实现：
+			服务器端实现：
+				node.js
+				http://nodejs.cn/
+			浏览器端实现：
+				Browserify(因为在浏览器端：模块需要提前编译打包处理来让浏览器识别require等语法，browserify就是打包工具)
+				http://browserify.ofg/
+				也称为CommonJS的浏览器端的打包工具
+				
+				
+				
+		Node.js模块化教程
+			1，下载安装node.js
+			2，创建项目结构
+				/-modules(文件夹)
+					/-module1.js
+						//module.exports = value 暴露一个对象
+						module.exports = {
+							msg: 'module1',
+							foo(){
+								console.log(this.msg)
+							}
+						}
+					/-module2.js
+						//module.exports = function(){} 暴露一个函数
+						module.exports = function(){
+							console.log('module2');
+						}
+					/-module3.js
+						//exports.xxx = value
+						exports.foo = function(){
+							console.log('foo() module3');
+						}
+						exports.bar = function(){
+							console.log('bar() module3');
+						}
+						exports.arr = [2,4,5,2,3,5,1];
+				/-app.js
+					//将其他的模块汇集到主模块
+					let uniq = require('uniq');  //引入第三方库要放在引入自定义库的上方
+					
+					let module1 = require('./modules/module1');
+					let module2 = require('./modules/module2');
+					let module3 = require('./modules/module3');
+					
+					module1.foo();
+					module2();
+					
+					module3.foo();
+					module3.bar();
+					
+					let result = uniq(module3.arr); //去重 排序(根据第一位数字的unicode编码)
+					console.log(result);
+					
+					//运行 终端进入项目根目录下，node app.js   即可运行
+				/-package.json  // 可以用npm init初始化项目，自动生成package.json,除了包名不能有中文/大写，其它一路回车
+					{
+						"name": "commonjs-node",
+						"version": "1.0.0"，
+						"dependencies": {
+							"uniq": "^1.0.1"
+						}
+					}
+				...
+			3，下载第三方模块
+				npm install uniq --save (npm5以前需要手写--save，5以后是默认的，不需要手写了，--save就是会写到package.json里)
+			4，模块化编码
+			
+			
+4，commonjs基于浏览器端应用
+	Browserify模块化使用教程
+		1，创建项目结构
+			/-js(文件夹)
+				/-dist //打包生成文件的目录
+				/-src //源码所在的目录
+					/-module1.js
+						//module.exports = value 暴露一个对象
+						module.exports = {
+							msg: 'module1',
+							foo(){
+								console.log(this.msg)
+							}
+						}
+					/-module2.js
+						//module.exports = function(){} 暴露一个函数
+						module.exports = function(){
+							console.log('module2');
+						}
+					/-module3.js
+						//exports.xxx = value
+						exports.foo = function(){
+							console.log('foo() module3');
+						}
+						exports.bar = function(){
+							console.log('bar() module3');
+						}
+						
+					/-app.js //应用主源文件
+						let module1 = require('./module1');
+						let module2 = require('./module2');
+						let module3 = require('./module3');
+						
+						module1.foo();
+						module2();
+						
+						module3.foo();
+						module3.bar();
+			/-index.html
+				//直接<script src="./js/src/app.js"></script> 会报错require is not defined，需要使用browserify转一下
+				<script src="./js/dist/bundle.js"></script>  //正常输出了
+			/-package.json  //基于浏览器端 此文件需手动创建
+				{
+					"name": "commonjs-browserify",
+					"version": "1.0.0"，
+					"devDependencies": {   //开发依赖
+						"browserify": "^14.5.0"
+					},
+					"dependencies": {   //运行依赖
+						"uniq": "^1.0.1"
+					}
+				}
+			//当npm install去下载包的时候会产生node_modules文件夹
+		2，下载browserify
+			全局：npm install browserify -g
+			局部：npm install browserify --save-dev   //--save局部安装且写入依赖  -dev开发依赖包(browserify只是在开发时用到它，
+			等到上线就用不着他了)
+		3，定义模块代码
+			module1.js
+			...
+		
+			打包处理js：
+				browserify js/src/app.js(源文件) -o js/dist/bundle.js(输出文件的路径及名字)   //-o => output
+			页面使用引入：
+			...
+			<script src="js/dist/bundle.js"></script>
