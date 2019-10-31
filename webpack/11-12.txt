@@ -1,0 +1,181 @@
+11,在项目中对打包编译的文件进行分类
+	我们所期望的场景是：项目打包编译之后，对文件进行分类，不同的文件放在不同的文件夹下。比如打包编译后，图片全部都放在 dist/images 文件夹下，样式文件全部放在 dist/css 文件夹下，这样便于管理项目
+
+	1,将图片文件进行分类
+		想要对图片进行分类，我们需要使用 url-loader 来处理图片文件。第一步还是安装该loader
+			yarn add url-loader -D
+		到 webpack.config.js 中进行配置
+			module.exports = {
+				/* 节省篇幅，其余配置已省略 */
+				module: {
+					rules: [ {
+							test: /\.(png|jpg|jpeg|gif)$/,
+							use: {
+								loader: 'url-loader',
+								options: {
+									limit: 2 * 1024,    // 小于2k的图片，直接使用Base64编码进行处理
+									outputPath: '/image/'
+								}
+							}
+						}
+					]
+				}
+			}
+		使用url-loader处理图片资源的时候，需要指定 limit 属性，当图片小于该属性大小的时候，直接使用Base64编码处理图片，不会在项目中生成图片文件。
+
+		当图片大于该属性大小的时候，不使用Base64编码处理图片，而是将该图片放到 dist 文件夹下，如果指定了 outputPath 属性，那么图片会放到该属性指定的目录下。
+
+	2，将CSS样式文件进行分类
+		对打包编译后的CSS文件进行分类，需要借助一个插件，即：mini-css-extract-plugin
+			yarn add mini-css-extract-plugin -D
+			
+			let MiniCssExtract = require('mini-css-extract-plugin')     // 引入插件
+			/* 节省篇幅，其余配置已省略 */
+			module.exports = {
+				plugins: [
+					new MiniCssExtract({
+						filename: 'css/main.css'    // 配置CSS输出位置
+					}),
+				]
+			}
+		配置完成之后，进行打包编译项目，就会看到编译后的CSS文件在 build/css 文件夹之下了。
+
+
+12，打包编译后文件的引入路径问题
+	在一些基于Webpack的项目中，我们可能会遇到这个情况：使用本地开发服务器开发项目的时候，项目可以正常运行，所需要的资源也能正常请求到。但是项目经打包编译，部署到服务器上之后，会报错一些 404 的错误，显示一些图片文件、css文件或js文件等找不到。
+
+	这是因为打包后的项目文件的引用路径问题，如果我们不做额外配置，打包编译后得到的 .html 文件的代码如下：
+	<html lang=en>
+
+	<head>
+		<meta charset=UTF-8>
+		<meta name=viewport content="width=device-width,initial-scale=1">
+		<meta http-equiv=X-UA-Compatible content="ie=edge">
+		<title>Document</title>
+		<link href=css/main.css rel=stylesheet>     <!-- 注意这里的文件引入路径 -->
+	</head>
+
+	<body>
+		<img src=logo.png alt="">       <!-- 注意这里的文件引入路径 -->
+		<script type=text/javascript src=index.js></script>     <!-- 注意这里的文件引入路径 -->
+	</body>
+
+	</html>
+	这个时候，如果是在本地开发服务器中查看项目，是没有问题的。因为在本地开发服务器下，有且只有我们当前开发的这一个项目，并且项目所需要的文件，也都可以通过开发服务器的根域名获取到。比如可以直接通过 localhost：8080/css/main.css 找到相关文件。
+
+	但是真实的服务器上可能有很多项目，想要访问项目文件，需要通过 域名+项目目录 来访问，比如 www.fengzhen8023.com/myProject/css/main/css 来访问。
+
+	但是如上面 .html 文件所示，文件的引入路径中，没有项目目录名。所以会直接到根域名下找所需要的资源，那么最终肯定是获取不到，报出一些404的错误。
+
+	所以根据服务器部署的实际情况，我们在打包编译项目的时候，需要做一些额外配置，使得在引入文件资源的时候，在前面加一些路径，比如域名或者项目文件名等，使得文件可以被正常引入。
+
+	这也是本篇博客的主要内容，包括两个方面：
+
+	1，在所有的文件引用路径中，添加前缀域名
+	2，单独给图片文件引用路径中，添加前缀域名
+
+	1，在所有的文件引用路径中，添加前缀域名
+		在 webpack.config.js 文件中进行配置
+			module.exports = {
+				/* 节省篇幅，其他配置已省略 */ 
+				output: { 
+					filename: "index.js", // 出口文件的文件名
+					path: path.resolve(__dirname, "build"), //出口文件的路径，注意一定要是绝对路径
+					publicPath: 'http://www.fengzhen8023.com/myProject/'    // 给所有的文件引用路径中，添加前缀域名
+				}
+			}
+		配置完成之后，再次进行打包编译项目，得到的 .html 文件如下：
+			<html lang=en>
+			<head>
+				<meta charset=UTF-8>
+				<meta name=viewport content="width=device-width,initial-scale=1">
+				<meta http-equiv=X-UA-Compatible content="ie=edge">
+				<title>Document</title>
+				<link href=http://www.fengzhen8023.com/myProject/css/main.css rel=stylesheet>       <!-- 注意这里的文件引入路径 -->
+			</head>
+
+			<body>
+				<img src=http://www.fengzhen8023.com/myProject/logo.png alt="">     <!-- 注意这里的文件引入路径 -->
+				<script type=text/javascript src=http://www.fengzhen8023.com/myProject/index.js></script>       <!-- 注意这里的文件引入路径 -->
+			</body>
+			</html>
+
+	2，单独给图片文件引用路径中，添加前缀域名
+		需要使用到一个laoder—— url-loader
+		在 webpack.config.js 中进行如下配置：
+			module.exports = {
+				/* 节省篇幅，其他配置已省略 */ 
+				module: {
+					rules: [
+						{
+							test: /\.(png|jpg|jpeg|gif)$/,
+							use: {
+								loader: 'url-loader',
+								options: {
+									limit: 2 * 1024, // 小于2k的图片，直接使用Base64编码进行处理
+									outputPath: '/image/'
+								}
+							}
+						}
+					]
+				}
+			}
+		配置完成，再次编译项目的时候，得到的 .html 文件中的代码如下：
+			<html lang=en>
+			<head>
+				<meta charset=UTF-8>
+				<meta name=viewport content="width=device-width,initial-scale=1">
+				<meta http-equiv=X-UA-Compatible content="ie=edge">
+				<title>Document</title>
+				<link href=css/main.css rel=stylesheet> <!-- css文件引用路径没有做处理 -->
+			</head>
+
+			<body>
+				<img src=/image/logo.png alt=""> <!-- 注意这的图片的引用路径 -->
+				<script type=text/javascript src=index.js></script> <!-- js文件引用路径没有做处理 -->
+			</body>
+			</html>
+
+		以上便是这篇博客的全部内容，如果你想对其他的文件单独进行引用路径的修改，可以查阅相关的文档，不过大致思路是：
+		给处理这些文件的loader配置相关的属性，来指定打包编译后，文件的引用路径。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

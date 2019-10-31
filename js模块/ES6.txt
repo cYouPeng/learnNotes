@@ -33,7 +33,7 @@
 			导出模块：export
 			引入模块：import
 	实现(浏览器端)
-		使用Babel将ES6编译成ES6代码
+		使用Babel将ES6编译成ES5代码
 		使用Browserify编译打包js
 		项目结构：
 			/-js(文件夹)
@@ -64,13 +64,13 @@
 						export let arr = [1,2,3]
 					/-module2.js
 						//统一暴露      分别暴露和统一暴露 ==> 常规暴露
-						export function fun(){
+						function fun(){
 							console.log('fun() module1');
 						}
-						export function fun2(){
+						function fun2(){
 							console.log('fun2() module1');
 						}
-						export {fun, fun2}
+						export {fun, fun2}   不可以这么写 export fun; 一定要加{} =>  export { fun }
 					/-module3.js
 						//默认暴露，可以暴露任意数据类型，暴露什么数据接收到的就是什么数据
 						//语法：export default value
@@ -83,6 +83,7 @@
 								console.log(this.msg)
 							}
 						}
+						export default后面直接跟值，或者一个变量名，不能像export那样后面跟正常声明的变量或对象
 				/-dist
 					bundle.js
 				/-build
@@ -90,7 +91,7 @@
 					/-module1.js
 					/-module2.js
 					/-module3.js
-			/-.babelrc(它是一个json文件，单不需要你手写.json后缀名) //babel干活之前先来读取.babelrc，来知道自己要干什么活
+			/-.babelrc(它是一个json文件，但不需要你手写.json后缀名) //babel干活之前先来读取.babelrc，来知道自己要干什么活
 				{
 					"presets": ["es2015", "react"]
 				}

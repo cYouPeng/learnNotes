@@ -1,0 +1,259 @@
+干股只能分红不能买卖，卸职以后就要收回
+
+  select b.owner,b.object_name,a.session_id,a.locked_mode 
+  from v$locked_object a,dba_objects b
+  where b.object_id = a.object_id;
+  
+  select b.username,b.sid,b.serial#,logon_time
+  from v$locked_object a,v$session b
+  where a.session_id = b.sid order by b.logon_time;
+  
+  alter system kill session '3021(sid),12253(serial#)';
+  
+  
+  console.log(new Date())  //Wed Oct 09 2019 16:45:03 GMT+0800 (中国标准时间)
+  console.log(new Date().toLocaleString())    //2019/10/9 下午4:45:03       把date对象转为字符串
+  
+  
+  <div title="hello"></div>  任何元素都可以加title属性，鼠标悬浮其上会显示额外信息
+  
+  var obj = {
+	foo: 'bar'
+  }
+
+  Object.freeze(obj)   //阻止修改现有的属性
+  obj.foo = 'hello' //会报错
+  
+  <div v-bind:hello="a" >中国</div>  //如果a的值为null,undefined或false，那么该hello特性不会出现在div中
+  <div :[attri]="a"></div>   //从 2.6.0 开始，可以用方括号括起来的 JavaScript 表达式作为一个指令的参数：动态参数
+  
+  js的全局变量本来就是同一页面上所有script脚本供用的，你要注意js文件的加载顺序
+  ps： 只能同一页面，不能跨页面
+  
+  
+  vue-resource是一个非常轻量的用于处理HTTP请求的插件
+  vue2.0之后，就不再对vue-resource更新，而是推荐使用axios。基于 Promise 的 HTTP 请求客户端，可同时在浏览器和 Node.js 中使用
+  
+  
+  cli:command line interface 命令行接口
+  
+  如何创建.babelrc文件   命令行中 echo  > .babelrc   //echo后是两个空格			 
+  
+  浅拷贝和深拷贝只针对于引用数据类型
+  浅拷贝：只复制对象的引用地址，此时两个变量指向同一块内存
+  深拷贝：申请一块新的内存，把对象中的所有值都复制过去，此时两个变量指向两块地址不同的内存
+	1，slice()、concat、... 操作符：只能实现一维数组的深拷贝
+						let arr1 = [1, [2, 3]];
+						let arr2 = arr1.slice() / [...arr1] / [].concat(arr1)
+						arr2[0] = 9;
+						arr2[1][0] = 8;
+						console.log(JSON.stringify(arr1))  //[1,[8,3]]
+						console.log(JSON.stringify(arr2))  //[9,[8,3]]
+
+	2，Object.assign()：只能实现一维对象的深拷贝
+						let obj1 = {
+							x: 'hello',
+							y: {
+								z: 'world'
+							}
+						}
+						let obj2 = Object.assign({}, obj1);
+						obj2.x = 'olleh'
+						obj2.y.z = 'dlrow'
+						console.log(JSON.stringify(obj1))  //{"x":"hello","y":{"z":"dlrow"}}
+						console.log(JSON.stringify(obj2))  //{"x":"olleh","y":{"z":"dlrow"}}
+	
+	进行JSON.stringify()序列化的过程中，undefined、任意的函数以及 symbol 值，在序列化过程中会被忽略（出现在非数组对象的属性值中时）或者被转换成 null（出现在数组中时）。
+		 let obj = {
+            a: 123,
+            b: undefined,
+            c(){
+                console.log(11)
+            },
+            d:Symbol("haha"),
+            e: 'cyp'
+        }
+        console.log(JSON.stringify(obj))  //{"a":123,"e":"cyp"}
+		
+        let arr = [12, undefined, function(){}, Symbol('ha'), 'cyp'];
+        console.log(arr);  //(5) [12, undefined, ƒ, Symbol(ha), "cyp"]
+        console.log(JSON.stringify(arr));  //[12,null,null,null,"cyp"]
+
+	3，JSON.parse(JSON.stringify(obj))：可实现多维对象的深拷贝，但会忽略undefined、任意的函数、symbol 值
+		let obj = {
+            a: 123,
+            g: {
+                m: '999'
+            },
+            b: undefined,
+            c(){
+                console.log(11)
+            },
+            d:Symbol("haha"),
+            e: 'cyp'
+        }
+        let obj2 = JSON.parse(JSON.stringify(obj));
+        obj2.g.m = 888;
+        console.log(obj)  //{a: 123, g: {m: "999"}, b: undefined, d: Symbol(haha), c: ƒ, …}
+        console.log(obj2); //{"a":123,"g":{"m":888},"e":"cyp"}
+	
+	
+	
+  es6之扩展运算符(...)
+	扩展运算符(...)用于取出参数对象中的所有可遍历属性，拷贝到当前对象之中
+		-对象的扩展运算符
+			let bar = { a: 1, b: 2 };
+			let baz = { ...bar }; // { a: 1, b: 2 }
+		  上述方法实际上等价于:
+			let bar = { a: 1, b: 2 };
+			let baz = Object.assign({}, bar); // { a: 1, b: 2 }
+			
+			Object.assign方法用于对象的合并，将源对象（source）的所有可枚举属性，复制到目标对象（target）。
+			Object.assign方法的第一个参数是目标对象，后面的参数都是源对象。(如果目标对象与源对象有同名属性，或多个源对象有同名属性，则后面的属性会覆盖前面的属性)
+	
+			同样，对于扩展运算符而言，如果有同名属性，后面也会覆盖前面的
+				let bar = {a: 1, b: 2};
+				let baz = {...bar, ...{a:2, b: 4}};  // {a: 2, b: 4}
+	
+		-数组的扩展运算符
+			-可以将数组转换为参数序列
+				function add(x, y) {
+				  return x + y;
+				}
+
+				const numbers = [4, 38];
+				add(...numbers) // 42
+			-可以复制数组		
+				const arr1 = [1, 2];
+				const arr2 = [...arr1];
+	
+		//个人觉得，扩展运算符只是把对象中所有可遍历属性给取了出来，至于后续的复制等动作是我们来做的，而不是扩展运算符来做的
+		//rest参数是把参数序列转为数组，把所有苹果放到一个篮子里
+		//扩展运算符是把数组转为参数序列，当然它也可应用于对象，但说它是rest参数的逆运算并不算错误。把篮子里的苹果给取出来
+		
+		const [first, ...rest] = [1, 2, 3, 4, 5]  //此处为rest参数和解构赋值的结合使用，下标为0的元素赋给first变量，剩下的参数序列赋值给rest参数
+        console.log(first)  //1
+        console.log(Array.isArray(rest)) //true
+		
+		等同于：
+		const arr = [1, 2, 3, 4, 5]  
+        const first = arr[0];
+        const rest = arr.slice(1);
+        console.log(rest)
+	
+	
+	then方法返回一个Promise，而它的行为与then中的回调函数的返回值有关
+		-如果then中的回调函数返回一个值，那么then返回的Promise将会成为成功状态，
+		 并且将返回的值作为新Promise对象的成功状态的回调函数的参数值
+		-如果then中的回调函数抛出一个错误，那么then返回的Promise将会成为失败状态，
+		 并且将抛出的错误作为新Promise对象的失败状态的回调函数的参数值
+		-如果then中的回调函数返回一个已经是成功状态的Promise，那么then返回的Promise
+		 也会是成功状态，并且将那个Promise传出的参数值作为新Promise的成功状态的回调函数
+		 的参数值
+		-如果then中的回调函数返回一个已经是失败状态的Promise，那么then返回的Promise
+		 也会是失败状态，并且将那个Promise传出的参数值作为新Promise的失败状态的回调函数
+		 的参数值
+		-如果then中的回调函数返回一个初始状态的Promise，那么then返回的Promise也会是
+		 初始状态，并且它的终态与那个Promise的终态相同；同时，那个Promise变为终态时传出
+		 的参数值作为新Promise变为终态时调用的回调函数的参数值
+	
+		一，	
+			let promise = new Promise((resolve, reject) => {
+				setTimeout(() => {
+					reject()
+				}, 1000)
+			})
+			promise.then(() => {
+				return 123
+			}, (val) => {
+				return 456
+			}).then((val) => {
+				console.log("succ"+val)
+			}, (val) => {
+				console.log("err"+val)
+			})
+		    // succ456
+			
+		二，
+			let promise = new Promise((resolve, reject) => {
+				setTimeout(() => {
+					reject()
+				}, 1000)
+			})
+			promise.then(() => {
+			   return 123
+			}, (val) => {
+				throw new Error('faild')
+			}).then((val) => {
+				console.log("succ"+val)
+			}, (val) => {
+				console.log("err"+val)
+			})
+			// errError: faild
+			
+		三，
+			let promise = new Promise((resolve, reject) => {
+				setTimeout(() => {
+					reject()
+				}, 1000)
+			})
+			promise.then(() => {
+			   return 123
+			}, (val) => {
+				return new Promise((resolve, reject) => {
+					resolve('cyp')
+				})
+			}).then((val) => {
+				console.log("succ"+val)
+			}, (val) => {
+				console.log("err"+val)
+			})
+			// succcyp
+			
+		四，
+			let promise = new Promise((resolve, reject) => {
+				setTimeout(() => {
+					reject()
+				}, 1000)
+			})
+			promise.then(() => {
+			   return 123
+			}, (val) => {
+				return new Promise((resolve, reject) => {
+					reject('cyp')
+				})
+			}).then((val) => {
+				console.log("succ"+val)
+			}, (val) => {
+				console.log("err"+val)
+			})
+			// errcyp
+			
+		五，
+			let promise = new Promise((resolve, reject) => {
+				setTimeout(() => {
+					reject()
+				}, 1000)
+			})
+			promise.then(() => {
+			   return 123
+			}, (val) => {
+				return new Promise((resolve, reject) => {
+					setTimeout(() => {
+						reject('cyp')
+					}, 3000)					
+				})
+			}).then((val) => {
+				console.log("succ"+val)
+			}, (val) => {
+				console.log("err"+val)
+			})
+			// errcyp
+	
+	
+	
+	
+	
+	
+					
+  

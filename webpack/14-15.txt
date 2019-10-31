@@ -1,0 +1,127 @@
+14，Webpack的源码映射
+	Webpack在工作的过程中，会对代码进行打包编译，这就会带来一个问题：如果项目中代码错误，浏览器中的报错提示，定位到的是打包编译后的代码，而不是我们在项目中实际书写的代码
+
+	快速定位到错误代码的位置，从而快速修复。想要达到这个目的。即webpack中的 源码映射
+
+	2. 配置devtool属性，进行源码映射
+		直接在 webpack.config.js 文件中指定 devtool 属性即可
+			module.exports = {
+				/* 节省篇幅，其余配置已省略 */
+				devtool: "eval-source-map",
+			}
+		devtool是开发工具，它的作用是生成源代码映射(Source Map)，方便调试
+		源代码映射记录了打包编译后的代码和源代码之间的位置对应关系。它可以让你在控制台查找日志（或错误）来源时，直接跳转到源代码中，而不是打包编译后的代码
+		该属性常使用的值有以下几个：
+
+			source-map： 会产生单独的映射文件，控制台中的错误信息会定位到代码错误的文件，并且会定位到文件的第几行第几列。帮助我们调试源代码。
+
+			eval-source-map： 不会产生单独的映射文件，控制台中的错误信息会定位到代码错误的文件，并且会定位到文件的第几行第几列。
+
+			cheap-module-source-map： 会产生单独的映射文件，控制台中的错误信息会定位到代码出错的文件，但是只能定位到第几行出错，不能定位到第几列。
+
+			cheap-module-eval-source-map： 不会产生单独的映射文件，控制台中的错误信息会定位到代码出错的文件，但是只能定位到第几行出错，不能定位到第几列。这个模式构建速度适中，而且会生成较好的源代码映射，适合在开发环境中使用 。
+
+
+15，Webpack中的三个小插件
+	在前面的博客中我们说过，webpack之所以有这么强大的功能，是因为它借助了很多 loader 和 插件 的帮助。在之前webpack配置中，我们已经介绍了很多 loader 和 插件 ，在这里再介绍三种小插件，可以帮助我们更好地使用webpack构建项目。
+
+	这三款插件分别是：CleanWebpackPlugin、CopyWebpackPlugin、BannerPlugin(webpack内置插件)
+
+	1，CleanWebpackPlugin
+		该插件的作用是：每次进行 build 的时候，将之前的dist目录下的代码清除，然后再打包生成新的代码文件。
+
+		当我们在使用 build 命令进行打包编译项目的时候，webpack会根据配置信息，将打包编译好的项目输出到一个文件夹中(默认文件夹是dist) 。在项目的开发过程中，我们肯定会多次执行 build 命令，这个时候我们希望每次执行 build 命令的时候，都可以将之前打包生成的代码文件删除，然后生成最新的代码文件。
+		但是实际情况却是之前的代码不会删除，比如：第一次打包编译项目，生成了a.js文件，第二次打包编译项目，生成了b.js文件。这个时候，a.js文件使用不到的，但该文件还是会存在dist文件夹下，这是我们不愿意看到的。
+
+		这里我们可以借助CleanWebpackPlugin插件进行删除之前的文件，首先执行以下命令进行安装插件：
+		yarn add clean-webpack-plugin -D
+		
+		在 webpack.config.js 文件中书写以下代码进行配置
+			let { CleanWebpackPlugin } = require('clean-webpack-plugin')
+
+			module.exports = {
+				/* 节省篇幅，其余配置已省略 */
+				plugins: [
+					new CleanWebpackPlugin()  //默认会清除 output.path 输出的目录
+				]
+				
+			}
+
+	2，CopyWebpackPlugin
+		该插件的作用是：在每次进行 build 的时候，将某些静态资源复制到特定文件夹下。
+
+		比如将一些特定的Excel文件，拷贝到dist 目录下，可以借助这款插件的帮助。使用这款插件，首先要执行以下命令进行安装：
+			yarn add copy-webpack-plugin -D
+		配置
+			let CopyWebpackPlugin = require('copy-webpack-plugin')
+			modules.export = {
+				/* 节省篇幅，其余配置已省略 */
+				plugins: [
+					new CopyWebpackPlugin([
+						// 参数是数组，可以对多个位置的文件进行copy 
+						{ from: './doc', to: './dist' }
+					])
+				]
+			}
+		有一点需要注意：to代表的地址的 ./ 表示的是输出目录，而不是webpack.config.js所在的根目录，所以以上配置会在dist目录下再生成一个dist目录用来存放静态文件
+
+	3，BannerPlugin(webpack内置插件)
+		这是一款webpack的内置插件，作用是：代码版权声明插件，在编译好的 .js 文件的头部插入我们指定的版权声明文字，起到版权声明的作用。
+
+		既然是webpack内置插件，所以我们不用额外进行安装，可以直接进行在 webpack.config.js 文件中进行配置，示例代码如下：
+			let webpack = require('wepack');
+
+			modules.export = {
+				plugins: [
+					// 参数是你要一个字符串，值是你要添加的版权声明信息
+					new webpack.BannerPlugin('Made by Allen Feng')
+				]
+			}
+		配置完成之后，再次进行打包编译项目，就可以在生成的 .js 文件中看到我们的版权信息：
+			/*! Made by Allen Feng */!function(e)...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

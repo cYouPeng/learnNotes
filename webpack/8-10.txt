@@ -1,0 +1,238 @@
+8，使用ESLint检查项目代码
+	2，安装并配置 ESLint-loader
+		安装 eslint 和 eslint-loader 
+			yarn add eslint eslint-loader -D
+		在 webpack.config.js 文件中配置
+			module: {
+				rules: [
+					/** 其他的配置规则，节省篇幅，故省略  **/ 
+					{
+						test: /\.js$/, 
+						use: {
+							loader: 'eslint-loader', 
+							options: {
+								enforce: 'pre' 
+							}
+						},
+						exclude: /node_modules/
+					}
+				]
+			}
+		enforce: 该属性表示loader的种类，loader有四种：前置loader、后置loader、普通loader、内联loader 。该属性默认是 	    normal(即普通loader) 。可以根据需要设置成 pre(前置loader) 或者 post(后置loader) 。
+		
+		属性的不同导致loader的一些行为不同，在webpack.config.js配置文件中，loader的执行顺序是 从右到左，从下到上 。但是：
+		如果是前置loader，那么webpack会 优先 使用该loader处理文件；
+		如果是后置loader，那么webpack会在普通loader 之后 处理文件；
+		如果是内联loader，可以在 .js 文件中使用，而不只是在webpack.config.js配置文件中使用。
+
+		exclude ：排除正则表达式匹配的文件或者文件夹，比如上述规则中，不使用eslint-loader对 node_modules 文件夹中的代码进行校验。
+
+
+	3，编写ESLint的配置文件
+		推荐大家到 官网的Demo配置页面 ,根据自己的需求，来获取ESLint配置文件：
+		在该页面，根据实际情况选择你的项目需要，然后点击页面底部的 Download .eslintrc.json file 即可下载得到一份ESLint配置文件。
+
+		将这个文件重命名（在文件名之前加一个 点）得到 .eslintrc.json 文件，然后将这个文件放到你的项目根目录下，和 webpack.config.js 文件同级。
+
+		如此一来，便配置好了ESLint。这个时候再来打包编译项目或者开启本地开发服务器，就可以看到ESLint发挥的作用了
+
+
+9，在项目中引入全局变量
+	两种方式：
+		使用 webpack模块 注册全局变量
+		将变量暴露给 window对象 ，成为全局变量
+
+		例：首先安装jquery包   yard add jquery
+	1，使用webpack模块注入全局变量
+		这里要特别注意一下，webpack是一个工具，可以帮助我们构建项目，在这个工具里面，有一个 同名模块，叫做 webpack ，我们今天就是要使用这个模块来给每一个页面或者组件注入一个对象
+		配置webpack.config.js			
+			let Webpack = require('webpack')    // 引入webpack模块
+
+			module.exports = {
+				plugins: [      // 这是一个插件，所以要在plugins属性中配置
+					new Webpack.ProvidePlugin({
+						$: 'jquery'
+					})
+				],
+			}
+		上述配置的作用是：给项目中的每一个文件，都注入一个对象 $ ，这个对象就是我们安装的jquery包。安装完成之后，在其他页面中无需引入，即可使用jQuery语法。比如某一个 .js 文件中书写以下代码：
+			console.log($)
+			console.log($(window));
+		项目启动之后，就会在控制台输出jquery对象和选择的window对象
+
+	2，将变量暴露给 window对象 ，成为全局变量
+		借助 expose-loader
+			yarn add expose-loader -D
+		expose-loader是一个 内联loader ，既可以直接在文件中使用，当然也可以在 webpack.config.js 配置文件中使用
+			现在假设项目中有一个 index.js 文件，我们在这个文件中将 $对象 暴露给 window 对象，使之成为全局变量
+				import $1 from 'expose-loader?$!jquery' // 引入jquery对象，并将该对象暴露给window的$属性
+
+				console.log($1)
+				console.log(window.$);
+				首先通过 import 命令，从安装的jquery包中导入一个对象，将这个对象命名为 $1 ，$1 不是全局对象。
+				通过 expose-loader?$!jquery 命令，从安装的jquery模块中导入一个对象，将这个对象添加到 window 对象的 $ 属性上。这样一来，就得到了一个全局变量 window.$ ，即 $ 。
+
+			如果你不喜欢在文件使用内联loader设置全局对象，那么可以在 webpac.config.js 文件中进行配置
+				module.exports = {
+					module: {
+						rules: [{
+								test: require.resolve('jquery'),    // 匹配到引入jquery的文件
+								use: 'expose-loader?$'              // 使用 expose-loader 进行处理
+							}
+						]
+					}
+				}
+				然后你就可以在 index.js 文件中正常地引入jquery包，webpack会来使用 expose-loader 自动帮我们暴露全局变量。 index.js 文件代码参考如下：
+					import $1 from 'jquery'     // 正常导入jquery包
+
+					console.log($1)
+					console.log(window.$);
+				这样设置之后，在其他的 .js 文件中，就无须再导入jquery，方便快捷。
+
+
+10，在项目中使用图片资源
+	在 .html 文件中，通过 <img src="" alt=""> 标签引入图片
+	在 .css 文件中，通过 background: url() 属性来引入图片
+	在 .js 文件中，通过 import 或者 require 语法来引入图片
+
+	但是在基于webpack的项目中，如果你只是简单的引入，而没有对这些图片文件做一些配置处理的话，是不能成功的
+		import logo from './logo.png'
+		console.log(logo);
+	打包编译项目或者启动本地开发服务器的时候，会报错
+
+	如何进行配置webpack，使得图片资源可以在项目中被正常地使用。主要内容包括：
+		使用 file-loader 处理图片资源
+		使用 html-withimg-loader 处理图片资源
+
+	1，使用 file-loader 处理图片资源
+		安装
+			yarn add file-loader -D
+		到 webpack.config.js 文件中进行配置
+			module.exports = {
+				/* 节省篇幅，其他配置信息已省略 */
+				module: {
+					rules: [
+						{
+							test: /\.(png|jpg|jpeg|gif)$/,  // 使用正则匹配文件图片
+							use: {
+								loader: 'file-loader'       // 使用file-loader对这些文件进行处理
+							}
+						}
+					]
+				}
+			}
+		file-loader 的作用：对项目中使用到的图片文件进行处理，将处理后的文件保存到 输出文件夹，并返回输出文件夹下该文件的 URL 。如此一来，这个文件就可以被正常使用。如此一来，上述代码就不会报错了
+		
+		如果这时候，你在 .html 文件中 <img src="" alt=""> 标签引入图片，webpack一样会报错。仅靠file-loader做不到这一点，为了解决这个问题，我们需要 在file-loader的基础上，使用下面讲到的loader。
+
+	2，使用 html-withimg-loader 处理图片资源
+		这个loader的作用是：处理 .html 文件中引用的图片，使得图片能够被正常使用。但是要注意，使用这个loader的时候，同时也要使用上面的 file-loader 。
+			yarn add html-withimg-loader -D
+			
+			module.exports = {
+				/* 节省篇幅，其他配置信息已省略 */
+				module: {
+					rules: [
+						// 配置 file-loader
+						{
+							test: /\.(png|jpg|jpeg|gif)$/,   
+							use: {
+								loader: 'file-loader'    
+							}
+						},
+						// 配置 html-withimg-loader
+						{
+							test: /\.html$/,
+							use: 'html-withimg-loader'
+						}
+					]
+				}
+			}
+		配置完成之后，我们就可以在 .html 文件中正常使用图片
+		模板文件
+			<html lang="en">
+			<head>
+				<meta charset="UTF-8">
+				<meta name="viewport" content="width=device-width, initial-scale=1.0">
+				<meta http-equiv="X-UA-Compatible" content="ie=edge">
+				<title>Document</title>
+			</head>
+			<body>
+				<!-- 引入logo.png图片 -->
+				<img src="./logo.png" alt="">       
+				
+			</body>
+			</html>
+		现在进行打包编译项目，得到编译后的 index.html 文件代码如下：
+			<html lang=en>
+
+			<head>
+				<meta charset=UTF-8>
+				<meta name=viewport content="width=device-width,initial-scale=1">
+				<meta http-equiv=X-UA-Compatible content="ie=edge">
+				<title>Document</title>
+			</head>
+
+			<body>
+				<!-- 注意这里的图片引用路径不再是logo.png -->
+				<!-- 这个路径是 file-loader 对文件处理后生成新文件的路径 -->
+				<img src=2b9a35ac93ae4d5ea1eb21230d61c324.png alt="">
+			</body>
+
+			</html>
+
+	3，优化图片处理方式，减少http请求
+		在编写前端项目的过程中，我们可能会用到很多图片资源，有些图片非常小，只有几KB。但是这些小图片的数量有时却非常大，有的项目中可能有几十个甚至是上百个图片。
+
+		这就会导致一个问题：项目上线之后，为了请求这些图片资源，浏览器端会大量使用http请求来获取图片，这就可能导致浏览器的开销过大，性能较低。那么怎么来解决这个问题呢？
+
+		这里我们介绍一种编码方式——Base64编码。这不是一种加密解密方式，它是一种编码方式。简单来说，它的作用就是：使用字符来表示任意二进制文件（这些字符包括：A B ... Z a b ... z 0 1 ... 9 + / 等64个字符）。
+
+		使用Base64对图片进行编码，就可以将这些图片切入到静态的 .html 文件中，这样就不需要再使用http请求来获取图片了，从而节省浏览器开销，提高性能。
+
+		为了在基于Webpack的项目中使用Base64编码处理图片，我们需要使用 url-loader 来进行处理。首先安装该loader，安装命令如下：
+			yarn add url-loader -D
+		到 webpack.config.js 文件中进行相关配置
+			module.exports = {
+			   /* 节省篇幅，其他的配置信息已省略 */
+				module: {
+					rules: [
+						{
+							test: /\.(png|jpg|jpeg|gif)$/,
+							use: {
+								loader: 'url-loader',
+								options: {
+									limit: 200*1024     // 小于200k的图片，使用Base64进行处理
+								}
+							}
+						}
+					]
+				}
+			}
+		上述配置非常好理解：对于png、jpg等图片格式的资源，使用url-loader进行处理，如果图片小于200k，那么就是用Base64进行编码；如果图片大于200k，就不做处理，使用http请求来获取图片。
+
+		配置完成之后，当我们编译项目时，就会在生成的 .html 文件中看到使用Base64编码后的图片
+		
+		小于200k，用Base64进行编码，大于200K，对图片做类似于file-loader的处理。使用了url-loader就不能再用file-loader了，否则会报错
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

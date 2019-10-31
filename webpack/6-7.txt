@@ -1,0 +1,177 @@
+6，使用babel打包编译js文件
+	为什么要使用babel，在一些低版本的浏览器中不支持es6, es7，所以要借助babel转换成低版本js语法
+	2，在webpack中配置babel，编译高版本JS语法
+		安装三个包：babel-loader 、 @babel/core 、 @babel/preset-env 
+			yarn add babel-loader @babel/core @babel/preset-env -D
+			babel-loader 和 @babel/core 是核心插件。@babel/preset-env 是babel的 预设 ，它的主要功能是将 ES6 语法转成 ES5 语法。
+		webpack.config.js 文件中进行配置
+			module: {
+				rules: [
+					...
+					{
+						test: /\.js$/,      // 匹配js文件，然后用下面所配置的工具对这些文件进行编译处理
+						use: {
+							loader: 'babel-loader',     // babel的核心模块
+							options: {
+								presets: [              // 配置babel的预设，将ES6语法转成ES5语法
+									'@babel/preset-env'
+								]
+							}
+						}
+					}
+				]
+			}
+		配置完成之后，我们就可以在项目中使用 ES6 语法来编写项目了。注意我这里说的是 ES6 语法，如果在项目中你使用了更新的 ES7 语法，仅靠上面的配置是不行的，在你进行打包编译的时候会报错，比如在项目中使用了以下的 ES7 语法：
+			class A {
+				className = 'A' 
+			}
+
+			let a = new A();
+		此时会报错：根据提示，是因为我们没有安装所需要的依赖包。
+		安装所需的包：@babel/plugin-proposal-class-properties
+			yarn add @babel/plugin-proposal-class-properties -D
+		修改 webpack.config.js 文件中的 babel 配置
+			{
+				test: /\.js$/,
+				use: {
+					loader: 'babel-loader',
+					options: {
+						presets: [
+							'@babel/preset-env'   //去掉该选项在chrome等浏览器没有影响，因为chrome支持es6语法，但是在ie中会有影响
+						],
+						plugins: [  // 配置babel插件，转换更更高版本语法
+							'@babel/plugin-proposal-class-properties'
+						]
+					}
+				}
+			}
+		同理，如果你在项目中使用了其他的高级语法，比如 装饰器 ，那么也是需要额外配置的，这里就不一一阐述，到时候你可根据webpack的报错信息，进行查找配置即可。
+
+
+	3，babel是个什么东西
+		根据官网的定义：Babel 是一个 工具链 ，主要用于将 ECMAScript 2015+ 版本的代码转换为向后兼容的 JavaScript 语法，以便能够运行在当前和旧版本的浏览器或其他环境中。 在具体的实践中，babel可以帮我们做以下事情：
+
+		语法转换
+		通过 Polyfill 方式在目标环境中添加缺失的特性 (通过 @babel/polyfill 模块)
+		源码转换 (codemods)
+		更多 ...
+		对于前端小白来说，上面的文字还不足以帮助他们了解babel，下面我用大白话来说一下：我们将babel类比成手机上使用的 中英词典APP。
+
+		我们知道，手机上安装的 中英词典APP 可以帮助我们将不认识的英文翻译成我们熟知的汉语，这样我们就可以理解单词和句子表达的意义了。类似，babel 可以将我们写的 ES6 语法翻译成浏览器熟悉的 ES5 语法，这样，浏览器就可以知道这些 JS 代码要做什么事情了。比如下面的例子：
+		[1, 2, 3].map(n => n**2)          [1, 2, 3].map(function(n) {
+											return Math.pow(n, 2);
+										 })
+		中英词典APP 在我们安装之初，就可以将英文翻译成中文，是因为开发程序员在这个APP中预先设置了中英翻译功能。同理，babel 在配置之初就可以将 ES6 语法翻译成 ES5 语法，是因为我们在配置之初，给 babel 指定了 预设（presets） ，才使得 babel 可以做到这一点。
+
+		默认状态下，中英词典APP 可以将英语翻译成汉语，但是不能将俄语翻译成汉语，因为程序员在开发之前，没有预先设置这个功能，如果我们想要这款APP也可以翻译俄语，那么就需要下载额外的 俄语翻译扩展包 ，下载完成之后，就可以实现这个功能。
+
+		同理，在默认配置下， babel 可以将 ES6 翻译成 ES5 ，但是不能将 ES7 翻译成 ES5。这是因为在 babel 中有将 ES6 翻译成 ES5 的 预设（presets） ，没有将 ES7 翻译成 ES5 的 预设（presets） 。如果要实现这个功能，我们就需要下载配置额外的 插件，比如第一节提到的 @babel/plugin-proposal-class-properties 。插件 配置下载配置完成之后，就可以将 ES7 等更高级语法翻译成 ES5 语法。
+
+		通过babel的中文官网，我们可以看到对于不同版本的语法，有不同的插件。相当于在 中英词典APP 中，对于不同的语言，有不同的扩展包，需要什么扩展包，我们下载即可
+
+
+		根据个人的经验，在使用这些插件的时候，项目开发之初不用配置。在打包编译的时候，如果报错了，再根据报错信息，查看缺少什么插件，然后再进行配置即可。当然，如果你经验很丰富，一开始就知道要使用那些插件，那么肯定要提前配置，
+
+
+
+7，关于babel的一些补充
+	2，@babel/plugin-transform-runtime、@babel/runtime插件
+		首先说一下这两款插件的使用场景，在之前的博客中提到过：babel默认配置的转化能力有限，只能将部分ES6语法转换成ES5语法，如果想要将更高级的ES6语法或者ES7等语法转成低级语法，需要进行额外的配置。
+
+		熟悉ES6语法的程序员肯定了解ES6语法中的 Generator 函数 和 Promise 对象 ，并且在项目中也会使用到这些高级语法。比如以下语法：
+			function * generator() {
+				yield 1;
+			}
+
+			console.log(generator().next(() => {
+				console.log('generator 执行完毕');
+			}));
+		那么问题来了，当你打包编译项目之后，在浏览器端运行的时候，会发现控制台报错了：
+			regeneratorRuntime is not defined
+		这是因为babel的默认配置不支持转换这些高级语法，如果需要达到这个目的，就需要安装配置额外的插件，也就是我们现在提到的@babel/plugin-transform-runtime、@babel/runtime 插件
+		首先安装 @babel/plugin-transform-runtime ，这是一个开发依赖，打包之后不需要这个包
+			yarn add @babel/plugin-transform-runtime -D
+		然后安装 @babel/runtime ，需要说明的是，这是运行环境中所需要的依赖包，打包编译之后还是也是需要它的
+			yarn add @babel/runtime
+		配置babel的基础上进行配置
+			module: {
+				rules: [
+					{
+						test: /\.js$/,
+						use: {
+							loader: 'babel-loader',
+							options: {
+								presets: [
+									'@babel/preset-env'     // 预设，将ES6转成ES5
+								],
+								plugins: [
+									'@babel/plugin-proposal-class-properties',   
+									'@babel/plugin-transform-runtime'   // 配置运行时的转换插件
+								]
+							}
+						},
+						//这里include必须写，不然就报错，我也不知原因
+						include: path.resolve(__dirname, 'src')  // 只转换src目录下的代码
+					}
+				]
+			}
+		进行如上配置之后，就可以顺利运行项目中的 Generator 函数 和 Promise 对象 等语法了。
+
+		这里提一句：上面配置中的 include ，表示只对 src目录 下的 .js 文件进行匹配。除此之外，还可以使用 exclude ，表示匹配除这些文件夹之外的 .js 文件，支持使用正则表达式，比如：exclude: /node_modules/ 。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

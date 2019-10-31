@@ -1,0 +1,388 @@
+1，ECMAScript入门介绍
+	1，它是一种由ECMA组织(前身为欧洲计算机制造商协会)制定和发布的脚本语言规范
+	2，而我们学的JavaScript是ECMA的实现，但术语ECMAScript和JavaScript平时表达同一个意思
+	3，JS包含三个部分
+		1)，ECMAScript(核心)
+		2)，扩展==>浏览器端
+			* BOM （浏览器对象模型）
+			* DOM （文档对象模型）
+		3)，扩展==>服务器端
+			* Node
+	4，ES的几个重要版本
+		* ES6：09年发布
+		* ES6(ES2015): 15年发布，也称为ECMA2015
+		* ES7(ES2016): 16年发布，也称为ECMA2016 （变化不大）
+		
+2,es5-严格模式
+	1，理解：
+		* 除了正常运行模式(混杂模式)，es5添加了第二种运行模式："严格模式"(strict mode)。
+		* 顾名思义，这种模式使得JavaScript在更严格的语法条件下运行
+	2，目的/作用
+		* 消除JavaScript语法的一些不合理、不严谨之处，减少一些怪异行为
+		* 消除代码运行的一些不安全之处，为代码的安全运行保驾护航
+		* 为未来新版本的JavaScript做好铺垫
+	3，使用
+		* 在全局或函数的第一条语句定义为 'use strict';
+		* 如果浏览器不支持，只解析为一条简单的语句，没有任何副作用
+	4，语法和行为改变
+		* 必须用var声明变量
+		* 禁止自定义的函数中的this指向window
+		* 创建eval作用域
+		* 对象不能有重名的属性
+		
+		"use strict"
+		
+		name = "jack"; //error
+		var name = "jack";
+		
+		function Person(name, age){
+			this.name = na;
+			this.age = age;
+		}
+		Person("jack",12); //报错
+		new Person("jack",12); //正确
+		
+		var str = "NBA";
+		eval("var str = 'CBA'; alert(str);");   //eval()会解析调用时传进来的字符串
+		alert(str); //不加严格，弹出CBA(eval()作用域污染全局), 加了严格，弹出NBA(eval()内部数据变成私有)
+		
+		var obj = {
+			name: "xx",
+			name: "ee"  //error
+		}
+		
+3，json对象
+	
+4，es5 object对象的扩展
+	ES5给object扩展了一些静态方法，常用的2个
+	1，Object.create(prototype, [description])
+		作用：以指定对象为原型创建新的对象
+		为新的对象指定新的属性，并对属性进行描述
+			- value：指定值
+			- writable：标识当前属性值是否是可修改的，默认值为false
+			- configurable：标识当前属性是否可以被删除，默认为false
+			- enumerable：标识当前属性是否能用for in 枚举，默认为false
+	2，Object.defineProperties(object, description)
+		作用：为指定对象定义扩展多个属性
+			get：用来获取当前属性值的回调函数
+			set：修改当前属性值触发的回调函数，并且实参即为修改后的值
+		存取器属性：setter, getter 一个用来存值，一个用来取值
+		
+	var obj = {name: 'jack', age: 12}
+	var obj1 = {}
+	obj1 = Object.create(obj, {
+		sex: {
+			value: '男',
+			writeable: true,
+			configurable: true
+			enumerable: true
+		}
+	})
+	console.log(obj1)
+	obj1.sex = '女'
+	delete obj1.sex
+	for(var i in obj1){
+		console.log(i)
+	}
+	
+	
+	
+	var obj2 = {firstName: 'kobs', lastName: 'bryant'}
+	Object.defineProperties(obj2, {
+		fullName: {
+			get: function(){  //获取扩展属性的值，获取扩展属性值的时候get方法自动调用
+				return this.firstName +' '+ this.lastName
+			},
+			set: function(data){ //监听扩展属性，当扩展属性发生变化时会自动调用，自动调用后会将变化的值作为实参注入到set函数
+				var names = data.split('')
+				this.firstName = names[0]
+				this.lastName = names[1]
+			}
+		}
+	})
+	console.log(obj2.fullName)
+	obj2.fullName = 'tim duncan'
+	console.log(obj2.fullName)
+	
+	
+	
+	对象本身的两个方法
+		get propertyName(){} 用来得到当前属性值的回调函数
+		set propertyName(){} 用来监听当前属性值变化的回调函数
+			var obj = {
+				firstName: 'curry',
+				lastName: 'stephen',
+				get fullName(){
+					return this.firstName +' '+ this.lastName
+				},
+				set fullName(data){
+					var names = data.split('')
+					this.firstName = names[0]
+					this.lastName = names[1]
+				}
+			}
+			
+			console.log(obj)
+			obj.fullName = 'cobe bryant'
+		    console.log(obj.fullName)
+		
+		
+		
+	以上都是惰性求值，获取的时候才会显示
+	
+5,es5 数组的扩展
+	Array.prototype.indexOf(value) : 得到值在数组中的第一个下标
+	Array.prototype.lastIndexOf(value) : 得到值在数组中的最后一个下标
+	Array.prototype.forEach(function(itme, index){}) : 遍历数组
+	Array.prototype.map(function(time, index){}) : 遍历数组返回一个新的数组，返回加工之后的值
+	Array.prototype.filter(function(item, index)) : 遍历过滤出一个新的子数组，返回条件为true的值
+	
+	/*
+	 *需求
+		1，输出第一个6的下标
+		2，输出最后一个6的下标
+		3，输出所有元素的值和下标
+		4，根据arr产生一个新数组，要求每个元素都比原来大18
+		5，根据arr产生一个新数组，返回的每个元素要大于4
+		
+		
+6，es5 call, apply, bind用法
+	1，Function.prototype.bind(obj) 
+		作用：将函数内的this绑定为obj，并将函数返回
+	2，面试题：区别bind()与call()和apply()
+		都能指定函数中的this
+		call()/apply()是立即调用函数
+		bind()是将函数返回
+			var obj = {name: 'jack'}
+			function foo(data){
+				console.log(this, data);
+			}
+			//传入参数的形式
+			// foo.call(obj, 33) //直接从第二个参数开始，依次传入
+			// foo.apply(obj, [33]) //第二个参数必须是数组，传入放在数组里
+			// bind的特点：绑定完this不会立即调用当前的函数，而是将函数返回
+			//bind传参的方式同call一样，bind主要用于改变回调函数的this
+			foo.bind(obj, 33)()
+			
+			setTimeout(function(){
+				console.log(this)
+			}.bind(obj), 1000)
+			
+	
+7, ES6 let const 关键字
+	1，作用：
+		与var类似，用于声明一个变量
+	2，特点：
+		在块作用域内有效
+		不能重复声明
+		不会预处理，不存在提升
+	3，应用
+		循环遍历加监听
+		使用let取代var是趋势
+		
+		
+	const	
+		1，作用
+			定义一个常量
+		2，特点
+			不能修改
+			其它特点同let
+		3，应用
+			保存不用修改的数据
+			
+		const KEY = 'jack'
+		KEY = '123'  //报错
+		console.log(KEY)
+		
+8，ES6  变量的解构赋值
+	1，理解
+		从对象或数组中提取数据，并赋值给变量(多个)
+	2，对象的解构赋值
+		let {n, a}(必须写对象中已有的属性名，否则返回undefined) = {n: 'tom', a:12}
+	3，数组的解构赋值
+		let [a, b] = [1, 'hello']
+	4，用途
+		给多个形参赋值
+		
+	let obj = {
+		name: 'jack',
+		age: 12,
+		addr: 'newyork'
+	}
+	let {name, age} = obj
+	console.log(name, age)
+	
+	
+	let arr = [1, 3, 'hello', true]
+	let [a, b] = arr  //a和b分别对应下标0和1
+	console.log(a, b) // 1 3
+	
+	let [ , ,c, d] = arr  //|是我自己写的，表示占了哪两个位置，所以c和d的下标就得往后挪了
+	console.log(c, d) //加了两个逗号相当于占了两个位置，c和d的下标为2和3，----> 'hello' true
+	
+	
+	function foo(obj){
+		console.log(obj.name, obj.age)
+	}
+	foo(obj) // jack 12
+	
+	function foo2({name, age}){
+		console.log(name, age)
+	}
+		相当于
+		function foo2(obj){
+			let {name, age} = obj
+			console.log(name, age)
+		}
+	
+	foo2(obj)// jack 12
+	
+	
+	es6 解构赋值 从对象或数组中提取数据，并赋值给变量
+        提取的是对象，用{}
+        提取的是数组，用[]
+        之后正常使用该变量即可
+	
+9, ES6 模板字符串
+	模板字符串：简化字符串拼接
+		模板字符串必须用 `` 包含
+		变化的部分用${xxx}定义
+		
+	let obj = {name: 'jack', age: 12}
+	let str = '我的名字是'+ obj.name +'，我今年'+ obj.age +'岁'
+	console.log(str)
+	let str2 = `我的名字是${obj.name}，我今年${obj.age}岁`
+	
+10，ES6 对象的简写方式
+		简化的对象写法
+			省略同名的属性值
+			省略方法的function
+			例如：
+				let x = 1;
+				let y = 2;
+				let point = {
+					x,
+					y,
+					setX (x) {this.x = x}
+				}
+				
+		let name = 'jack'
+		let age = 12
+		let obj = { 
+			name,   //  = name: name   
+			age,
+			getName(){  //= getName: function(){}
+				console.log(this.name)
+			}
+		}
+		console.log(obj.name)  //jack
+		obj.getName() //jack
+		
+11，箭头函数
+	作用：定义匿名函数
+	基本语法：
+		没有参数：() => console.log('xxxx')
+		一个参数：i => i+2
+		大于一个参数：(i, j) => i+j
+		函数体不用大括号：默认返回结果
+		函数体如果有多个语句：需要用{}包围，若有需要返回的内容，需要手动返回
+	使用场景：多用来定义回调函数
+	
+	箭头函数的特点：
+		1，简洁
+		2，箭头函数没有自己的this，箭头函数中的this不是调用的时候决定的，而是在定义的时候所处的对象就是它的this
+		3，扩展理解：箭头函数中的this看外层是否有函数
+			如果有，外层函数的this就是内部箭头函数的this
+			如果没有，则this就是window
+			
+	//形参的情况
+		//1，没有形参的时候
+		let fun1 = () => console.log("我是箭头函数");
+		fun1()
+		//2，只有一个形参的时候，()可以省略
+		let fun2 = a => console.log(a)
+		fun2('aaa')
+		//3，两个及两个以上的形参的时候，()不能省略
+		let fun3 = (x, y) => console.log(x, y)
+		fun3('hello', 'world')
+	
+	//函数体的情况
+		//1，函数体只有一条语句或者是表达式的时候 {}可以省略---->这样做的好处是会自动返回语句执行的结果或者是表达式的结果
+		//如果你加上了{}，必须手写return，不然会报错  ？？？？？
+		let fun4 = (x, y) => x+y  // == {return x+y}
+		console.log(fun4(3, 4)) //7
+		//2，函数体不只一条语句或者是表达式的情况 {}不可以省略
+		let fun5 = (x, y) => {
+			console.log(x, y)
+			return x + y;
+		}
+		console.log(fun5(3, 8)) //
+		
+		
+	//this的情况
+		let btn1 = document.getElementById('btn1')
+		let btn2 = document.getElementById('btn2')
+		btn1.onclick = function(){
+			alert(this)  //btn1
+		}
+		
+		btn2.onclick = () => {
+			alert(this)  //window
+		}
+		
+		let obj = {
+			name: '箭头函数',
+			getName: function(){
+				btn2.onclick = () => {
+					alert(this)  //obj
+				}
+			}
+		}
+		obj.getName()
+		修改：
+		let obj = {
+			name: '箭头函数',
+			getName: () => {
+				btn2.onclick = () => {
+					alert(this)  //window
+				}
+			}
+		}
+		obj.getName()
+		//上述等同于 obj.getName = () => {...}  这个函数其实还是在window下定义的
+		
+		
+		函数体只有一条语句，可以不加{}，此时默认返回该语句执行的结果
+        函数体有多条语句，一定要加{}，此时若要返回些什么，需手写return
+		
+12，ES6 三点运算符
+	用途
+	1，rest(可变)参数
+		用来取代arguments，但比arguments灵活，只能是最后部分形参参数
+		function fun(a, b, ...values){  //可以(...values)  不可以(a, ...values, b)
+			console.log(arguments)
+			arguments.forEach(function(item,index){   //arguments是个伪数组，不具备forEach方法，所以报错
+				console.log(item, index)
+			})
+			console.log(values)
+			values.forEach(function(item, index){  //values是一个真正的数组，所以可以用forEach
+				console.log(item, index)
+			})
+		}
+		fun(1, 2, 3)
+		
+	2，扩展运算符
+		它好比 rest 参数的逆运算，将一个数组转为用逗号分隔的参数序列
+		let arr1 = [1, 3, 5]
+		let arr2 = [2, ...arr1, 6]
+		arr2.push(...arr1)
+		
+13，ES6 形参默认值
+	形参默认值 --- 当不传入参数的时候默认使用形参里的默认值
+	function Point(x=1, y=2){
+		this.x = x;
+		this.y = y
+	}
+	let p = new Point()
+	console.log(p)
+	
