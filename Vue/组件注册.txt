@@ -1,0 +1,111 @@
+一，组件名
+	我们强烈推荐遵循 W3C 规范中的自定义组件名 (字母全小写且必须包含一个连字符)。
+	
+	1，组件名大小写
+		定义组件名的方式有两种：
+			使用 kebab-case (短横线分隔命名)，在使用和引用时也要这种方式
+			使用 PascalCase(首字母大写命名)，在引用时两种方式都行，在DOM中使用时需要换成 kebab-case
+				
+二，全局注册
+	Vue.component('my-component-name', {
+	  // ... 选项 ...
+	})				
+	这些组件是全局注册的。也就是说它们在注册之后可以用在任何新创建的 Vue 根实例 (new Vue) 的模板中。比如：			
+	Vue.component('component-a', { /* ... */ })
+	Vue.component('component-b', { /* ... */ })
+	Vue.component('component-c', { /* ... */ })
+
+	new Vue({ el: '#app' })
+
+	<div id="app">
+	  <component-a></component-a>
+	  <component-b></component-b>
+	  <component-c></component-c>
+	</div>
+		
+	此时你只创建了一个vue根实例，如果你再多new几个，a,b,c这三个组件也都是可以直接这几个根实例的模板中使用的
+				
+	同时这三个组件在各自内部也都可以相互使用，也就是说在b组件内部可以使用a组件，a组件内部可以使用c组件			
+				
+三，局部注册
+	通过一个普通的 js 对象来定义组件
+		var ComponentA = { /* ... */ }
+		var ComponentB = { /* ... */ }
+		var ComponentC = { /* ... */ }
+	然后在 components 选项中进行注册
+		new Vue({
+		  el: '#app',
+		  components: {
+			'component-a': ComponentA,
+			'component-b': ComponentB
+		  }
+		})
+		<component-a></component-a>
+	注意局部注册的组件在其子组件中不可用，此时a组件在b组件中是不可用的，要想可用需要在b组件中局部注册a组件
+		var ComponentB = {
+		  components: {
+			'component-a': ComponentA
+		  }
+		}
+
+	通过 Babel 和 webpack 使用 ES2015 模块
+		import ComponentA from './ComponentA.vue'   //引用时两种命名方式都可以，在DOM中使用时需要换成横杠
+
+		export default {
+		  components: {
+			ComponentA   //es6的简写方式
+		  },
+		  // ...
+		}
+
+四，模块系统
+	1，在模块系统中局部注册
+		使用了诸如webpack，需要先导入，再注册，就像上边这样
+	
+	2，基础组件的自动化全局注册
+		
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				

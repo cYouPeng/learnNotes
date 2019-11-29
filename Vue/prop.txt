@@ -1,247 +1,187 @@
-Prop 的大小写
-	-HTML 中的特性名是大小写不敏感的，所以浏览器会把所有大写字符解释为小写字符
-	-在JS中如果你使用camelCase命名，那么在HTML中用到该prop的时候，就需要换成和其等价的kebab-case命名
-		<ex-component first-name="Jack"></ex-component>
-		
+一，prop 的大小写
+	HTML是不区分大小写的，浏览器会把大写字符解释为小写字符
+	JS中如果你使用camelCase命名，那么在HTML中用到该prop的时候，就需要换成和其等价的kebab-case命名
+	例：
+        <ex-component  first-name="Jack"></ex-component>	
 		Vue.component('ex-component', {
 			props: [ 'firstName' ]
 		})
-		
-	HTML是不区分大小写的，浏览器会把大写字符解释为小写字符
-	如果在JS中如果你使用camelCase命名，那么在HTML中用到该prop的时候，就需要换成和其等价的kebab-case命名
-		
-Prop 类型
+二，prop 类型
 	以往我们都是以字符串数组形式列出的 prop
-	现在我们可以为每个prop指定值类型，当提供的值不符合类型时，会进行提示，但不会影响程序执行
-		props: {
-		  title: String,
-		  likes: Number,
-		  isPublished: Boolean,  
-		  commentIds: Array,
-		  author: Object,
-		  callback: Function,
-		  contactsPromise: Promise 
-		}
+		props: ['title', 'likes', 'isPublished', 'commentIds', 'author']
 		
+	现在我们可以为每个prop指定值类型，当提供的值不符合类型时，会进行提示，但不会影响程序执行		
+        props: {
+			title: String,
+	        likes: Number,
+	        isPublished: Boolean,  
+	        commentIds: Array,
+	        author: Object,
+	        callback: Function,
+	        contactsPromise: Promise 
+        }
 		
-		
-		
-	-字符串形式
-		//props: ['title', 'likes', 'isPublished', 'commentIds', 'author']
-		此时每个prop的初始类型都是String
-	-为每个prop指定值类型，当提供的值不符合类型时，会进行提示，但不会影响程序执行
-		props: {
-		  title: String,
-		  likes: Number,
-		  isPublished: Boolean,  
-		  commentIds: Array,
-		  author: Object,
-		  callback: Function,
-		  contactsPromise: Promise 
-		}
-		
-传递静态或动态 Prop
-	-传递一个静态的值
+三，传递静态或动态 prop
+	传递一个静态的值
 		<ex-component first-name="Jack"></ex-component>
-	-通过 v-bind 动态赋值
+	通过 v-bind 动态赋值
 		<ex-component :first-name="info.firstname"></ex-component>
-		也可以
+	也可以
 		<ex-component :first-name="info.firstname +' and '+ info.lastname"></ex-component>
-	-上述中，我们传的值都是字符串类型的，实际上任何类型的值都可以传给一个prop
-	 利用v-bind告诉vue传入的是一个JavaScript表达式，而不是一个字符串
-		传入一个数字
-			<ex-component v-bind:likes="42"></ex-component>  
-		传入一个布尔值
-			<ex-component isPublished></ex-component>  //不给赋值，默认为true
-			<ex-component :isPublished="false"></ex-component>
-		传入一个数组
-			<ex-component :commentIds="[123, 456, 789]"></ex-component>
-		传入一个对象
-			<ex-component :author="{name: 'Jack', age: 34}"></ex-component>
-		传入一个对象的所有属性
-			如果想要将一个对象的所有属性都作为特性传入，可以使用不带参数的v-bind
-				post: {
-					name: 'Jack',
-					age: 24
-				}
-				<ex-component v-bind="post"></ex-component>   //不能写 :="post"  
-				相当于
-				<ex-component :name="post.name" :age="post.age"></ex-component>
-	-其实就是看你是否使用了v-bind，没有使用，那你传的就是一个字符串，是死值；使用了v-bind，代表你写的是一个表达式，就可以
-	 传数字，布尔，数组，对象等值了
 		
-单向数据流
+	上述中，我们传的值都是字符串类型的，实际上任何类型的值都可以传给一个prop
+	利用v-bind告诉vue传入的是一个JavaScript表达式，而不是一个字符串
+
+	传入一个数字
+	    <ex-component v-bind:likes="42"></ex-component>  
+	传入一个布尔值
+	    <ex-component isPublished></ex-component>  //不给赋值，默认为true
+	    <ex-component :isPublished="false"></ex-component>
+	传入一个数组
+	     <ex-component :commentIds="[123, 456, 789]"></ex-component>
+	传入一个对象
+	     <ex-component :author="{name: 'Jack', age: 34}"></ex-component>
+		 
+	传入一个对象的所有属性
+	如果想要将一个对象的所有属性都作为特性传入，可以使用不带参数的v-bind
+	    post: {
+			name: 'Jack',
+			age: 24
+	    }
+	    <ex-component v-bind="post"></ex-component>   //v-bind等只有带参数时才能缩写，此时不能写做 :="post"  
+	    //相当于
+	    <ex-component :name="post.name" :age="post.age"></ex-component>
+		
+		其实就是看你是否使用了v-bind，没有使用，那你传的就是一个字符串，是死值；使用 了 v-bind，那你传的就是一个表达式，表达式的结果可能是数字，布尔，对象等类型
+
+四，单向数据流
 	数据总是从父组件传到子组件，子组件没有权利修改父组件传过来的数据，只能请求父组件对原始数据进行修改。
-	但是，很多时候我们又确实要操作这个数据，那么应该怎么办呢？	
+
+	由于单向数据流的限制，我们不能直接在子组件中修改 props 的值，当我们修改的时候会报错
+
+	但是，很多时候我们又确实要在子组件中操作这个从父组件传过来的数据，那么应该怎么办呢？
+
 	有两种方法：
-		-定义一个局部变量，并用 prop 的值初始化它：
+
+		定义一个局部变量，并用 prop 的值初始化它
 			props: ['initialCounter'],
 			data: function () {
-			  return {
-				counter: this.initialCounter
-			  }
+		       return {
+					counter: this.initialCounter
+		       }
 			}
-		-定义一个计算属性，处理 prop 的值并返回：
+		定义一个计算属性，处理 prop 的值并返回
 			props: ['size'],
 			computed: {
-			  normalizedSize: function () {
-				return this.size.trim().toLowerCase()
-			  }
-			}
-		
-Prop 验证		
-	-null 和 undefined 会通过任何类型验证
-	-Vue.component('my-component', {
-	  props: {
-		// 基础的类型检查 
-		propA: Number,
-		// 多个可能的类型
-		propB: [String, Number],
-		// 必填的字符串或数字
-		propC: {
-		  type: [String, Number],
-		  required: true
-		},
-		// 带有默认值的数字
-		propD: {
-		  type: Number,
-		  default: 100
-		},
-		// 带有默认值的对象
-		propE: {
-		  type: Object,
-		  // 对象或数组的默认值必须从一个函数获取，这么写会报错
-		  // default: { message: 'hello' }
-		  default: function () {
-			return { message: 'hello' }
-		  }
-		},
-		// 自定义验证函数
-		propF: {
-		  validator: function (value) {
-			// 这个值必须匹配下列字符串中的一个
-			return ['success', 'warning', 'danger'].indexOf(value) !== -1
-		  }
-		}
-	  }
-	})	
-		
-类型检查		
-	type 可以是下列原生构造函数中的一个：
+		       normalizedSize: function () {
+		           return this.size.trim().toLowerCase()
+		       }
+	        }
+	利用了data和computed来间接地操作这个数据，这样就不会报错了
+
+五，prop 验证
+	null 和 undefined 会通过任何类型验证，以下面代码中的propA举例，你给他传null或undefined，控制台是不会有任何报错的，这样是允许的
+
+	Vue.component('my-component', {
+	    props: {
+			// 基础的类型检查 
+		    propA: Number,
+			// 多个可能的类型
+			propB: [String, Number],
+			// 必填的字符串或数字
+			propC: {
+				type: [String, Number],
+				required: true
+			},
+			// 带有默认值的数字
+			propD: {
+				type: Number,
+				default: 100
+			},
+			// 带有默认值的对象
+			propE: {
+				type: Object,
+				// 对象或数组的默认值必须从一个函数获取，这么写会报错
+				// default: { message: 'hello' }
+				default: function () {
+					return { message: 'hello' }
+				}
+			},
+			// 自定义验证函数
+			propF: {
+				validator: function (value) {
+					// 这个值必须匹配下列字符串中的一个
+					return ['success', 'warning', 'danger'].indexOf(value) !== -1
+		       }
+	        }
+	    }
+    })
 	
-	String
-	Number
-	Boolean
-	Array
-	Object
-	Date
-	Function
-	Symbol	
-	还可以是一个自定义的构造函数	
-		function Person (firstName, lastName) {
-		  this.firstName = firstName
-		  this.lastName = lastName
-		}
-		Vue.component('blog-post', {
-		  props: {
-			author: Person
-		  }
-		})
-		
-非 Prop 的特性
-	一个非prop特性是指给组件传了一个特性，但是该特性并没有在这个组件的props中定义		
-		
-替换/合并已有的特性		
-	<ex-component>组件的内部模板是这样的
-		<div name="Jack" class="main"></div>
-	调用该组件时
-		<ex-component name="Selina" class="con"></ex-component>
-	对于绝大多数特性来说，调用组件时传入的值会代替组件内部定义好的值，name="Selina"会替换name="Jack"，
-	但是class和style会有些不一样，不会进行替换而是把两边的值合并起来，最后得到的值：class="main con"(注意顺序)
-	
-	
-	这里指的是非prop特性，对于prop特性，则和替换/合并没什么关系，prop特性更像是你在子组件里定义了一个形参，你在父作用域里调用
-	该子组件的时候，给这个形参传了一个值，然后你在子组件里可以使用 文本差值{{}} 或 属性插值v-bind 获取到这个实参
-	
-	这里指的是组件根元素上的非prop特性会被替换，子元素上的就没人管了
-		
-禁用特性继承		
-			inheritAttrs(inherit 继承   attributes 属性)，这个属性的值的类型为Boolean，默认为true
-			你在调用子组件时设置的非prop特性会被子组件继承，并且显式渲染在子组件根元素上，如果子组件内部模板早就已经定义好了
-			同名非prop特性，则会被替换，如果你希望阻止这个行为，可以在组件选项里写inheritAttrs: false，但不会阻止class和style的合并
-	        
-		    
-		    
-		
-	-$attrs
-		在调用组件时，传过来了一些非prop特性，这些特性就会被保存在$attrs对象中，
-		但class和style除外
-		
-	最后还是要强调一遍，本小节所讲的，不管是替换/合并、还是禁用xxx，都和prop特性没啥关系，有例为证
-		1，
-			子组件：
-			let exComponent = {
-				template: '<div  name="Selina">{{name}}</div>',   
-				props: [ 'name' ]
-			}
-		
-			父作用域调用：
-			<ex-component name="jack" ></ex-component>
-			最后渲染：
-			<div name="Selina">jack</div>
-			//其实有些不严谨，因为替换/合并这个知识点压根就和prop特性扯不上，更像是我上面说的prop特性类似于一个形参
+	1，类型检查
+        type 可以是下列原生构造函数中的一个：
+	        String
+	        Number
+	        Boolean
+	        Array
+	        Object
+	        Date
+	        Function
+	        Symbol	
+	    还可以是一个自定义的构造函数	
+		    function Person (firstName, lastName) {
+		        this.firstName = firstName
+		        this.lastName = lastName
+		    }
+		    Vue.component('blog-post', {
+		        props: {
+					author: Person
+		        }
+		    })
 			
-		2，
-			子组件：
-			let exComponent = {
-				template: '<div>{{name}}</div>',   
-				inheritAttrs: false,
-				props: {
-					name: String					
-				},
-			}
-			父作用域调用：
-			<ex-component name="jack" ></ex-component>
-			最后渲染：
-			<div>jack</div>
-			//充分说明prop特性和inheritAttrs: false扯不上关系
+六，非 prop 的特性
+	一个非prop特性是指给组件传了一个特性，但是该特性并没有在这个组件的props中定义
+	或者这么说，一个没有在 props 选项中定义的特性就叫做非prop特性
 		
-		为什么要特别举例说这两点呢，因为大多数人都把prop特性和上面两点扯上了关系，从此钻牛角尖里出不来
+		一个人天生就是黑色眼睛、黄皮肤 这是prop特性，预定就定义好的
+		可能因为意外少了一个指头，这是非prop特性，预定没有料到的
+	
+	1，替换/合并已有的特性
+		组件的内部模板是这样的
+	       <div name="Jack" class="main"></div>
+		调用该组件时
+	       <ex-component name="Selina" class="con"></ex-component>
+		最后渲染出来
+	       <div name="Selina" class="main con"></div>
+		   
+		对于非prop特性来说，调用组件时传入的值会代替组件内部定义好的值， Selina会替换Jack，
+		但是class和style会有些不一样，不会进行替换而是把两边的值合并起来，最后得到的值：class="main con"
 		
-	非prop和prop特性的区别：
-		prop特性可以使用插值的形式获取父组件传递的值，而非prop特性不能
-		prop特性在页面渲染的时候不会显示出来，非prop特性是以属性的方式显示在渲染出来的html根元素上
+		替换/合并只针对根元素上的非prop特性
 		
+	2，禁用特性继承
+		非prop特性会被子组件继承下来，添加到根元素上或替换根元素上已有的特性，使用 inheritAttrs:false 会阻止这种继承
+		class和style除外，没有什么会影响他们的合并
 		
-	有了 inheritAttrs: false 和 $attrs，你就可以手动决定这些特性会被赋予哪个元素
-		官网上的这句话想比很多童鞋都不甚理解，那我来叨叨
-		调用组件时传的非prop特性默认会被渲染在组件的根元素上，因为子组件把这些非prop特性从父作用域继承了过来，如果此时
-		我加上inheritAttrs: false，那么浏览器F5刷新之后组件根元素上就不会有这些非prop特性了
+		vm.$attrs 该实例对象保存着从父组件传过来的非prop特性(class和style除外)
 		
-		再来说说$attrs，父作用域调用子组件传的非prop特性都会保存到该属性中，甭管inheritAttrs的值是啥
-		
-		然后就是这二者刀剑合璧的时刻了，不说了，上代码
-			子组件：
-			let exComponent = {
+		从父组件传过来的非prop特性会被渲染在组件的根元素上，利用 inheritAttrs:false 和 $attrs 可以决定把这些特性
+		渲染哪个子元素上，而不是渲染在根元素上
+			Vue.component('ex-component', {
 				template: `
 					<div>
-						<nav v-bind="$attrs"></nav>
-						<div>我是一只小青蛙，呱呱呱</div>
-						<footer v-bind="$attrs"></footer>
+						<h1>tittle</h1>
+						<p v-bind="$attrs"></p>
 					</div>
-				`,   
-				inheritAttrs: false,
-			}
-			父作用域调用：
-			<ex-component title="apple" date="2019"></ex-component>
-			最后渲染：
-			<div>
-				<nav title="apple" date="2019"></nav> 
-				<div>我是一只小青蛙，呱呱呱</div> 
-				<footer title="apple" date="2019"></footer>
-			</div>
+				`,
+				inheritAttrs: false
+			})
+		首先利用inheritAttrs: false阻止非prop特性继承，这样根元素上就不会渲染这些特性了。再利用 v-bind="$attrs"
+		把这些非prop特性渲染在你想要渲染的元素上
+
+
+
+		再来说说非prop和prop特性的区别：
 		
-			还没看懂？没关系，你可以把inheritAttrs: false去掉试试看，你会发现最后渲染的根元素上也会出现这些特性，这通常使我们
-			不希望出现的
-			所以，首先借助inheritAttrs: false，阻止子组件继承这些非prop特性，这样根元素上就不会渲染这些特性了，但是根元素内
-			部还有很多子元素呢，其中有些子元素需要这些非prop特性，此时就可以借助$attrs了
+		1，prop特性可以使用插值的形式获取父组件传递的值，而非prop特性不能
+
+		2，prop特性在页面渲染的时候不会显示出来，非prop特性是以属性的方式显示在渲染出来的html根元素上

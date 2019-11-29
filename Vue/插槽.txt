@@ -1,361 +1,325 @@
 一，插槽内容
-	“Vue 实现了一套内容分发的 API，将 <slot> 元素作为承载分发内容的出口。”  --官网
-		“内容分发”：同一段内容的不同部分可能会被发往不同地方进行渲染
-		“承载分发内容的出口”：内容被发送出去了，就肯定要走一个出口，这个出口就是<slot>
-			
-	
-	以前我们在<ex-component>中间添加内容的话，这个内容是不会被渲染出来的，但现在借助<slot>便可以达成这个目标
+	“Vue 实现了一套内容分发的 API，将 <slot> 元素作为承载分发内容的出口。” --官网
+	“内容分发”：同一段内容的不同部分可能会被发往不同地方进行渲染
+	“承载分发内容的出口”：内容被发送出去了，就肯定要走一个出口，这个出口就是<slot>
+	以前我们在<ex-component>中间添加内容的话，这个内容是不会被渲染出来的，但现在借助<slot>便可以达成这个目的
 		Vue.component('ex-component', {
 			template: '
 				<h1>
 					<slot></slot>
 				</h1>
 			'
-		})		
+		})
 		<ex-component>some text</ex-component>
-		如此一来 some text 这段文本内容就会替换掉<slot></slot>，成功被渲染出来
+	如此一来 some text 这段文本内容就会替换掉<slot></slot>，成功被渲染出来
 	
-	“插槽内可以包含任何模板代码“  --官网
-		只要在<template>中可以出现的，都可以放在插槽里
+	“插槽内可以包含任何模板代码“ --官网
+	只要在<template>中可以出现的，都可以放在插槽里
 		<ex-component>
 			<span>123</span> 
 			some text 
 			<ex-component2></ex-component2>     //甚至可以是另一个组件
-		</ex-component>
-		
-		但如果没有使用<slot>，则<ex-component>中间的内容都会被抛弃，也就是不会被渲染出来
-	
-	
+		</ex-component>	
+	但如果没有使用<slot>，则<ex-component>中间的内容都会被抛弃，也就是不会被渲染出来
+
+
 二，编译作用域
 	想在插槽里使用数据的话
 	<ex-component url="profile">my name is {{name}} {{url}}</ex-component>
 	这段内容位于父级作用域内，就只能访问父级作用域内的数据，无法访问子组件作用域内的数据，所以url会是undefined
-	
-	“父级模板里的所有内容都是在父级作用域中编译的；子模板里的所有内容都是在子作用域中编译的。”  --官网
-	
-	其实本小节最重要的就是这句话，凡是在父级<template>里编写的内容都是属于父级作用域的；凡是在子组件<template>里编写
-	的内容都是属于子组件作用域的。如果你直接跨域访问，是会报错的
-	
-	
+
+	“父级模板里的所有内容都是在父级作用域中编译的；子模板里的所有内容都是在子作用域中编译的。” --官网
+	其实本小节最重要的就是这句话，凡是在父级<template>里编写的内容都是属于父级作用域的；凡是在子组件<template>里编写的内容都是属于子组件作用域的。如果你直接跨域访问，是会报错的
+
 三，后备内容
 	本小节的内容是非常简单的
 	后备内容类似于es6的默认参数，你不给他提供值的时候，插槽就使用默认值，举个例子就明白了
-	Vue.component('ex-component', {
-		template: '<button><slot>submit</slot></button>'  
-	})
-	
-	<ex-component></ex-component>    =>   <button>submit</button>    //你不给插槽提供内容的话，默认渲染submit这个文本
-	<ex-component>save<ex-component>  => <button>save</button>       //提供内容的话，就不用默认的了
-	
+		Vue.component('ex-component', {
+			template: '<button><slot>submit</slot></button>'  
+		})
+		
+		<ex-component></ex-component>    =>   <button>submit</button>    //你不给插槽提供内容的话，默认渲染submit这个文本
+		<ex-component>save<ex-component>  => <button>save</button>       //提供内容的话，就不用默认的了
+
 四，具名插槽
-	
 	有时我们需要多个插槽。例如对于一个带有如下模板的 <base-layout> 组件：
 		<div class="container">
-		  <header>
-			<!-- 我们希望把页头放这里 -->
-		  </header>
-		  <main>
-			<!-- 我们希望把主要内容放这里 -->
-		  </main>
-		  <footer>
-			<!-- 我们希望把页脚放这里 -->
-		  </footer>
+			<header>
+				<!-- 我们希望把页头放这里 -->
+			</header>
+			<main>
+				<!-- 我们希望把主要内容放这里 -->
+			</main>
+			<footer>
+				<!-- 我们希望把页脚放这里 -->
+			</footer>
 		</div>
 	对于这样的情况，<slot> 元素有一个特殊的特性：name。这个特性可以用来定义额外的插槽：
 		<div class="container">
-		  <header>
-			<slot name="header"></slot>
-		  </header>
-		  <main>
-			<slot></slot> 
-		  </main>
-		  <footer>
-			<slot name="footer"></slot>
-		  </footer>
+			<header>
+				<slot name="header"></slot>
+			</header>
+			<main>
+				<slot></slot> 
+			</main>
+			<footer>
+				<slot name="footer"></slot>
+			</footer>
 		</div>
-		一个不带 name 的 <slot> 出口会带有隐含的名字“default”。所以<slot></slot> 相当于 <slot name="default"></slot>
-		
+	一个不带 name 的 <slot> 出口会带有隐含的名字“default”。所以<slot></slot> 相当于 <slot name="default"></slot>
+
 	在向具名插槽提供内容的时候，我们可以在一个 <template> 元素上使用 v-slot 指令，并以 v-slot 的参数的形式提供其名称：
 		<base-layout>
-		  <template v-slot:header>
-			<h1>Here might be a page title</h1>
-		  </template>
+			<template v-slot:header>
+				<h1>Here might be a page title</h1>
+			</template>
 
-		  <p>A paragraph for the main content.</p>
-		  <p>And another one.</p>
+			<p>A paragraph for the main content.</p>
+			<p>And another one.</p>
 
-		  <template v-slot:footer>
-			<p>Here's some contact info</p>
-		  </template>
+			<template v-slot:footer>
+				<p>Here's some contact info</p>
+			</template>
 		</base-layout>
 	现在 <template> 元素中的所有内容都将会被传入相应的插槽。任何没有被包裹在带有 v-slot 的 <template> 中的内容都会被视为默认插槽的内容。
-	
+
 	这个默认插槽其实也是具名插槽的一种，就像es6的默认参数，难道你能说给了它默认值，它就不是参数了吗
 	同理，虽然默认插槽没有显式声明name特性，但它也是一个具名插槽
+
 	<slot></slot> 和 <slot name="header"></slot> 都属于具名插槽，只不过<slot></slot>同时还是默认插槽
-		
-		
+
 	然而，如果你希望更明确一些，仍然可以在一个 <template> 中包裹默认插槽的内容：
 		<base-layout>
-		  <template v-slot:header>
-			<h1>Here might be a page title</h1>
-		  </template>
+			<template v-slot:header>
+				<h1>Here might be a page title</h1>
+			</template>
 
-		  <template v-slot:default>
-			<p>A paragraph for the main content.</p>
-			<p>And another one.</p>
-		  </template>
+			<template v-slot:default>
+				<p>A paragraph for the main content.</p>
+				<p>And another one.</p>
+			</template>
 
-		  <template v-slot:footer>
-			<p>Here's some contact info</p>
-		  </template>
+			<template v-slot:footer>
+				<p>Here's some contact info</p>
+			</template>
 		</base-layout>
-	
-	任何一种写法都会渲染出：	
+	任何一种写法都会渲染出：
 		<div class="container">
-		  <header>
-			<h1>Here might be a page title</h1>
-		  </header>
-		  <main>
-			<p>A paragraph for the main content.</p>
-			<p>And another one.</p>
-		  </main>
-		  <footer>
-			<p>Here's some contact info</p>
-		  </footer>
+			<header>
+				<h1>Here might be a page title</h1>
+			</header>
+			<main>
+				<p>A paragraph for the main content.</p>
+				<p>And another one.</p>
+			</main>
+			<footer>
+				<p>Here's some contact info</p>
+			</footer>
 		</div>
 	注意 v-slot 只能添加在一个 <template> 上 (只有一种例外情况)，这一点和已经废弃的 slot 特性不同。
-		下面我来说一下关于具名插槽新旧语法的区别，看完你应该就明白了上面这句话的意思
-		在2.6.0以前，使用slot特性将内容从父级传给具名插槽，具有相同值的slot特性可以重复使用，并且可以应用在一个普通元素上
-			<ex-component>
-				<h1 slot="header">123</h1>
-				<p slot="header">456</p>
-			</ex-component>
-		到了2.6.0版本以后，使用新语法v-slot，多了很多限制，具有相同参数的v-slot不能重复使用，并且只能应用在<template>上
-		
-			<ex-component>
-				<template v-slot:header>
-					<h1>123</h1>
-				</template>
-			</ex-component>
-			
-			但有一种例外情况，就是子组件模板里只有一个插槽，此时给插槽传递内容的话，v-slot可以直接写在组件标签上
-			template: ` 
-				<div>
-				   <slot name="header"></slot>
-				</div>
-			`, 			
-			<ex-component v-slot:header>
-				<h1>123</h1>          
-			</ex-component>
-		
-	
-	虽然v-slot只能添加在一个 <template> 上，但子组件模板里却可以写多个同名插槽，传递内容时这多个同名插槽也都会接收到同样
-	的内容
+
+	下面我来说一下关于具名插槽新旧语法的区别，看完你应该就明白了上面这句话的意思
+	在2.6.0以前，使用slot特性将内容从父级传给具名插槽，具有相同值的slot特性可以重复使用，并且可以应用在一个普通元素上
+		<ex-component>
+			<h1 slot="header">123</h1>
+			<p slot="header">456</p>
+		</ex-component>
+	到了2.6.0版本以后，使用新语法v-slot，多了很多限制，具有相同参数的v-slot不能重复使用，并且只能应用在<template>上
+		<ex-component>
+			<template v-slot:header>
+				<h1>123</h1>
+			</template>
+		</ex-component>		
+	但有一种例外情况，就是子组件模板里只有一个插槽，此时给插槽传递内容的话，v-slot可以直接写在组件标签上
 		template: ` 
 			<div>
-			   <slot name="header"></slot>
-			   <slot name="header"></slot>
+			 <slot:data="post"></slot>
+			</div>
+		`, 			
+		<ex-component #default="slotProps">
+			<h1>{{ slotProps }}</h1>
+		</ex-component>
+	虽然v-slot只能添加在一个 <template> 上，但子组件模板里却可以写多个同名插槽，传递内容时这多个同名插槽也都会接收到同样的内容
+		template: ` 
+			<div>
+				<slot name="header"></slot>
+				<slot name="header"></slot>
 			</div>
 		`, 			
 		<ex-component v-slot:header>
 			<h1>123</h1>          
 		</ex-component>
-		会渲染出两个<h1>标签
-	
-	
-		
-	
-	
+		//会渲染出两个<h1>标签
+
 五，作用域插槽
+
 	有时我们需要在插槽内容中访问子组件中才有的数据
 		template: ` 
-            <div>
-               <slot name="header"></slot>
-            </div>
-        `,       
-        data(){
-            return{
-                user: {
-                    name: 'Jack'
-                }
-            }
-        }
-		
-		<ex-component v-slot:header>
-            {{user.name}}         
-        </ex-component>
-		
-		运行是会报错的，因为只有 <ex-component> 组件可以访问到 user 而我们提供的内容是在父级渲染的。
-		
-		为了让 user 在父级的插槽内容中可用，我们可以将 user 作为 <slot> 元素的一个特性绑定上去：
-			template: ` 
 				<div>
-				   <slot name="header" :user="user"></slot>
+				   <slot></slot>
 				</div>
-			`,  
-		绑定在 <slot> 元素上的特性被称为插槽 prop。现在在父级作用域中，我们可以给 v-slot 带一个值
-			<ex-component v-slot:header="slotProps">
-				{{slotProps.user.name}}         
-			</ex-component>
-		在这个例子中，我们选择将包含所有插槽 prop 的对象命名为 slotProps，但你也可以使用任意你喜欢的名字。
-		
-		下面我来说一下关于作用域插槽新旧语法的区别
-			在2.6.0之前，使用slot-scope特性接收传递给插槽的prop，也就是使插槽内容可以访问子组件的数据
-				<ex-component>
-					<template slot="header" slot-scope="slotProps">
-						{{slotProps}}
-					</template>
-				</ex-component>
-				当然旧的语法不必非得局限在<template>标签上
-				
-				多一嘴，可以看到，新的语法是把 slot和slot-scope二者合在一起了，使用更加方便  v-slot:header="slotProps"
-	   
+			`,       
+			data(){
+				return{
+					user: {
+						name: 'Jack'
+					}
+				}
+			}		
+		<ex-component>
+			{{user.name}}         
+		</ex-component>
+	运行是会报错的，因为只有 <ex-component> 组件可以访问到 user 而我们提供的内容是在父级渲染的。
+
+	为了让 user 在父级的插槽内容中可用，我们可以将 user 作为 <slot> 元素的一个特性绑定上去：
+		template: ` 
+			<div>
+				<slot name="header" :user="user"></slot>
+			</div>
+		`
+	绑定在 <slot> 元素上的特性被称为插槽 prop。现在在父级作用域中，我们可以给 v-slot 带一个值
+		<ex-component v-slot:header="slotProps">  //slotProps => {"user": {"name" : "Jack"}}
+			{{slotProps.user.name}}
+		</ex-component>
+	在这个例子中，我们选择将包含所有插槽 prop 的对象命名为 slotProps，但你也可以使用任意你喜欢的名字。
+
+	下面我来说一下关于作用域插槽新旧语法的区别
+
+	在2.6.0之前，使用slot-scope特性接收传递给插槽的prop，也就是使插槽内容可以访问子组件的数据
+		<ex-component>
+			<template slot="header" slot-scope="slotProps">
+				{{slotProps}}
+			</template>
+		</ex-component>
+	当然旧的语法不必非得局限在<template>标签上
+
+	可以看到，新的语法是把 slot和slot-scope二者合在一起了，使用更加方便 v-slot:header="slotProps"
+
 	1，独占默认插槽的缩写语法
 		当被提供的内容只有默认插槽时，组件的标签才可以被当作插槽的模板来使用。这样我们就可以把 v-slot 直接用在组件上：
-			template: ` 
+			template: `
 				<div>
-				   <slot :user="user"></slot>              
+					<slot :user="user"></slot>
 				</div>
-			`,
+			`
+			
 			<ex-component v-slot:default="slotProps">
 				{{slotProps.user.name}}
 			</ex-component>
-			当你使用这种缩写语法时：
-			代表子组件模板内只有一个插槽，此时他一定是默认插槽，因为你再给它的name赋个其它值就多此一举了
-			此时他也一定是作用域插槽，因为如果不是作用域插槽，你再给一个 v-slot:default 也是多此一举
-			
-		这种写法还可以更简单。就像假定未指明的内容对应默认插槽一样，不带参数的 v-slot 被假定对应默认插槽：	
-			<ex-component v-slot="slotProps">
-				{{slotProps.user.name}}
-			</ex-component>
-		只要出现多个插槽，就不能再用这种缩写语法了
-	
-			
-			
+	当你使用这种缩写语法时：
+	代表子组件模板内只有一个插槽，此时他一定是默认插槽，因为你再给它的name赋个其它值就多此一举了
+	此时他也一定是作用域插槽，因为如果不是作用域插槽，你再给一个 v-slot:default 也是多此一举
+
+	这种写法还可以更简单。就像假定未指明的内容对应默认插槽一样，不带参数的 v-slot 被假定对应默认插槽：
+	    <ex-component v-slot="slotProps">
+			{{slotProps.user.name}}
+	    </ex-component>
+	只要出现多个插槽，就不能再用这种缩写语法了
+
 	2，解构插槽 Prop
 		作用域插槽的内部工作原理是将你的插槽内容包括在一个传入单个参数的函数里：
 			function (slotProps) {
-			  // 插槽内容
+				// 插槽内容
 			}
-		这意味着 v-slot 的值实际上可以是任何能够作为函数定义中的参数的 JavaScript 表达式。所以在支持的环境下 ，你也可以使用 ES2015 解构来传入具体的插槽 prop
-			<ex-component v-slot="{ user, other }">
-				{{user.name}}
-				{{other}}
-			</ex-component>
-			这样可以使模板更简洁，尤其是在该插槽提供了多个 prop 的时候。我觉得这才是本小节的宗旨，俩字  简洁
-			
-		它同样开启了 prop 重命名等其它可能，例如将 user 重命名为 person：	
-			<ex-component v-slot="{ user: person, other }">
-				{{person.name}}
-				{{other}}
-			</ex-component>	
-			这个主要是利用解构赋值里的重命名，注意一点，此时不能再使用user这个原先的名字了，否则会报错的
-		
-		你甚至可以定义后备内容，用于插槽 prop 是 undefined 的情形：	
-			<ex-component v-slot="{ user= {name: 'Selina'}, other }">
-				{{user.name}}
-				{{other}}
-			</ex-component>	
-			也是利用解构赋值里的默认值，赋值对象里没有对应的属性，则会使用默认值
-			
-	
-		
-	
+	这意味着 v-slot 的值实际上可以是任何能够作为函数定义中的参数的 JavaScript 表达式。所以在支持的环境下 ，你也可以使用 ES2015 解构来传入具体的插槽 prop
+	   <ex-component v-slot="{ user, other }">
+			{{user.name}}
+			{{other}}
+	   </ex-component>
+	这样可以使模板更简洁，尤其是在该插槽提供了多个 prop 的时候。我觉得这才是本小节的宗旨，俩字 简洁
+
+	它同样开启了 prop 重命名等其它可能，例如将 user 重命名为 person：
+	   <ex-component v-slot="{ user: person, other }">
+			{{person.name}}
+			{{other}}
+	   </ex-component>	
+	这个主要是利用解构赋值里的重命名，注意一点，此时不能再使用user这个原先的名字了，否则会报错的
+
+	你甚至可以定义后备内容，用于插槽 prop 是 undefined 的情形：
+	   <ex-component v-slot="{ user= {name: 'Selina'}, other }">
+			{{user.name}}
+			{{other}}
+	   </ex-component>	
+	也是利用解构赋值里的默认值，赋值对象里没有对应的属性，则会使用默认值
+	也就是你没有提供这个插槽prop，则会使用默认值
+
+
 六，动态插槽名
 	2.6.0 新增
 	动态指令参数也可以用在 v-slot 上，来定义动态的插槽名
-	<ex-component>
-		<template v-slot:[slotname]>
-			<h1>123</h1>
-		</template>
-	</ex-component>
+		<ex-component>
+			<template v-slot:[slotname]>
+				<h1>123</h1>
+			</template>
+		</ex-component>
 	slotname的值是什么，这个内容就放在哪个<slot>中
+
 
 七，具名插槽的缩写
 	2.6.0 新增
 	跟 v-on 和 v-bind 一样，v-slot 也有缩写，即把参数之前的所有内容 (v-slot:) 替换为字符 #。例如 v-slot:header 可以被重写为 #header：
+
 		<base-layout>
-		  <template #header>
-			<h1>Here might be a page title</h1>
-		  </template>
+			<template #header>
+				<h1>Here might be a page title</h1>
+			</template>
 
-		  <p>A paragraph for the main content.</p>
-		  <p>And another one.</p>
+			<p>A paragraph for the main content.</p>
+			<p>And another one.</p>
 
-		  <template #footer>
-			<p>Here's some contact info</p>
-		  </template>
+			<template #footer>
+				<p>Here's some contact info</p>
+			</template>
 		</base-layout>
-	
 	然而，和其它指令一样，该缩写只在其有参数的时候才可用。这意味着以下语法是无效的：
 		<current-user #="{ user }">
-		  {{ user.firstName }}
+			{{ user.firstName }}
 		</current-user>
 	可以加上参数
 		<current-user #default="{ user }">
-		  {{ user.firstName }}
+			{{ user.firstName }}
 		</current-user>
 
 
 八，其它示例
-	“插槽 prop 允许我们将插槽转换为可复用的模板，这些模板可以基于输入的 prop 渲染出不同的内容”  --官网
-	<body>
-		<div id="app">
+	“插槽 prop 允许我们将插槽转换为可复用的模板，这些模板可以基于输入的 prop 渲染出不同的内容” --官网
+		<body>
+			<div id="app">
 			<ex-component  :todolist="lists">
 				<template #default="{ item }">
 					<span v-if="item.isCompeted">
-						✓
+						对号
 					</span>
-					{{item.text}}
-				</template>
-				
+				{{item.text}}
+			   </template>				
 			</ex-component>
-		</div>
-	</body>
-	<script type="text/javascript">
-		Vue.component('ex-component', {
-			template: ` 
-				<ul>
-					<li v-for="item in todolist" :key="item.id">
-						<slot :item="item">
-							{{item.text}}
-						</slot>
-					</li>
-				</ul>
-			`,
-			props: ['todolist']                                  
-		})
-		new Vue({
-			el: '#app',
-			data() {
-				return {
-					lists: [
-						{id: 1, text: 'apple', isCompeted: true},
-						{id: 2, text: 'pear', isCompeted: true},
-						{id: 3, text: 'pink', isCompeted: false},
-						{id: 4, text: 'orange', isCompeted: true}
-					]
+			</div>
+		</body>
+		<script type="text/javascript">
+			Vue.component('ex-component', {
+				template: ` 
+					<ul>
+						<li v-for="item in todolist" :key="item.id">
+							<slot :item="item">
+								{{item.text}}
+							</slot>
+						</li>
+					</ul>
+				`,
+				props: ['todolist']                                  
+			})
+			new Vue({
+				el: '#app',
+				data() {
+					return {
+						lists: [
+							{id: 1, text: 'apple', isCompeted: true},
+							{id: 2, text: 'pear', isCompeted: true},
+							{id: 3, text: 'pink', isCompeted: false},
+							{id: 4, text: 'orange', isCompeted: true}
+						]
+					}
 				}
-			}
-		})
-	</script>
-
-		总结：子组件提供数据，父组件决定如何显示这些数据
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	
-	
+			})
+		</script>
+	总结：子组件提供数据，父组件决定如何显示这些数据
