@@ -1,0 +1,111 @@
+html,body,div,h1,h2,h3,h4,h5,h6,p,ul,li,span{
+	margin: 0;
+	padding: 0;
+	font-family: "微软雅黑";
+}
+ul{
+	list-style: none;
+}
+a{
+	text-decoration: none;
+}
+img{
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+.clear{
+	clear: both;
+}
+.hengban{
+	width: 100%;
+	height: 20px;
+}
+/******************共通部分******************/
+.header{
+	width: 100%;
+	height: 60px;
+	background-color: #3C80DC;
+}
+.header .nav{
+	width: 1000px;
+	height: 60px;
+	margin: 0 auto;
+}
+.header .nav .logo{
+	float: left;
+}
+.header .nav .logo em{
+	line-height: 60px;
+	font-size: 30px;
+	color: #FFF;
+}
+.header .nav ul{
+	margin-left: 200px;
+	height: 60px;
+	float: left;
+}
+.header .nav ul li{
+	width: 120px;
+	text-align: center;
+	line-height: 60px;
+	font-size: 16px;
+	float: left;
+}
+.header .nav ul li a{
+	width: 120px;
+	height: 60px;
+	color: #FFF;
+	display: block;
+}
+.header .nav ul li a:hover{
+	color:  #3C80DC;
+	background-color: #FFF;
+}
+.container{
+	width: 1200px;
+	margin: 0 auto;
+}
+.container .newsType{
+	width: 1200px;
+	height: 60px;
+}
+.container .newsType div{
+	width: 525px;
+	height: 30px;
+	border-bottom: solid 1px #CCC;
+	float: left;
+}
+.container .newsType p{
+	width: 150px;
+	text-align: center;
+	font-size: 20px;
+	line-height: 60px;
+	color: #555;
+	float: left;
+}
+.container .content{
+	width: 900px;
+	margin: 0 auto;
+}
+.banner{
+	width: 1200px;
+	height: 360px;
+	margin: 0 auto;
+}
+.footer{
+	width: 1200px;
+	height: 60px;
+	margin: 0 auto;
+	background-color: #3C80DC;
+	margin-bottom: 30px;
+}
+.footer p{
+	text-align: center;
+	line-height: 60px;
+	color: #FFF;
+	font-size: 12px;
+}
+.footer p a{
+	color: #FFF;
+}

@@ -1,0 +1,55 @@
+relative :top 往下   left  往右   bottom  往上  right  往左
+fixed的元素永远固定
+absolute元素，如果其直接父元素为static,会继续往上找它的祖先元素，一直到relative或absolute为止，不然一直找到body
+absolute一直向上找有定位的父容器
+
+float:相对于当前水平位置的最左或最右，脱离文档流之后，会默认覆盖文档流中元素
+文档流中元素塌陷：文档流中元素和浮动中元素一旦位置重叠，会产生遮盖，文档流元素内容会因为浮动元素的挤占而离开原有位置
+
+浮动：优：可以在同一行放多个块级元素
+      缺：塌陷
+
+可以使用margin:0px auto;实现对块级元素的水平居中，但无法使用margin:auto 0px  实现块的垂直居中
+对一行中的行块元素设置margin-top,则其他元素同样偏移
+
+
+
+ul/ol默认有margin-top/bottom:16px  left/right为0；border为0；padding-left:40px;其余为0
+input里text和password默认有padding-top/bottom:1px  左右为0；border:2px；margin为0。
+button默认有padding-top/bottom:1px  padding-left/right:6px；border:2px；margin为0。
+body默认只有margin:8px;其他都是0；
+li/a默认的都是0，所以不必额外添加
+
+
+
+margin:0 auto  水平居中是针对于块元素而言，并且他要设置了width，不设置width的话它会占据一整行的空间
+行级元素只有margin的left和right好使
+
+解决标签之间间距的方案有两个：
+1.把元素写成一行，缺点：会让代码看起来非常的凌乱；
+2.把父类设置font-size:0，缺点：标签必须要设置字体大小，否则将看不到标签的文字。
+
+对a标签的父类设置color属性，那么对于a标签的文本是不起效果的
+
+行内元素经过绝对定位后变成块级元素
+:before和:after伪元素在页面中生成的元素在缺省情况下是“内联(inline)”元素，如果我们想指定它们的高度和宽度，需要首先定义它们为一个block元素，使用display: block;。
+
+	width:300/3px;
+        height:200/2px;  类似于这种纯数字，必须要加px
+
+不能对同一个元素添加两次同一种伪元素，否则，按照顺序原则，后边覆盖前边  例：
+.a:after{                           .a:after{
+    content:"aaa";                      content:"aaa";
+}                                    }
+.b:after{                           .a:after{
+    content:"bbb";                      content:"bbb";
+}                                    }                 //添加的是bbb
+...
+<div class="a b"></div>  添加的是bbb
+要想对同一个元素添加两个伪元素，就不能都是before或者after，因为这样后者会覆盖前者
+
+采用绝对定位的前提，和文档流中元素重叠
+
+img和background：前景用img 背景用background
+		图片上面有字，用前景
+	  	固定不动，用背景

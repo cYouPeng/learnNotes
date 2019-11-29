@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<script>
+			window.onload = function(){
+				var tarea = document.getElementById("tarea");
+				var inputTxt = document.getElementById("inputTxt");
+				var btn = document.getElementById("btn");
+				btn.onclick = function(){
+					tarea.value += inputTxt.value + "\n";
+					inputTxt.value = "";
+				}
+				inputTxt.onkeydown = function(ev){
+					var objEvent = ev||window.event;
+					//if(objEvent.ctrlKey == true && objEvent.keyCode == 13 ){
+					if(objEvent.ctrlKey && objEvent.keyCode == 13 ){
+						tarea.value += inputTxt.value + "\n";
+						inputTxt.value = "";
+					}
+				}
+			}
+		</script>
+	</head>
+	<body>
+		<textarea id="tarea" rows="5" cols="30"></textarea><br>
+		<input id="inputTxt" type="text">
+		<input id="btn"  type="button" value="提交">
+	</body>
+</html>

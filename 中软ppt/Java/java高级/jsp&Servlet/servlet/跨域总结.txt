@@ -1,0 +1,47 @@
+一、基于xhr2技术的跨域解决方案：
+方案1：
+通过修改服务端的响应头和响应类型，通过设置允许跨域访问路径实现
+response.setContentType("application/json");
+response.setHeader("Access-Control-Allow-Origin", "*");
+注意：
+a-“*”可以替换成一个特定的路径如：http://localhost:8080
+b-这种方式可以解决普通的跨域访问问题，但是不能解决无法获取sessionId问题。因此不能根据sessionId识别用户身份
+
+该方案如果需要解决识别用户身份的情况则需要如下方式
+a-依赖session的方案：通过将服务端产生的sessionId写入cookie，发送请求时浏览器将得到的cookie发送至服务端。
+
+1) jq中为$.ajax()的参数加入属性：
+$.ajax({
+	...
+	xhrFields: {
+		withCredentials: true
+	},
+	rossDomain: true,
+	....
+});
+2) 修改服务端的响应头和响应类型
+response.setContentType("application/json");
+response.setHeader("Access-Control-Allow-Origin", "http://localhost:8080");//第二个参数为允许跨域路径
+response.setHeader("Access-Control-Allow-Credentials", "true");
+
+b-使用webStorage和数据库技术实现对数据的存储，需要身份验证的操作额外提交账号密码
+
+
+
+方案2：
+使用jsonp实现跨域，此时实际上是由服务端返回一个javascript函数，返回的数据为该函数返回值，web端得到该函数执行并得到返回值，因为js代码不受同源策略影响，故而可以在不支持xhr2技术的环境下使用，但是无法解决sessionId的问题。
+java端解决方案：
+String fun = request.getParameter("callback");
+out.println(fun+"(){return \"hello\"}");
+web端
+$.ajax({
+	mothed:"get",
+	dataType:"jsonp",
+	jsonp:"callback",
+	....
+});
+注意：jq发送请求时会以“callback”为名字发送一个随机的函数名；
+服务端得到函数名后响应的内容为：函数名(返回的数据内容)
+另外jsonp只能使用get方式提交
+
+

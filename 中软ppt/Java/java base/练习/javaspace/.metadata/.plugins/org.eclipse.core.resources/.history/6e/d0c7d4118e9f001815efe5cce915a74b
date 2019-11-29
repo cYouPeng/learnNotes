@@ -1,0 +1,44 @@
+package oop1;
+
+import java.util.Random;
+import java.util.Scanner;
+
+public class Test {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+//		Dog d = new Dog();//返回狗类的对象
+//		d.age=5;
+//		d.name="欧迪";
+//		d.showInfo();
+//		Dog d2 = new Dog();
+//		d2.age = 2;
+//		d2.name = "小黑";
+//		d2.showInfo();
+//		
+//		Dog d3 = new Dog();
+//		d3.showInfo();
+		
+		
+//		Mobile iphonex = new Mobile();//返回手机类的对象
+//		iphonex.brand = "apple";
+//		iphonex.name = "iphoneX 256G 土豪金版";
+//		iphonex.price = 8000;
+//		iphonex.os = "ios";
+//		iphonex.showInfo();
+//		
+//		Mobile mi = new Mobile();
+//		mi.brand = "小米";
+//		mi.name = "米8 128G 豪华版";
+//		mi.os = "安卓";
+//		mi.price = 1999;
+//		mi.showInfo();
+
+		
+//		Scanner input = new Scanner(System.in);
+//		
+//		Random ran = new Random();
+	
+	}
+
+}

@@ -1,0 +1,14 @@
+.container .content ul{
+	width: 900px;
+}
+.container .content ul li{
+	width: 450px;
+	height: 30px;
+	float: left;
+}
+.container .content ul li a{
+	color: #444;
+}
+.container .content ul li a:hover{
+	color: #888;
+}

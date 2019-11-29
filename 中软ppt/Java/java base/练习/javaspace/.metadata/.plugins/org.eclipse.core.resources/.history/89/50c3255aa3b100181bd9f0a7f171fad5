@@ -1,0 +1,34 @@
+package net;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.ServerSocket;
+import java.net.Socket;
+
+public class Server {
+	public static void main(String[] args){
+		try {
+			ServerSocket ss = new ServerSocket(8000);
+			System.out.println("服务端开始监听8000端口");
+			Socket socket = ss.accept();
+			BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			while(br.ready()){
+				System.out.println(br.readLine());
+			}
+			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+			bw.write("hehe");
+			br.close();
+			bw.close();
+			
+			ss.close();			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
+}

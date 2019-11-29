@@ -1,0 +1,40 @@
+package thread;
+
+public class TestThread {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		//mt就是一个县城对象
+		MyThread mt = new MyThread("线程1");//mt新建状态
+		mt.start();//mt转成就绪状态，等待cpu时间片达到运行状态，运行run方法的代码，run方法执行结束mt线程结束
+		MyThread mt2 = new MyThread("线程2");
+		mt2.start();
+	}
+
+}
+
+class MyThread extends Thread{
+	private static int num=0;
+	private int sleepTime;
+	public MyThread(String name, sleepTime) {
+		super(name);
+		// TODO Auto-generated constructor stub
+	}
+
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		for(int i=1; i<=10; i++){
+			num++;
+			System.out.println(this.getName()+":i="+i+",num="+num);
+			try {
+				Thread.sleep(1000);//线程进入阻塞，1s后进入就绪
+				
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+	
+}

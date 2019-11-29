@@ -1,0 +1,13 @@
+package oop1;
+
+public class MyMath {
+	int num;
+	public boolean isOdd(){
+		if(num%2==0){
+			
+		}else{
+			
+		}
+		
+	}
+}

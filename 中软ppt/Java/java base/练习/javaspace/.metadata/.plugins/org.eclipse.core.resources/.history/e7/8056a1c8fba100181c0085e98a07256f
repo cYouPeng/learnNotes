@@ -1,0 +1,19 @@
+package atm;
+
+public class Atm {
+	User currUser;
+	
+	public boolean login(String id,String pwd){
+		return true;
+	}
+	public boolean saveMoney(double money){
+		
+	}
+	public boolean loadMoney(double money){
+		
+	}
+	public double getMoeny(){
+		
+	}
+	
+}

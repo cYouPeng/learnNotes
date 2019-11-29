@@ -1,0 +1,39 @@
+package thread;
+
+public class Test {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Thread t1 = new Thread(()->{
+			while(true){
+				System.out.println(Thread.currentThread().getName());
+			
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		});
+		Thread t2 = new Thread(()->{
+			while(true){
+				System.out.println(Thread.currentThread().getName());
+				Thread.yield();
+//				try {
+//					Thread.sleep(1000);
+//				} catch (InterruptedException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+			}
+		});
+		t1.setName("max");
+		t2.setName("min");
+		t1.setPriority(Thread.MAX_PRIORITY);
+		t2.setPriority(Thread.MIN_PRIORITY);
+		t1.start();
+		t2.start();
+	}
+
+}

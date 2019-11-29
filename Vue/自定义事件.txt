@@ -1,0 +1,190 @@
+一，事件名
+	不同于组件和prop，在JS中你要触发某个camelCase命名的事件，在html中并不会有与之等价的kebab-case事件
+	v-on事件监听器在DOM模板中会被转换为全小写，这点和组件、prop都是一样的，例：v-on:onEvent="xx" 会变成 v-on:onevent="xx"
+	
+	并且vue要求触发的事件名需要完全匹配监听这个事件所用的名称
+		所以在js中 this.$emit('onEvent') ，这个事件你是永远也触发不到的
+		所以事件名你要么类似于 onevent 这样全小写并且挨在一起的
+				    要么类似于 on-event 这样全小写但是-分隔的  推荐这样写
+					当然你也可以这样写：v-on:onEvent="xx"   然后 this.$emit('onevent')  强烈不推荐
+					
+二，自定义组件的v-model
+				
+	1,v-model语法糖
+		<input type="text" v-mdoel="mes"> 一般我们都是这样实现双向绑定的，此时mes值就与文本框的value值就实现了双向绑定
+		但实际上v-model只是一个语法糖，真正的实现是这样的：
+		<input v-bind:value="mes" v-on:input="mes = $event.target.value">
+		v-bind只能实现单向绑定
+		v-model（v-bind + 类似input事件）可以实现双向绑定
+	2,自定义表单输入组件
+		1，借助props，实现从父组件子组件的单向绑定
+			   <ex-component :value="name" ></ex-component>  
+		2，借助input事件，实现从子组件到父组件的单向绑定，子组件模板里是一个文本框，绑定input事件，当该事件触发，借助$emit触发父组件上的事件并传参，父组件把传过来的实参赋给变量
+			  Vue.component('ex-component', {
+				template: '<input @input="$emit('input', $event.target.value)"'
+			  })
+			  <ex-component :value="name" @input="name = 子组件传过来的值"></ex-component>
+			  可以简写为：
+			  <ex-component v-model="name"></ex-component>
+			
+		“一个组件上的 v-model 默认会利用名为 value 的 prop 和名为 input 的事件“  --官网
+			也就是说你在调用组件时使用了v-model，实际上是酱婶儿的
+			:value="xx" @input="xxx"  也只会使用value和input，因为这是默认配置
+		
+		“但是像单选框、复选框等类型的输入控件可能会将 value 特性用于不同的目的。model 选项可以用来避免这样的冲突” --官网
+			<form>
+				<input value="Jack" name="name"/><br/>
+				<input type="radio" name="hobby" value="basketball" />篮球<br/>
+				<input type="submit" value="提交" />
+			</form>
+			勾选上单选框，点击提交
+				Request URL: http://ip:port?name=Jack&hobby=basketball
+			文本框的value由用户决定，每一次的请求都有可能是不同的值；而单选框、多选框的value是固定不变的，随着框的勾选与否，
+			随之变化的属性是checked
+			
+			如此一来，当子组件模板中不再是文本框而是单选框时，v-model的默认配置就不符合我们的要求了，我们可以利用model选项
+			改变v-model的默认配置
+				<ex-component :checked="bask" @hello="bask = 子组件传过来的值"></ex-component>
+				
+				Vue.component('ex-component', {
+					template: '<input type="radio" @change="$emit('hello', $event.target.value)"',
+					model: {
+						prop: 'checked',
+						event: 'hello'
+					},
+					props: [ 'checked' ]
+			    })
+				
+		“注意你仍然需要在组件的 props 选项里声明 checked 这个 prop”	 --官网
+			
+			 
+	
+		
+	
+三，将原生事件绑定到组件
+	
+	
+		“你可能有很多次想要在一个组件的根元素上直接监听一个原生事件”  --官网
+		有两种写法：
+			1，在定义组件时在根元素上传一个监听事件，但这种写法会把事件名和执行方法写死，限制比较大
+			2，在调用组件时传一个监听事件，这样事件名和执行方法就可以由调用者决定，需要借助.native修饰符
+				<base-input v-on:focus.native="onFocus"></base-input>
+				不用.native修饰符的话，这个事件是不会生效的				
+				
+				有一点需要注意，这个focus事件只会作用在组件根元素上，如果<base-input>组件的模板是这么写的
+				<div>
+					<input placeholder="enter something"/>
+				</div>
+				这时这个focus事件依然会作用在组件根元素上，但div也没聚焦这个功能啊！所以focus事件就相当于与失效了
+				我们还想让focus事件作用在input标签上，可以借助 $listeners 属性，里面保存了从父组件传过来的所有事件
+				<div>
+					<input placeholder="enter something" v-on="$listeners" />
+				</div>
+				
+				还记得在讲非prop特性时说的$attrs和inheritAttrs:false这个组合吗？
+					首先利用inheritAttrs:false阻止特性继承，防止组件根元素渲染这些特性
+					然后借助v-bind="$attrs"在需要的子元素上渲染这些特性	
+				
+				v-on="$listeners" 就类似于此，可以在需要的子元素上渲染这些事件，不过不能借助inheritAttrs:false阻止事件继承
+				
+				
+				官网上有一个例子：
+					Vue.component('base-input', {
+						inheritAttrs: false,
+						props: ['label', 'value'],
+						computed: {
+							inputListeners: function () {
+								var vm = this;								
+								return Object.assign(
+									{},									
+									this.$listeners,									
+									{										
+										input: function (event) {
+											vm.$emit('input', event.target.value)
+										}
+									}
+								)
+								//利用Object.assing()的特点，后面的同名属性会覆盖前面的同名属性，这样就能确保input事件始终
+								//会是最后添加的这个
+							}
+							
+						},
+						template: `
+							<label>
+							{{ label }}
+							<input
+								v-bind="$attrs"
+								v-bind:value="value"
+								v-on="inputListeners"
+								//如果使用v-on="$listeners"，则v-model的input事件会被作用在input元素上，但很明显
+								//该input事件不是我们所希望的，所以利用计算属性把$listeners里的input事件进行覆盖
+								//或添加一个正确的input事件
+								
+							>
+							</label>
+						`
+					})
+				
+										            
+				
+四，.sync 修饰符		
+	<ex-component  :my-name.sync="name"></ex-component>
+	<!--首先就是正常的父子组件间的双向绑定，然后触发的事件名会有所不同，key:value这种形式命名的事件名 -->
+	<!--到了这里，除了事件名有所不同，其它都是一样的 -->
+	<!--但是这种形式会有一种简写形式： -->
+	<ex-component :son-prop-name="fatherData" @update:son-prop-name="e => this.fatherData = e"></ex-component>
+	<ex-component :son-prop-name.sync="fatherData"></ex-component>
+	<!--其实update:myPropName这种形式的命名，主要是我们需要双向绑定多个prop的时候方便，-->
+	
+
+	就像v-model默认使用value和input
+	.sync默认使用update:propname
+	:propname.sync="fatherData"   通过这句话就可以知道要绑定的子组件的prop和父组件的data
+	然后解析成 :propname="fatherData" @update:propname="e => this.fatherData = e"
+	至于事件名为何会是update:propname这种形式
+	那是因为我们有可能想要同时双向绑定多个prop，手动实现双向绑定还好，事件名可以随便写
+	@update:propname这种形式用以区分不同的事件，并且可以清晰区分出数据的来源
+
+	v-model和.sync修饰符好像并没有什么区别，都是用于双向绑定的语法糖
+	一个是v-model使用比较方便
+	.sync更能区分出数据的来源	
+	
+		完整代码如下：
+		<body>
+			<div id="app">
+				{{data1}}
+				{{data2}}
+				{{data3}}
+				<ex-component :val1.sync="data1" :val2.sync="data2" :val3.sync="data3"></ex-component>
+			</div>
+		</body>
+		<script type="text/javascript">
+			Vue.component('ex-component', {
+				template: ` <div>
+							{{val1}}  
+							{{val2}} 
+							{{val3}}             
+							<input  @input="change"/>
+						</div>
+				`,                                         
+				props: [ 'val1', 'val2', 'val3' ],
+				methods: {
+					change(event){
+						this.$emit('update:val1', event.target.value)
+						this.$emit('update:val2', event.target.value)
+						this.$emit('update:val3', event.target.value)
+					}
+				}
+			})
+			new Vue({
+				el: '#app',
+				data() {
+					return {
+						data1: 'one',
+						data2: 'two',
+						data3: 'three'
+					}
+				}
+			})
+		</script>
+		

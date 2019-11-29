@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.chinasoft.news.mapper.FirstTitleMapper">
+
+  <resultMap type="FirstTitle" id="FirstTitleResult">
+    <id column="fid" property="fid"/>
+    <result column="titleName" property="titleName"/>
+    <result column="creator" property="creator"/>
+    <result column="createTime" property="createTime"/>
+    <collection property="stList" ofType="SecondTitle">   
+      <id property="sid" column="ssid"/>
+      <result property="titleName" column="stitleName"/>
+      <result property="newContent" column="snewContent"/>
+      <result property="creator" column="screator"/>
+      <result property="createTime" column="screateTime"/>
+      <result property="parentTitleId" column="sparentTitleId"/>
+    </collection>
+  </resultMap>
+   
+  <!-- 全查询 --> 
+  <select id="selectFirstTitleAll" resultMap="FirstTitleResult">
+    select * from firsttitle order by fid
+  </select>
+  
+  <!-- 插入 --> 
+  <insert id="insertFirstTitle" parameterType="FirstTitle">
+    <selectKey keyProperty="fid" resultType="int" order="BEFORE">  
+      select first_seq.nextval from dual
+    </selectKey>  
+    insert into firsttitle values(${fid},
+                                  #{titleName,jdbcType=VARCHAR},
+                                  #{creator,jdbcType=VARCHAR},
+                                  #{createTime,jdbcType=VARCHAR})
+  </insert>
+  
+  <!-- 根据ID查询 --> 
+  <select id="selectFirstTitleById" resultMap="FirstTitleResult">
+    select * from firsttitle where fid=#{fid} order by fid
+  </select>
+  
+  <!-- 更新 --> 
+  <update id="updateFirstTitle" parameterType="FirstTitle">
+  	update firsttitle set titleName=#{titleName,jdbcType=VARCHAR},creator=#{creator,jdbcType=VARCHAR} where fid=#{fid}
+  </update>
+  
+  <!-- 删除 --> 
+  <delete id="deleteFirstTitle" parameterType="int">
+  	delete from firsttitle where fid=#{fid}
+  </delete>
+  
+</mapper>

@@ -1,0 +1,27 @@
+package string;
+
+
+
+public class Test3 {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		int a = 100;
+		String str = String.valueOf(a);
+		System.out.println(str);
+		char[] arr = {'h','e','l','l','o'};
+		String s1 = String.valueOf(arr);
+		String s2 = String.valueOf(arr, 3, 2);
+		System.out.println(s1);
+		System.out.println(s2);
+		
+		System.out.println("abab".compareTo("aba"));
+		
+		System.out.println("abc.png".endsWith("jpg"));
+		
+		byte[] chars = 你好".getBytes();
+		System.out.println();
+		
+	}
+
+}

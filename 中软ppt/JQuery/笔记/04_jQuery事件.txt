@@ -1,0 +1,41 @@
+on()基于事件委托  一般用来替换bind()基于时间绑定
+off()...                     unbind()...
+
+on的两种用法:1，jQuery对象.on(事件,callback)  事件绑定
+	     2, jQuery对象.on(事件,委托对象,callback)  事件委托
+大多使用第二种
+
+$('table').on('click','td,th',function(event){})  此处的event既不是window.event也不是我们传的参数，，而是由jQuery提供的，已经做了兼容性处理
+
+return false ：jQuery中可用来阻止事件冒泡和默认行为
+
+若有colspan只有第一行不受其影响，其它行都有可能受其影响
+
+本来以为jQuery("#select1").val();是取得选中的值，
+那么jQuery("#select1").text();就是取得的文本。
+这是不正确的，正确做法是：
+jQuery("#select1  option:selected").text()/.val();
+
+
+on就是事件委托，其内部是按事件委托机制处理的，jQuery不存在事件绑定，第二个参数可以知道谁对他进行的委托，不传相当于* 所有
+
+on函数可以一次绑定多个事件，一个单引号内用空格间隔
+addEventListener 属于Dom元素函数 js中事件绑定只处理冒泡
+
+localStorage生命周期是永久，这意味着除非用户显式在浏览器提供的UI上清除localStorage信息，否则这些信息将永远存在。存放数据大小为一般为5MB,而且它仅在客户端（即浏览器）中保存，不参与和服务器的通信。
+
+sessionStorage仅在当前会话下有效，关闭页面或浏览器后被清除。存放数据大小为一般为5MB,而且它仅在客户端（即浏览器）中保存，不参与和服务器的通信。源生接口可以接受，亦可再次封装来对Object和Array有更好的支持。
+
+[注意]它俩都不能存json，会显示[object Object]
+
+localStorage和sessionStorage使用时使用相同的API：
+
+ localStorage.setItem("key","value");//以“key”为名称存储一个值“value”
+
+    localStorage.getItem("key");//获取名称为“key”的值
+
+    localStorage.removeItem("key");//删除名称为“key”的信息。
+
+    localStorage.clear();?//清空localStorage中所有信息
+
+子函数和父函数的this一定要区分开  只写this是Dom元素  加$()是变成了jQuery对象

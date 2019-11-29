@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<style>
+			#container{
+				width: 750px;
+				height: 198px;
+				margin: 0 auto;
+			}
+			#scrollContainer{
+				position: relative;  /*里面的ul是绝对定位，所以父容器做成相对定位*/
+				width: 640px;
+				height: 198px;
+				float: left;
+			}
+			ul{
+				margin: 0;
+				padding: 0;
+				position: absolute;
+				width: 640px;
+				height: 198px;
+				left: 0px;
+				top: 0px;
+				list-style: none;
+			}
+			li{
+				width: 160px;
+				height: 198px;
+				float: left;
+			}
+			.jiantou{
+				width: 55px;
+				height: 198px;
+				float: left;
+			}
+		</style>
+	</head>
+	<body>
+		<!--图片尺寸：160*198-->
+		<div id="container">
+			<div class="jiantou">
+				<img src="images/left.jpg">
+			</div>
+			<div id="scrollContainer">
+				<ul>
+					<li><a href="#"><img src="images/1.jpg" ></a></li>
+					<li><a href="#"><img src="images/2.jpg" ></a></li>
+					<li><a href="#"><img src="images/3.jpg" ></a></li>
+					<li><a href="#"><img src="images/4.jpg" ></a></li>
+				</ul>
+			</div>
+			<div class="jiantou">
+				<img src="images/right.jpg">
+			</div>
+			<div style="clear: both;"></div>
+		</div>
+	</body>
+</html>

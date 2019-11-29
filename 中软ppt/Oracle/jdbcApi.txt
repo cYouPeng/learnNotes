@@ -1,0 +1,26 @@
+DriverManager类
+static Connection getConnection(String url, String user, String password) 
+得到一个指定数据的的连接
+
+Connection接口
+Statement createStatement(),用来创建一个包含sql语句的描述对象
+PreparedStatement prepareStatement(String sql) 用来创建一个包含sql语句的预格式描述对象
+void setAutoCommit(boolean autoCommit) 设置是否进行自动事物提交，false为不自动提交，默认为自动提交
+void commit() 事务提交
+void rollback() 事务回滚
+void close()
+
+Statement接口
+ResultSet executeQuery(String sql) 执行查询的sql语句并返回结果集
+int executeUpdate(String sql) 执行增删改的sql语句并返回结果集
+void close()
+PreparedStatement接口
+ResultSet executeQuery() 执行查询的sql语句并返回结果集
+int executeUpdate() 执行增删改的sql语句并返回结果集
+setXxxxx(int index, value)//用以给sql中的占位符匹配值
+void close() 
+
+ResultSet接口
+boolean next() 指向下一行数据，如果下一行存在则返回true否则返回false
+getXxxxx(int/String) 得到当前行某得列的数据
+void close()

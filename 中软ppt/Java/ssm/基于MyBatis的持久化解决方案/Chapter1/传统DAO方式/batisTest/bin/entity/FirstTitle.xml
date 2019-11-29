@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ft">
+
+  <select id="selectFirstTitleById" parameterType="int" resultType="entity.FirstTitle">
+    select * from firsttitle where fid=#{param}
+  </select>
+  
+  <select id="selectFirstTitleAll" resultType="entity.FirstTitle">
+    select * from firsttitle
+  </select>
+  
+  <select id="selectFirstTitleByAll" parameterType="entity.FirstTitle" resultType="entity.FirstTitle">
+    select * from firsttitle where titlename = #{titleName} and creator = #{creator} and createtime = #{createTime}
+  </select>
+
+</mapper>     

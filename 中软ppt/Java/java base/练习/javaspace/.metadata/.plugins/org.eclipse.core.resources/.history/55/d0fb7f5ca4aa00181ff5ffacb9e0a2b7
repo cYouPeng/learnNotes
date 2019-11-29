@@ -1,0 +1,27 @@
+package innerclass;
+
+public class Test2 {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+	
+}
+class Outer{
+	private int instanceField;
+	private static int staticField;
+	
+	/**
+	 * 成员内部类
+	 * @author Administrator
+	 *
+	 */
+	class Inner{
+		public void method(){
+			instanceField = 10;
+			staticField = 20;
+		}
+	}
+	
+}

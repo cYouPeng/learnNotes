@@ -1,0 +1,21 @@
+package string;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class Test3 {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		int a = 100;
+		String str = String.valueOf(a);
+		System.out.println(str);
+		char[] arr = {'h','e','l','l','o'};
+		String s1 = String.valueOf(arr);
+		String s2 = String.valueOf(arr, 1, 2);
+		System.out.println(s1);
+		System.out.println(s2);
+		
+	}
+
+}

@@ -1,0 +1,24 @@
+ext适合jQuery差不多的东西，但里面特效很多，多用于政府项目
+
+event 代表偶数
+min：压缩版 空行，回车全部去掉；局部变量进行了压缩，例：userId->a
+开发版：则没有上述变化
+
+jQuery.fn = jQuery.prototype
+window.jQuery = window.$ = jQuery
+
+jQuery(document).ready 可在页面写多次，不会覆盖
+window.onload 最后一次会覆盖前面的
+
+ready不会等图片加载完毕，而只是加载完img这个标签就行
+
+$()/jQuery()  jQuery工厂方法 参数有两种：1，字符串(css选择器)
+					2,Dom对象
+一定要分清Dom对象和jQuery对象
+意义：Dom对象只能调用原生JS属性/方法
+      jQuery对象只能调用jQuery属性/方法    它俩不能相互调用对方的属性/方法
+
+jQuery中直接创建元素的两种方式
+1,利用多行字符串 `<p>1</p>`
+2,利用工厂函数 $('<p>2</p>') 注意引号
+或者也可以在某些函数中写引号里边写html代码/标签

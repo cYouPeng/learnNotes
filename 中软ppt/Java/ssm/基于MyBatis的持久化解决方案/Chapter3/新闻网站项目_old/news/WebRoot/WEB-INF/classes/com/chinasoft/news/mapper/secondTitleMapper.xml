@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.chinasoft.news.mapper.SecondTitleMapper">
+
+    <resultMap type="SecondTitle" id="SecondTitleResult">
+    <id column="sid" property="sid"/>
+    <result column="titleName" property="titleName"/>
+    <result column="newContent" property="newContent"/>
+    <result column="creator" property="creator"/>
+    <result column="createTime" property="createTime"/>
+    <result column="parentTitleId" property="parentTitleId"/>
+    <association property="ft" javaType="FirstTitle">
+	  <id property="fid" column="ffid"/>
+	  <result property="titleName" column="ftitleName"/>
+	  <result property="creator" column="fcreator"/>
+	  <result property="createTime" column="fcreateTime"/>
+	</association>
+  </resultMap>
+  
+  <!-- 根据一级标题ID查询所属二级标题-->
+  <select id="selectSecondTitleByFid" parameterType="int" resultMap="SecondTitleResult">
+    select * from secondtitle where parentTitleId=#{fid}
+  </select>
+  
+  <!-- 根据ID查询二级标题-->
+  <select id="selectSecondTitleById" parameterType="int" resultMap="SecondTitleResult">
+    select * from secondtitle where sid=#{sid}
+  </select>
+  
+  <!-- 根据parentTitleId删除 --> 
+  <delete id="deleteSecondTitleByPid" parameterType="int">
+  	delete from secondtitle where parentTitleId=#{fid}
+  </delete>
+  
+  <!-- 全查询 -->
+  <select id="selectSecondTitleAll" resultMap="SecondTitleResult">
+    select s.*,f.fid ffid,f.titlename ftitlename,f.creator fcreator,f.createtime fcreatetime
+    from secondtitle s,firsttitle f where f.fid=s.parenttitleid order by s.sid
+  </select>
+  
+  <!-- 插入 --> 
+  <insert id="insertSecondTitle" parameterType="SecondTitle">
+    <selectKey keyProperty="sid" resultType="int" order="BEFORE">  
+      select second_seq.nextval from dual
+    </selectKey>  
+    insert into secondtitle values(${sid},
+                                  #{titleName,jdbcType=VARCHAR},
+                                  #{newContent,jdbcType=VARCHAR},
+                                  #{creator,jdbcType=VARCHAR},
+                                  #{createTime,jdbcType=VARCHAR},
+                                  #{parentTitleId,jdbcType=INTEGER})
+  </insert>
+  
+  <!-- 更新 --> 
+  <update id="updateSecondTitle" parameterType="SecondTitle">
+  	update secondtitle set titleName=#{titleName,jdbcType=VARCHAR},newContent=#{newContent,jdbcType=VARCHAR},creator=#{creator,jdbcType=VARCHAR},parentTitleId=#{parentTitleId,jdbcType=INTEGER} where sid=#{sid}
+  </update>
+  
+  <!-- 删除 --> 
+  <delete id="deleteSecondTitle" parameterType="int">
+  	delete from secondtitle where sid=#{sid}
+  </delete>
+  
+</mapper>

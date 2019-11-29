@@ -1,0 +1,40 @@
+-- 创建一级标题表
+create table firstTitle(
+  fid number(3) primary key not null,
+  titleName varchar(50) not null,
+  creator varchar(50),
+  createTime varchar(30)
+);
+
+-- 创建二级标题表
+create table secondTitle(
+  sid number(3) primary key not null,
+  titleName varchar(50) not null,
+  newContent varchar(200),
+  creator varchar(50),
+  createTime varchar(30),
+  parentTitleId number(3) not null
+);
+
+-- 创建管理员表
+create table users(
+  userid number(3) primary key not null,
+  username varchar(50) not null,
+  password varchar(50) not null
+);
+
+insert into firstTitle values(1,'新闻','管理员','2012-2-6');
+insert into firstTitle values(2,'军事','管理员','2012-2-6');
+insert into firstTitle values(3,'体育','管理员','2012-2-6');
+insert into firstTitle values(4,'娱乐','管理员','2012-2-6');
+insert into firstTitle values(5,'财经','管理员','2012-2-6');
+
+insert into secondTitle values(1,'老人摔倒无人敢扶起','内容：老人摔倒无人敢扶起老人摔倒无人敢扶起老人摔倒无人敢扶起老人摔倒无人敢扶起老人摔倒无人敢扶起','管理员','2012-2-6',1);
+insert into secondTitle values(2,'美国民众游行，占领华尔街','内容：美国民众游行，占领华尔街美国民众游行，占领华尔街美国民众游行，占领华尔街美国民众游行，占领华尔街美国民众游行，占领华尔街美国民众游行，占领华尔街','管理员','2012-2-6',1);
+insert into secondTitle values(3,'油价涨多跌少，民众不满','内容：油价涨多跌少，民众不满油价涨多跌少，民众不满油价涨多跌少，民众不满油价涨多跌少，民众不满油价涨多跌少，民众不满油价涨多跌少，民众不满油价涨多跌少，民众不满','管理员','2012-2-6',1);
+insert into secondTitle values(4,'中国航母即将下水','内容：中国航母即将下水中国航母即将下水中国航母即将下水中国航母即将下水中国航母即将下水中国航母即将下水中国航母即将下水中国航母即将下水','管理员','2012-2-6',2);
+insert into secondTitle values(5,'天宫一号入轨成功','内容：天宫一号入轨成功天宫一号入轨成功天宫一号入轨成功天宫一号入轨成功天宫一号入轨成功天宫一号入轨成功天宫一号入轨成功天宫一号入轨成功天宫一号入轨成功','管理员','2012-2-6',2);
+
+insert into users values(1,'test','111');
+insert into users values(2,'oracle','222');
+

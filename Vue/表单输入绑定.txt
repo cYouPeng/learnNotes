@@ -1,0 +1,109 @@
+一，基础用法
+	使用了v-model，就不再将表单元素的value,checked,selected作为数据来源，而使用实例中的数据作为数据来源，所以你在声明
+	该类型数据的时候应该指定初始值
+	
+	v-model 在内部为不同的输入元素使用不同的属性并抛出不同的事件
+		text 和 textarea 元素使用 value 属性和 input 事件
+		checkbox 和 radio 使用 checked 属性和 change 事件
+		select 使用 value 属性和 change 事件
+		
+	1，文本
+		<input v-model="message" placeholder="edit me">
+		
+	2，多行文本
+		<textarea v-model="message" placeholder="add multiple lines"></textarea>
+		
+	3，复选框
+		单个复选框，绑定到布尔值
+			<input type="checkbox" id="checkbox" v-model="checked">   //checked初始类型为布尔
+		
+		多个复选框，绑定到同一个数组
+			<input type="checkbox" id="jack" value="Jack" v-model="checkedNames">
+			<label for="jack">Jack</label>
+			<input type="checkbox" id="john" value="John" v-model="checkedNames">  //checkedNames初始类型为对象数组
+			<label for="john">John</label>
+		
+		只有复选框需要注意data的数据类型，其它输入元素无需在意
+		
+	4，单选按钮
+		<input type="radio" id="one" value="One" v-model="picked">
+		<label for="one">One</label>
+		<br>
+		<input type="radio" id="two" value="Two" v-model="picked">
+		<label for="two">Two</label>
+		
+		上述语法如果使用普通的html来写是一定要写name属性的，但在vue中使用了v-model就不用在写name属性了
+		
+	5，选择框
+		单选时：
+			<select v-model="selected">
+				<option disabled value="">请选择</option>
+				<option>A</option>
+				<option>B</option>
+				<option>C</option>
+			</select>	
+			selected的值为<option>包裹的内容
+			如果 v-model 表达式的初始值未能匹配任何选项，<select> 元素将被渲染为“未选中”状态
+			
+		多选时 (绑定到一个数组)：
+			<select v-model="selected" multiple style="width: 50px;">  //selected初始类型为对象数组
+				<option>A</option>
+				<option>B</option>
+				<option>C</option>
+			</select>
+			
+		用 v-for 渲染的动态选项：
+			<select v-model="selected">
+				<option v-for="option in options" v-bind:value="option.value">
+					{{ option.text }}
+				</option>
+			</select>
+			
+			data: {
+				selected: 'A',
+				options: [
+					{ text: 'One', value: 'A' },
+					{ text: 'Two', value: 'B' },
+					{ text: 'Three', value: 'C' }
+				]
+			}
+			option有了value属性，下拉框的值就是被选option的value
+			
+二，值绑定
+
+三，修饰符
+	1，.lazy
+		v-model在文本框上默认使用input事件，使用.lazy修饰符，可以把input改为change
+			<!-- 在“change”时而非“input”时更新 -->
+			<input v-model.lazy="msg" >
+			
+	2，.number
+		对于输入框而言，即使是type="number"，输入的数据也都是string类型。使用.number修饰符可以把输入的数据
+		转为number类型。其实是parseFloat转换一下，如果这个值无法被 parseFloat() 解析，则会返回原始的值。
+		
+	3，.trim
+		<input v-model.trim="msg">
+		自动过滤掉输入内容的首位空白字符
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		

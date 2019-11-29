@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		<script type="text/javascript" src="js/jquery-2.1.1.js" ></script>
+		<script type="text/javascript" src="js/jQuery.myTable.js" ></script>
+		<style>
+			table{
+				width: 400px;
+				border: solid 1px #AAA;
+				border-collapse: collapse;
+			}
+			td{
+				height: 25px;
+				border: solid 1px #AAA;
+				text-align: center;
+			}
+		</style>
+		<script>
+			$(function(){
+				$("#myTable").myTable({
+					//evenRowColor:"red",
+			        //oddRowColor:"blue"
+				});
+			});
+			
+		</script>
+	</head>
+	<body>
+		<table id="myTable">
+			<tr>
+				<td>&nbsp;1&nbsp;</td>
+				<td>HTML5</td>
+				<td>&nbsp;25&nbsp;</td>
+			</tr>
+			<tr>
+				<td>2</td>
+				<td>CSS3</td>
+				<td>25</td>
+			</tr>
+			<tr>
+				<td>3</td>
+				<td>javaScript应用开发</td>
+				<td>25</td>
+			</tr>
+			<tr>
+				<td>4</td>
+				<td>基于javaScript的面向对象</td>
+				<td>25</td>
+			</tr>
+			<tr>
+				<td>5</td>
+				<td>使用jQuery高效开发</td>
+				<td>25</td>
+			</tr>
+			<tr>
+				<td>6</td>
+				<td>基于LESS的动态样式语言</td>
+				<td>25</td>
+			</tr>
+			<tr>
+				<td>7</td>
+				<td>基于Bootstrap的极速前端CSS框架</td>
+				<td>25</td>
+			</tr>
+			<tr>
+				<td>8</td>
+				<td>基于AngularJS的前端MVC框架</td>
+				<td>25</td>
+			</tr>
+		</table>
+	</body>
+</html>

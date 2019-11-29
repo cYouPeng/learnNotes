@@ -1,0 +1,122 @@
+ORM:(对象关系映射)  O:Object 对象
+		   R:relationship 关系
+		   M:mapping 映射
+
+hibernate 全自动 ORM框架，HQL，存在的一些问题：
+1，SQL语句不方便检验
+2，只查某几个列返回的不是结果集封装进对象，而是放到数组里
+3，严重依赖于配置
+4，严重依赖缓存
+
+mybatis 半自动 ORM框架
+
+实体类 -> 表
+属性 -> 列/字段
+对象 -> 一条记录
+
+mapper.xml：实体类和表的映射关系、属性和列的映射关系等，满足约定(字母，大小写完全一样)可省略此xml
+
+SqlMapConfig.xml：存储数据库信息
+
+数据库连接池：减少开启，断开连接时间，提升高并发合理性
+
+pooled JNDI 两种连接池
+
+mybatis 主流数据库都可连接
+
+返回类型为对象，如果结果集有多条记录，也只把第一条记录封装进对象
+
+selectOne/List/All
+
+如果resultType的值是对象类型，那么在mapper类里，如果返回的是list，则这个对象类型作为list的泛型，如果返回的是对象，那么直接就返回这种对象类型
+
+模糊查询不要在xml写%
+
+传参只能传一个
+
+在mapper.xml里，如果parameterType是一个对象，那么sql语句里的#{name}可有多个，但有一点需要注意的是这个name值必须和对象实体类中的某个属性名一致，否则报错
+
+多条件查询：如果都不满足，则干脆where也不拼了
+
+MyBatis默认手动提交事务  session.commit();
+事务没提交，数据就不会持久化到数据库里
+
+MySql自动增长的列 传null
+SQL Server 自动增长的列 不传 
+
+只有查询节点才有resultType
+
+namespace -> 接口的包名.类名
+statement的id -> 和接口的方法名一致
+parameterType -> 方法参数一致
+resultType -> 方法返回类型一致，返回集合，则和该集合的泛型一致
+
+约定：mapper.xml的名和mapper接口的名一致    这样<mappers><package name="com.entity"/></mappers>这个配置才会生效
+例：DeptMapper.java和DeptMapper.xml二者名字一样，可以在配置文件中写class="接口名"，就不用写xml的名字了
+
+映射文件不是必需的，可以应用注解
+
+接口对应映射文件
+
+resultType和parameterType  对应的是实体类
+约定1：结果集的列名和实体类的属性名一致
+约定2：parameterType的列名要和实体类的属性名一致
+
+注解也是一种配置     约定优于配置
+
+resultMap 用于处理列名和属性名不一致的情况   column：结果集中列名  property:实体类中属性
+
+resultType：按约定来做(列名和属性名一致)
+resultMap:不按约定来做，按配置来
+
+片段重用只能基于xml
+注解不能使用片段
+
+xml适合处理一些复杂情况  注解适合处理一些简单情况
+
+在mybatis看来：把 多对一 看成 一对一
+mybatis只处理 一对一 和 一对多(在业务层更容易实现)
+把 多对多 看成是两个 一对多
+
+<resultMap type="Emp" id="selectResultMap">
+	<association property="dept"(多的一方实体类中那个对象属性名) column="deptno"(column的意思是我在下方查询到的每条记录，把每条记录中的那个列的值拿出来作为后边select调用方法时传的参) select="com.mapper.DeptMapper(这是namespace).selectDeptById(这是id)">     基于配置：
+			//column为外键列
+	</association>                                   多对一的两种处理方式
+</resultMap>
+<select id="selectAllEmp" resultMap="selectResultMap">
+	select * from emp
+</select>
+有多个外键，就可以写多个association     这种多对一配置方式，前提必须使用动态代理
+
+基于注解：@Results -> resultMap
+	 @Result -> association   一个注解只能应用一个方法
+
+一对多的处理可直接在业务层实现，没必要在持久层实现，效率一样，都是n+1次查询
+
+在实体类中，一对多加list，，多对一加对象
+
+通常都是利用已有功能来实现一对多，多对一
+
+@Param("") 解决parameterType 只能传一个参数的问题
+@Param("deptno") Integer abc
+通过反射可以得到          通过反射不能得到
+
+session的open，commit，close由spring管理
+mapper由spring注入
+
+session级别：一级缓存：生命周期跟随session从开启到关闭，默认开启
+mapper级别：二级缓存：默认关闭，所有session共享，在同一个namespace下共享
+但缓存存在的问题：缓存和数据库数据的同步，，通常靠session.commit()来解决
+
+增删改先改变缓存中的数据，只有commit()之后，才会把数据放到数据库中，，但commit()之后，缓存中的数据也会被清除
+
+更新数据，就是靠commit()
+
+没有办法去实现真正意义上的延迟加载
+
+脏读：缓存和数据库数据不一致
+
+redis:内存数据库 访问快 无法持久化   要保证和传统数据库数据一致
+
+服务端分页
+前端分页  量不能太大  可迅速切换

@@ -1,0 +1,50 @@
+package toolsclass;
+
+public class TestClone {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Person p1 = new Person("lisi");
+		try {
+			Person p2 = p1.clone();
+			Person p3 = p1;
+			p3.setName("zhangsan");
+			p2.setName("wangwu");
+			System.out.println(p1+","+p1.hashCode());
+			System.out.println(p2+","+p2.hashCode());
+			System.out.println(p3+","+p3.hashCode());
+		} catch (CloneNotSupportedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+}
+class Person implements Cloneable{
+	private String name;
+
+	public Person(String name) {
+		super();
+		this.name = name;
+	}
+	
+	@Override
+	public Person clone() throws CloneNotSupportedException {
+		// TODO Auto-generated method stub
+		return (Person)super.clone();
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	@Override
+	public String toString() {
+		return "Person [name=" + name + "]";
+	}
+	
+}

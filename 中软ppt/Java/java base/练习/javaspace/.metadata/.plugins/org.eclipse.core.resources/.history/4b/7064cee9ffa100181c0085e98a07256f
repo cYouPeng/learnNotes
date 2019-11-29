@@ -1,0 +1,47 @@
+package atm;
+
+import java.util.Scanner;
+
+public class Menu {
+	Scanner input = new Scanner(System.in);
+	Atm atm;
+	public void mainMenu(){
+		System.out.println("输入卡号");
+		String id = input.next();
+		System.out.println("输入密码");
+		String pwd = input.next();
+		if(!atm.login(id, pwd)){
+			System.out.println("卡号不存在或密码错误");
+			return ;
+		}
+		while(true){
+			System.out.println("输入操作编号：1-存款 2-取款 3-查看余额 0-退出");
+			int sel = input.nextInt();
+			switch(sel){
+			case 1:
+				saveMenu();
+				break;
+			case 2:
+			case 3:
+			case 0:
+				return;
+			default:
+			}
+		}
+	}
+	
+	public void saveMenu(){
+		System.out.println("请输入存款金额");
+		int money = input.nextInt();
+		boolean status = atm.saveMoney(money);
+		if(status){
+			System.out.println("成功存入"+money+"元");
+			System.out.println("当前余额为"+atm.getMoeny()+"元");
+		}else{
+			System.out.println("执行失败");
+		}
+	}
+	
+	
+	
+}

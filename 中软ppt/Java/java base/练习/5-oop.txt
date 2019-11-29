@@ -1,0 +1,22 @@
+编写一个图形类：Graph，用以实现图形的输出功能；
+注意：在showRect()和showTriangle()内部当要输出某一行时，通过调用getGraphLine()得到这一行要输出的内容
+包含属性：字符类型的 icon，表示输出图形的图标；
+有方法：
+/**
+ * 输出矩形图形
+ * @param row 矩形的行数， col 矩形的列
+ */
+void showRect(int row, int col)
+/**
+ * 输出直角三角图形
+ * @param row 三角形的行数
+ */
+void showTriangle(int row)
+/**
+ * 返回一行图形的内容
+ * @param num 一行内的字符数量
+ */
+String getGraphLine(int num)
+
+测试类中创建Graph类的对象设定属性icon的值为“#”，
+通过调用showRect()和showTriangle()方法实现矩形和三角形的输出。

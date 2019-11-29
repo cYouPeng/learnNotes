@@ -1,0 +1,44 @@
+	       默认值	  	继承性   
+font-size      medium      	yes
+font-family    not specified    yes
+font-style     normal 		yes 
+font-variant   normal		yes
+font-weight    normal		yes
+
+文本
+
+color	       not sepcified    yes
+line-height    normal(设置合理的行间距) yes    	       
+text-align     left             yes
+vertical-align(定位属性)  baseline   no
+text-indent    not              yes
+text-decoration  none	        no
+text-transform  none            yes
+letter-spacing  normal          yes
+word-spacing    normal 		yes
+
+背景
+
+background-color   transparent(默认。背景颜色为透明。)   no
+background-image    none    no
+background-attachment 属性设置背景图像是否固定或者随着页面的其余部分滚动  scroll   no
+background-repeat 属性设置是否及如何重复背景图像。  repeat  no
+background-position 属性设置背景图像的起始位置。 0% 0%    no
+可以在一个background声明中定义多个属性，没有顺序
+
+根据CSS规范的规定，每一个网页元素都有一个display属性，用于确定该元素的类型，每一个元素都有默认的display属性值。
+
+比如div元素，它的默认display属性值为“block”，成为“块级”元素(block-level)；而span元素的默认display属性值为“inline”，称为“行内”元素。
+
+margin/padding  0   no
+
+
+列表
+
+list-style-image 属性使用图像来替换列表项的标记。  none  yes
+list-style-position该属性用于声明列表标志相对于列表项内容的位置。外部 (outside) 标志会放在离列表项边框边界一定距离处，不过这距离在 CSS 中未定义。内部 (inside) 标志处理为好像它们是插入在列表项内容最前面的行内元素一样。  outside  yes
+list-style-type 属性设置列表项标记的类型。 disc  yes
+list-style  在一个声明中设置所有列表属性  没有顺序
+
+
+cursor 属性规定要显示的光标的类型（形状）。   auto(浏览器设置的光标)  yes

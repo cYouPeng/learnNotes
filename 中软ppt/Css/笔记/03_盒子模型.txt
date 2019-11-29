@@ -1,0 +1,29 @@
+显示在屏幕上的盒子，他的尺寸是不包括margin的；在chrome或firfox上显示的盒子的尺寸是border+padding+content
+
+行级（内联）元素：如a、span  可以共享行，本身是没有尺寸的，由其内容决定
+块级元素：如p、ul、li、div、h1-6  独享行，可以设置尺寸
+行块元素：img、input  可以共享行，又可以设置尺寸
+
+水平居中是指在水平方向上处于中间的位置；垂直居中是指在垂直方向上处于中间的位置。
+
+行块/行级元素不能包含块级元素
+
+box-sizing:border-box  以边框来算宽高(IE怪异模式)
+	   content-box 其内容就是宽高，(标准盒子模型)
+
+p标签默认margin  上下1em，左右0px
+网页中字体默认大小16px
+
+块级元素居中通过margin: ..px auto;
+body的高度靠内容来撑
+
+在块级元素里，text-align对其内部的行级/行块元素水平对齐
+
+hr可用before代替
+
+input(此处指按钮)的默认box-sizing是border-box
+
+标准文档流：
+行块/行级：从左到右
+块级：从上到下
+行和行块都是内联元素

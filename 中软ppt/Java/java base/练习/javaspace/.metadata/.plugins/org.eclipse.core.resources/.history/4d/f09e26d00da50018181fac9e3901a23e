@@ -1,0 +1,14 @@
+package atm;
+
+public class User {
+	String id;
+	String pwd;
+	String name;
+	double money;
+	public User(String id, String pwd, String name, double money){
+		this.id = id;
+		this.pwd = pwd;
+		this.name = name;
+		this.money = money;
+	}
+}

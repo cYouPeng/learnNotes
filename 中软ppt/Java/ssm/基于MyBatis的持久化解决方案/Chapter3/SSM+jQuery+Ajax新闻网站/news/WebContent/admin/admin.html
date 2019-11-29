@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>后台管理首页</title>
+		<link rel="stylesheet" href="css/common.css" />
+		<script type="text/javascript" src="../js/jquery-1.11.3.js"></script>
+		<script type="text/javascript" src="../js/authorization.js"></script>
+		<script type="text/javascript" src="../js/common.js"></script>
+		<script>
+			$(function(){
+				$("#username").append(users.username);
+			});
+		</script>
+	</head>
+	<body>
+		<div class="container">
+			<div class="header">
+				<h3>新闻资讯后台管理系统</h3>
+				<p id="username">管理员：</p>
+			</div>
+			<div class="main">
+				<div class="left">
+					<ul>
+						<li>菜单列表</li>
+						<li><a href="addFirst.html" target="manager">添加一级标题</a></li>
+						<li><a href="firstList.html" target="manager">一级标题管理</a></li>
+						<li><a href="addSecond.html" target="manager">添加二级标题</a></li>
+						<li><a href="secondList.html" target="manager">二级标题管理</a></li>
+					</ul>
+				</div>
+				<div class="right">
+					<iframe src="welcome.html" name="manager" frameborder="no" scrolling="no"></iframe>
+				</div>
+			</div>
+		</div>
+		
+	</body>
+</html>

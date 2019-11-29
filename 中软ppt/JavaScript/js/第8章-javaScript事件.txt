@@ -1,0 +1,50 @@
+JS只能操作行内样式，不能操作内嵌、外部样式
+
+在html标记里绑定的事件函数必须是window对象的方法
+body没加载完，页面不会渲染
+onload绑定的函数会在所有DOM元素加载完之后执行
+window.onload只能声明一次，第二次声明的会覆盖第一次声明的
+
+onkeydown 不能处理组合键，字符只有大写，鼠标按住不放，则一直有此事件
+onkeyprice 可以处理组合键，有大小写，鼠标按住不放，也只能产生一个事件
+键盘上的方向键：上->38、下->40、左->37、右->39
+
+div.onload = function(e){
+    e = event || e;  //谷歌支持event,而火狐不支持event
+}
+
+parseInt('10px'); 可以把px去掉
+
+html
+body
+p
+span -> onclick
+img
+	从上至下的事件传播机制:事件捕获(首提-网景)
+	从下至上的时间传播机制:事件冒泡(首提-IE)
+对img进行点击(onclick)事件，事件会交给img处理，然后再交给span处理，一直到DOM模型最顶端，这个过程就叫做事件冒泡。默认的传播机制也是冒泡
+
+事件函数赋加给了谁，谁就是this
+
+offestLeft/Top 子容器和已定位父容器之间真是距离
+clientTop/Left 上/左边框的宽度
+
+js中的left、top等最好不要和css中margin一起写，会影响
+
+直接获取图片width/height，必须在img里写属性width/height，在css里写的必须用style
+
+常用毫秒：200快  400正常 600慢
+
+css里的border-width/color , margin-top等 到了js里就变成了borderWidth,borderColor,marginTop
+
+document.documentElement.scrollTop  是可读写的
+写在html里的属性，JS不必写style了，直接.就行了
+
+元素节点 取内容 用innerHTML  innerText不能识别标记
+文本节点 取内容 用nodeValue
+
+onmouseenter  onmouseleave  这两个事件不会导致鼠标移到子元素上也会触发事件，
+
+nodeName 得到的都是大写
+
+事件绑定都是单一逐个的

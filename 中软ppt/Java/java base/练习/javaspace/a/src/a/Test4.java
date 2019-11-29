@@ -1,0 +1,51 @@
+package a;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Scanner;
+
+public class Test4 {
+	public static void main(String[] args){
+		Scanner input = new Scanner(System.in);
+		Test4 t = new Test4();
+		List<Student>list = new LinkedList<Student>();
+		while(true){
+			System.out.println("1-add 2-del 3-showall 4- mod 0-exit");
+			int select = input.nextInt();
+			switch(select){
+			case 1: t.addStu(list); break;
+			case 2: t.delStu(list); break;
+			case 3: t.showAll(list); break;
+			case 4: t.modStu(list); break;
+			case 0: return;
+			}
+		}
+	}
+	public void addStu(List<Student> list){
+		Scanner input = new Scanner(System.in);
+		int id = input.nextInt();
+		String name = input.next();
+		list.add(new Student(id,name));
+	}
+	public void delStu(List<Student> list){
+		Scanner input = new Scanner(System.in);
+		int index = input.nextInt();
+		list.remove(index);
+	}
+	public void showAll(List<Student> list){
+		for(Student s : list){
+			System.out.println(s);
+		}
+	}
+	public void modStu(List<Student> list){
+		Scanner input = new Scanner(System.in);
+		int index = input.nextInt();
+		Student s = list.get(index);
+		System.out.println(s);
+		int id = input.nextInt();
+		String name = input.next();
+		s.setId(id);
+		s.setName(name);
+	}
+	
+}

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<style>
+			.header{
+				width: 150px;
+				height:25px;
+				background: #2A6982;
+				border:solid 1px #0A2D76;
+				cursor:default;
+				-webkit-user-select:none;
+				-moz-user-select:none;
+			}
+			.header span{
+				color:#FFF;
+				line-height: 25px;
+				margin-left: 10px;
+			}
+			.content{
+				width: 150px;
+				height:150px;
+				border:solid 1px #0A2D76;
+				border-top: none;
+				display: none;
+			}
+			ul{
+				margin: 0;
+				list-style: none;
+				padding-top: 10px;
+			}
+			ul li{
+				line-height: 30px;
+				font-size: 12px;
+				color: #2A6982;
+			}
+			.sanjiao{
+				width: 0px;
+				height: 0px;
+				border-width:6px 6px 0px 6px;;
+    				border-color:#FFF transparent transparent transparent;
+    				border-style:solid;
+    				margin-top: 9px;
+    				margin-right: 9px;
+				float: right;
+			}
+		</style>
+		<script type="text/javascript" src="../js/jquery-1.11.3.js" ></script>
+		<script>
+			$(function(){
+				var headerArr = $("div[class='header']");
+				var contentArr = $("div[class='content']");
+
+				headerArr.click(function(event){
+					/*
+					 * headerArr 中有多个对象，但这多个对象是分别在多个组中，而不是在一组中。而在它们各自的组中，索引值都为0。
+					 * 所以如果这样写的话：alert($(this).index());  那么索引值都为0.
+					 */
+					var index = $(this).parent().index();
+					if(contentArr.eq(index).is(":hidden")){
+						//只有在自己打开时，才把其他都关闭
+						contentArr.hide();
+						contentArr.eq(index).slideDown("fast");
+					}else{
+						contentArr.eq(index).slideUp("fast");
+					}
+					event.stopPropagation();
+				});
+				$(document).click(function(){
+					contentArr.slideUp("fast");
+				});
+			});
+		</script>
+	</head>
+	<body>
+		<div>
+			<div class="header">
+				<span>详细信息</span>
+				<div class="sanjiao"></div>
+			</div>
+			<div class="content">
+				<ul>
+					<li>我的电脑</li>
+					<li>我的文档</li>
+					<li>网上邻居</li>
+					<li>回收站</li>
+				</ul>
+			</div>
+		</div>
+		<div>
+			<div class="header">
+				<span>个人收藏</span>
+				<div class="sanjiao"></div>
+			</div>
+			<div class="content">
+				<ul>
+					<li>应用程序</li>
+					<li>桌面</li>
+					<li>文稿</li>
+					<li>下载</li>
+				</ul>
+			</div>
+		</div>
+		<div>
+			<div class="header">
+				<span>设备</span>
+				<div class="sanjiao"></div>
+			</div>
+			<div class="content">
+				<ul>
+					<li>远程光盘</li>
+					<li>Dirve</li>
+					<li>AirDrop</li>
+					<li>所有文件</li>
+				</ul>
+			</div>
+		</div>
+	</body>
+</html>

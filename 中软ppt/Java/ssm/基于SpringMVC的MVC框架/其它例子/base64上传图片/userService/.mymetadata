@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-module
+  type="WEB"
+  name="userService"
+  id="myeclipse.1470961662286"
+  context-root="/userService"
+  j2ee-spec="5.0"
+  archive="userService.war">
+  <attributes>
+    <attribute name="webrootdir" value="WebRoot" />
+  </attributes>
+</project-module>
+

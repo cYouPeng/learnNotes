@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<style>
+		        body{margin: 0;padding: 0;}
+			#leftLan{
+				width: 100px;
+				height: 200px;
+				background:#DDD;
+				position: absolute;
+				left:-100px;
+				top:10px;
+			}
+			#leftLan div{
+				width: 14px;
+				height: 54px;
+				padding: 3px;
+				background: #DDD;
+				position: absolute;
+				left: 100px;
+				top:60px;
+				font-size: 14px;
+			}
+		</style>
+		<script type="text/javascript" src="../js/jquery-1.11.3.js" ></script>
+		<script>
+			$(function(){
+				var leftLan =$("#leftLan");
+				leftLan.hover(
+					function(){
+						$(this).stop().animate({"left":"0"},500);
+					},function(){
+						$(this).stop().animate({"left":"-100"},500);
+					}
+				);
+			});
+		</script>
+	</head>
+	<body>
+		<div id="leftLan">
+			<div>分享到</div>
+		</div>
+	</body>
+</html>

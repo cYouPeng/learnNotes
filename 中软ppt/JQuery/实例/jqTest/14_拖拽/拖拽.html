@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html >
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		<style>
+			#loginBox{
+				width: 300px;
+				height: 200px;
+				position: absolute;
+			}
+			#loginBox .loginTitle{
+				width: 300px;
+				height: 30px;
+				line-height: 30px;
+				background-color: #20498E;
+				color: #FFF;
+			}
+			#loginBox .loginTitle span{
+				margin-left: 10px;
+				-webkit-user-select:none;
+				-moz-user-select:none;
+			}
+			#loginBox .loginContent{
+				width: 298px;
+				height: 169px;
+				border: solid 1px #999;
+				border-top: none;
+				background-color: #DDD;
+			}
+		</style>
+		<script type="text/javascript" src="../js/jquery-1.11.3.js" ></script>
+		<script>
+			$(function(){
+				var loginBox = $("#loginBox");
+				var loginTitle = $("#loginTitle");
+				
+				//鼠标距离拖拽块的位置
+				var mx = 0;
+				var my = 0;
+				
+				loginTitle.mousedown(function(event){
+					//鼠标距离拖拽块的位置 = 鼠标的位置-拖拽块的位置
+					mx = event.pageX - loginBox.offset().left;
+					my = event.pageY - loginBox.offset().top;
+					$(this).css("cursor","move");
+					
+					$(document).mousemove(function(event){
+						var leftTemp =event.pageX - mx;
+						var topTemp = event.pageY - my;
+						
+						if(leftTemp<0){
+							leftTemp = 0;
+						}else if(leftTemp>($(document).width()-loginBox.width())){
+							leftTemp = $(document).width()-loginBox.width();
+						}
+						if(topTemp<0){
+							topTemp = 0;
+						}else if(topTemp>($(document).height()-loginBox.height())){
+							topTemp = $(document).height()-loginBox.height();
+						}
+
+						loginBox.css("left",leftTemp).css("top",topTemp);
+					});
+					
+					$(document).mouseup(function(){
+						loginTitle.css("cursor","default");
+						$(this).off("mousemove").off("mouseup");
+					});
+
+				});
+			});
+		
+		</script>
+	</head>
+	<body >
+		<div id="loginBox">
+			<div class="loginTitle" id="loginTitle"><span>登陆</span></div>
+			<div class="loginContent"></div>
+		</div>
+	</body>
+</html>

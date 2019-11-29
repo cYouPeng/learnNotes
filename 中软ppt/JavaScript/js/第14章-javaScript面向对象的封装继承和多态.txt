@@ -1,0 +1,126 @@
+设置了表格的第一行中每个td的宽度，以后每行中的每个td宽度就不用设置了，
+会随着前面的宽度
+
+图片轮播的透明度+0.1，为什么停止计时器的条件不能设置为=号，这是因为在加0.1的过程中，并不总是正好相加，可能从0.1加0.1的过程中其结果就变成了0.19999...这样就不可能等于1了，所欲条件要写大于
+
+做li小圆圈，不管你是用border-box还是content-box，border-radius的值一定是总宽度的一半，也就是content+padding+border
+
+label是跟id相关联的
+border-radius:50% 50% 50% 50%; 这是一个椭圆
+h标签设置了绝对定位，它的宽度就不再是一整行的了
+
+margin:auto 对button是不管用的
+
+Ip和端口完全一致(localhost和127.0.0.1也不行)，才是在同一个域中
+
+状态码以2开头和304都代表请求成功
+
+FormData(表单Dom) 表单里不能有按钮，表单里的<button></button>相当于submit 是同步的
+
+当执行resolve()/rejected()时，Promise对象状态改为决议或已拒绝，然后根据Promise的状态决定执行then里的回调函数还是catch里的回调函数
+
+then后只能跟then,catch后只能跟catch
+
+onerror 出错事件
+
+回调地狱
+resolve或rejected在同一个作用域中写了两遍，那么以第一遍为准，而不是后者覆盖前者
+all和race都是Promise的静态方法，都是将一组Promise放到数组中
+			let imgArr=new Array();
+//			let p1 = new Promise(function(resolve, rejected){
+//
+//				let img = new Image();
+//				img.src = '../img/8949026b-fa9a-4370-989b-5d5e2f149106.jpg';
+//				img.onload = function(){
+//					//ctx.drawImage(img,0,0,300,300)
+//					imgArr[0] = img;
+//					resolve();
+//				}
+//				img.onerror = function(){
+//					console.log("p1 error")
+//					rejected();
+//				}
+//			})
+//			let p2 = new Promise(function(resolve, rejected){
+//
+//				let img = new Image();
+//				img.src = '../img/IMG0.jpg';
+//				img.onload = function(){
+//					//ctx.drawImage(img,100,100,300,300)
+//					imgArr[1] = img;
+//					resolve();
+//				}
+//				img.onerror = function(){
+//					console.log("p2 error")
+//					rejected();
+//				}
+//			})
+//			//let p = Promise.all([p1,p2])
+//			//all和race:p1和p2中有一个先设定rejected状态，则立刻执行p的catch中的回调
+//			//p1hep2都是resolve状态时
+//			//all:则在p1和p2都执行后依次执行p的then
+//			//race:p1和p2有一个达到resolve状态 后依次执行p的then，另外一个达到resolve后不再执行P的then
+//			let p = Promise.race([p1,p2]) //p1和p2一起决定了p的状态
+//			p.then(function(){
+//				if(imgArr[1])
+//					ctx.drawImage(imgArr[1],100,100,300,300)
+//				if(imgArr[0])
+//					ctx.drawImage(imgArr[0],0,0,300,300)
+//				
+//			}).catch(function(){
+//				alert('error')
+//			})
+
+race看第一个，all看所有，有一点要注意，不管是resolve()还是rejected()都只是改变Promise对象的状态，而不是去调用then或catch
+
+不是异步提交 timeout不管用
+对于AJAX来说，method，url，data，callback仅这些是不同的
+
+ES6十大特性：函数相关：默认参数、箭头函数、剩余参数、let块级变量
+	     字符串相关：多行字符串、字符串模板(占位符)
+	     类相关：class、Promise
+	     解构、模块(没讲，需配合node.js);
+
+for(let i=0;i<10;i++){
+     setTimeout(function(){
+         console.log(i);
+     },1000);
+}        此时输出的是0到9
+
+但是如果let 变成 var 那么输出的就是10个数字10
+let可解决var造成的暂时性死区的问题
+
+箭头函数没有自己的this，用的是主调函数的this
+
+a的href=""点击回到原始界面  ，如果换成#当前界面不变
+
+js里创建div，如果div里还要创建多个子元素的话，那么此时用多行字符串+占位符就很方便，而不是用createElement
+
+for(let key in myJson){
+	console.log(key+myJson[key]);
+} 利用这种for循环可以实现json的每一数据的输出，但如果其直接属性是数组,只会输出数组名，数组里面有几个元素输出几个[object Object] 注意o大小写
+let a = "bookId"
+//json的赋值
+myJson.bookId = 200;
+myJson[a] = 3000;
+myJson["bookId"] = 444
+//json的取值			
+console.log(myJson[a])
+console.log(myJson["bookId"])
+console.log(myJson.bookId)    .是把bookId当成一个字符串作为key的，[a]是把a当成一个变量，把变量a的值作为key的，
+如果这个key json里已经有了，那么就是修改key的值，如果没有那就是添加值； 如果有 = 此时为赋值
+没有 = 那就是取值
+判断json取值 还是赋值只要看有没有=号就行了，有就是赋值，没有就是取值
+
+let a = "bookId"
+//json的赋值			
+myJson[a] = myJson[a];  此时要注意：左边的值当做成key，右边value
+
+json提交要把x-www-form-urlencode改成json
+json格式字符串转json对象   JSON.stringify(str)
+
+下拉框的value与当前选了哪个option有关，你选了那个option，那么这个下拉框当前的value就是那个option的value
+
+localStorage.setItem('a','hello');关闭浏览器还有
+localStorage.getItem('a')
+sessionStorage 关闭浏览器就没了

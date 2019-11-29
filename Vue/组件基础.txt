@@ -1,0 +1,138 @@
+一，基本示例
+	因为组件是可复用的 Vue 实例，所以它们与 new Vue 接收相同的选项，例如 data、computed、watch、methods 以及生命周期钩子等。仅有的例外是像 el 这样根实例特有的选项
+	
+二，组件的复用
+	你可以将组件进行任意次数的复用
+		<div id="components-demo">
+		  <button-counter></button-counter>
+		  <button-counter></button-counter>
+		  <button-counter></button-counter>
+		</div>
+		复用的组件都拥有各自的作用域
+		
+	1，data 必须是一个函数
+		一个组件的 data 选项必须是一个函数
+			data: function () {
+			  return {
+				count: 0
+			  }
+			}
+			
+三，组件的组织
+	有两种组件的注册类型：全局注册和局部注册
+		Vue.component('my-component-name', {
+		  // ... options ...
+		})
+		这是全局注册
+		
+四，通过 Prop 向子组件传递数据
+	每个人都有身高、体重、年龄等属性。
+	但有的人可能每只手六根指头，有的人可能头发天生就是红色的，眼睛天生就是蓝色的，这是特性，区别于其他人的特性
+	
+	Prop 是你可以在组件上注册的一些自定义特性
+	例如 a 组件有 title 这个特性；b 组件有 tap 这个特性
+		Vue.component('blog-post', {
+		  props: ['title'],
+		  template: '<h3>{{ title }}</h3>'
+		})
+		一个组件可以拥有任意数量的 prop，prop可以接受任何类型的值，我们可以在模板中访问这个值，就像访问 data 中的值一样。
+	
+	一个 prop 被注册之后，你就可以像这样把数据传递进来：	
+		<blog-post title="My journey with Vue"></blog-post>
+		
+	你也可以利用 v-bind 传递一个动态的值
+		<blog-post :title="post.text"></blog-post>
+		
+五，单个根元素
+	组件模板内一定要有一个根元素来包裹所有内容，如果你这样写
+		template: `
+			<h1>{{ post.title }}</h1>
+			<p>{{ post.content }}</h1>
+		`
+	会报  every component must have a single root element (每个组件必须有一个根元素) 的错误
+	可以将模板的内容包裹在一个父元素内，来修复这个问题
+		template: `
+			<div>
+				<h1>{{ post.title }}</h1>
+				<p>{{ post.content }}</h1>
+			</div>
+		`
+		
+六，监听子组件事件
+	父级组件可以通过 v-on 监听子组件实例的任意事件
+		<my-component @game-over="user++"></my-component>
+	子组件可以通过调用内建的 $emit 方法 并传入事件名称来触发一个事件
+		template: `<button @click="$emit('game-over')">btn</button>`
+		
+	1，使用事件抛出一个值
+		$emit()还有第二个参数，用来传一个值(只有这两个参数，没有第三个啥的了)
+			$emit('game-over', 'hello')
+		然后在父级组件监听这个事件时，使用$event接收这个值
+			<my-component @game-over="user += $event"></my-component>
+		如果这个事件处理函数是一个方法，这个值将会作为第一个参数传入这个方法
+			methods: {
+				log(n1) {
+					alert(n1)  //在这里使用不了$event
+				}
+			}
+	
+	2，在组件上使用 v-model
+		<input v-model="msg" />
+		相当于
+		<input :value="msg" @input="msg = $event.target.value" />
+		
+		自定义输入组件
+			<my-component v-model="msg"></my-component>
+			在自定义组件上使用v-model，默认使用value特性和input事件
+			相当于
+			<my-component :value="msg" @input="msg = $event"></my-component>
+			
+			Vue.component('my-component', {
+				template: `<input :value="value" @input="$emit('input', $event.target.value)" />`,
+				props: ['value']
+			})
+	
+七，通过插槽分发内容
+	通过定义多个插槽，可以把内容分成几段送到它应该到的地方
+	
+八，动态组件
+	想动态切换组件，可以通过 Vue 的 <component> 元素加一个特殊的 is 特性来实现
+		<!-- 组件会在 `currentTabComponent` 改变时改变 -->
+		<component v-bind:is="currentTabComponent"></component>
+		
+九，解析 DOM 模板时的注意事项	
+	is 特性也可以放在其他html标签上
+		<div is="my-component"></div>   //相当于 <my-component></my-component>   当然了 没使用 v-bind 就不是动态的了
+		这只是一个例子，实际在div标签上使用 is 特性没什么意义，以下是有意义的
+		<ul>
+			<li is="my-component" v-for="item in items"></li>
+			//相当于<my-component v-for="item in items"></my-component>
+			//之所以这么写，是因为ul标签内只有li是有效的，这样写可以避免浏览器造成一些不必要的错误
+		</ul>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	

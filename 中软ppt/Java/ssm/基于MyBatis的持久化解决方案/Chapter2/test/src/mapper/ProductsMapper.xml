@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mapper.ProductsMapper">
+
+  <resultMap type="products" id="proResultMap">
+    <id property="pid" column="pid"/>
+    <result property="productName" column="productname"/>
+    <result property="productPrice" column="productprice"/>
+    <collection property="ordersList" ofType="orders">   
+      <id property="oid" column="oid"/>
+      <result property="userId" column="userid"/>
+      <result property="createTime" column="createtime"/>
+    </collection>
+  </resultMap>
+
+  <!-- 
+            使用resultMap方式实现多对多查询
+  -->
+  <select id="selectProductsAll" resultMap="proResultMap">
+    select p.*,
+           o.oid,
+           o.userid,
+           o.createtime
+    from orders o,products p,r_ord_pro r 
+    where o.oid=r.r_oid and 
+          p.pid=r.r_pid
+  </select>
+  
+</mapper>

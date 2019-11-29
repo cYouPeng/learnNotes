@@ -1,0 +1,29 @@
+package io;
+
+import java.io.File;
+
+public class TestFile2 {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		System.out.println(TestFile2.class.getResource(""));
+//		String path = TestFile2.class.getResource("/atm/").getPath();
+//		System.out.println(path);
+//		File file = new File(path);
+//		TestFile2 t = new TestFile2();
+//		
+//		t.findFiles(file);
+	}
+	public void findFiles(File dir){
+		File[] files = dir.listFiles();
+		for(File f : files){
+			if(f.isFile()){
+				System.out.println(f.getAbsolutePath());
+			}
+			if(f.isDirectory()){
+				this.findFiles(f);
+			}
+		}
+	}
+
+}

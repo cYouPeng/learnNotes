@@ -1,0 +1,7 @@
+package atm;
+
+public class Atm {
+	User currUser;
+	
+	public boolean login()
+}

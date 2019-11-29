@@ -1,0 +1,27 @@
+package exception;
+
+import java.util.InputMismatchException;
+import java.util.Scanner;
+
+public class Test2 {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Scanner input = new Scanner(System.in);
+		int result = 0;
+		try{
+			int a = input.nextInt();
+			int b = input.nextInt();
+			result = a/b;
+		}catch(InputMismatchException e){
+			System.out.println("输入的不为数字");
+			e.printStackTrace();
+		}catch(ArithmeticException e){
+			System.out.println("除数不能为0");
+		}
+		
+		System.out.println("结果："+result);
+				
+	}
+
+}

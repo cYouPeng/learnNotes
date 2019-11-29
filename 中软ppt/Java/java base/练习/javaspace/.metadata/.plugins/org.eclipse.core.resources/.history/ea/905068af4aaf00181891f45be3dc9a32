@@ -1,0 +1,23 @@
+package exception;
+
+public class TestThrow1 {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		try{
+			double s1 = calcArea(10);
+			System.out.println(s1);
+			double s2 = calcArea(-10);
+			System.out.println(s2);
+		}
+		
+	}
+	public static double calcArea(int r){
+		if(r<=0){
+			throw new RuntimeException("半径必须大于0");
+		}
+		return r*r*Math.PI;
+		
+	}
+
+}

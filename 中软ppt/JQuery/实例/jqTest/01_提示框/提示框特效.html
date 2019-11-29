@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<script type="text/javascript" src="../js/jquery-1.11.3.js" ></script>
+		<style>
+		        #container{
+		        	        width: 240px;
+		        	        height: 160px;
+		        	        border: solid 1px #AAA;
+		        	        margin: 0 auto;
+		        	        position: relative;
+		        }
+		         #container table{
+		         	margin-top: 10px;
+		         	margin-left: 20px;
+		         }
+			#div1 {
+				width: 160px;
+				height: 40px;
+				background: yellow;
+				border: solid 1px darkorange;
+				display: none;
+				position: absolute;
+				left: 40px;
+				top: 105px;
+			}
+		</style>
+		<script>
+			$(function(){
+				var autoLogin = $("#autoLogin");
+				/*
+				autoLogin.on("mouseover",function(){
+					$("#div1").show();
+				});
+				autoLogin.on("mouseout",function(){
+					$("#div1").hide();
+				});
+				*/
+				/*
+				autoLogin.on({
+					mouseover:function(){
+						$("#div1").show();
+					},mouseout:function(){
+						$("#div1").hide();
+					}
+				});
+				*/
+				//如果没有stop(),那么当用户频繁触发事件时，就会产生一个事件等待队列，从而频繁的出现动画。
+				autoLogin.hover(
+					function(){
+						//$("#div1").slideDown("fast");
+						$("#div1").stop().slideDown("fast");
+					},function(){
+						//$("#div1").slideUp("fast");
+						$("#div1").stop().slideUp("fast");
+					}
+				);
+				
+			});
+		</script>
+	</head>
+
+	<body>
+		<div id="container">
+			<table>
+				<tr>
+					<th colspan="2">登录</th>
+				</tr>
+				<tr>
+					<td>用户名</td>
+					<td><input type="text" /></td>
+				</tr>
+				<tr>
+					<td>密码</td>
+					<td><input type="password" /></td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						<label id="autoLogin"><input type="checkbox" >一个月内自动登录</label>
+						<div id="div1">请不要在网吧等公共场合使用该功能！</div>
+					</td>
+				</tr>
+				<tr>
+					<td></td>
+					<td><input type="submit" /> <input type="reset" /></td>
+				</tr>
+			</table>
+		</div>
+
+	</body>
+
+</html>

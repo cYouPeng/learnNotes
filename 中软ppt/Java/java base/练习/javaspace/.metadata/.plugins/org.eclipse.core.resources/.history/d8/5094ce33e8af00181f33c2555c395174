@@ -1,0 +1,41 @@
+package toolsclass;
+
+public class TestClone {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Person p1 = new Person("lisi");
+		Person p2 = ()p1.clone();
+		System.out.println(p1);
+		System.out.println(p2);
+	}
+
+}
+class Person{
+	private String name;
+
+	public Person(String name) {
+		super();
+		this.name = name;
+	}
+	
+	@Override
+	public Person clone() throws CloneNotSupportedException {
+		// TODO Auto-generated method stub
+		return super.clone();
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	@Override
+	public String toString() {
+		return "Person [name=" + name + "]";
+	}
+	
+}

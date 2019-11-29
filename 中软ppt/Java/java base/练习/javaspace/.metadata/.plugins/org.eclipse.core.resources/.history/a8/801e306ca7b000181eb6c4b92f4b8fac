@@ -1,0 +1,34 @@
+package io;
+
+import java.io.File;
+
+public class TestFindClass {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		String uri = TestFindClass.class.getResource("/").getFile();
+		new TestFindClass().findAllFile(new File(uri));
+	}
+	
+	
+	public void findAllFile(File root){
+		if(!root.isDirectory()){
+			return;
+		}
+		File[] files = root.listFiles();
+		for(File f : files){
+			
+			if(f.isDirectory()){
+				this.findAllFile(f);
+			}
+			if(f.isFile()){
+				System.out.println(f.getAbsolutePath());
+			}
+		}
+	}
+	public String getClassFullName(File classFile){
+		String path = classFile.getParent();
+		String packagePath = path.split("bin[\\]");
+	}
+
+}

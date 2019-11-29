@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<style>
+			ul{
+				position: absolute;
+				list-style: none;
+				width: 80px;
+ 				height: 80px;
+ 				border: solid 1px #666;
+				padding: 10px 0px 0px 10px;
+				display: none;
+				margin: 0;
+			}
+			li{
+				line-height: 20px;
+			}
+			a{
+				font-size: 12px;
+ 				color: #666;
+ 				text-decoration: none;
+			}
+		</style>
+		<script type="text/javascript" src="../js/jquery-1.11.3.js" ></script>
+		<script>
+			$(function(){
+				var rightMenu = $("#rightMenu");
+				$(document).contextmenu(function(event){
+					rightMenu.css("left",event.clientX).css("top",event.clientY).show();
+					return false;
+				});
+				$(document).click(function(){
+					rightMenu.hide();
+				});
+			});
+		</script>
+	</head>
+	<body>
+		<ul id="rightMenu">
+			<li><a href="">返回</a></li>
+			<li><a href="">前进</a></li>
+			<li><a href="">重新加载</a></li>
+		</ul>
+	</body>
+</html>

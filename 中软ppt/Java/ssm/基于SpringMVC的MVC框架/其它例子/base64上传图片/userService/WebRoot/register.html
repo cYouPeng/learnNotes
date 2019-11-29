@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+			#preview{
+				position: relative;
+				width: 200px;
+				height: 200px;
+			}
+			.img,img{
+				width: 200px;
+				height: 200px;
+			}
+		</style>
+		<script src="js/jquery-2.1.1.min.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			var picStr;
+			var picName;
+			function loadPic(file){
+				alert();
+				var prevDiv = $("#picView").get(0);
+				if (file.files && file.files[0]) {
+					var reader = new FileReader();
+					reader.onload = function(evt) {
+						var str = evt.target.result;
+						prevDiv.innerHTML = '<img src="' +str+ '" />';
+						picName = file.value;
+						picStr = str.substring(str.indexOf(",")+1);
+					}
+					reader.readAsDataURL(file.files[0]);
+				} else {
+					prevDiv.innerHTML = '<div class="img" style="filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(sizingMethod=scale,src=\'' + file.value + '\'"></div>';
+				}
+			}
+			$(function(){
+				$("input:button").click(function(){
+					var data = {"uid":$("#loginId").val()
+								,"upwd":$("#loginPwd").val()
+								,"uname":$("#nickName").val()
+								,"hpicName":picName
+								,"hpicStr":picStr};
+/*					var data = {"uname":$("#nickName").val()
+								,"hpicName":picName
+								,"hpicStr":picStr};
+								*/
+					$.ajax({
+						type:"post",
+						url:"http://localhost:8080/userService/user/UserRegister.action",
+						data:data,
+						dataType:"json",
+						async:true,
+						success:function(response){
+							console.log(response);
+							
+						}
+					});
+				});
+			});
+		</script>
+	</head>
+	<body>
+			<form action="" method="post">
+				id<input type="text" id="loginId" value="" /><br />
+				pwd<input type="text" id="loginPwd" value="" /><br />
+				name<input type="text" id="nickName" value="" /><br />
+				file<input type="file" id="headPic" value="" onchange="loadPic(this)"/><br />
+				<div id="picView"></div>
+				<input type="button" value="提交"/>
+			</form>
+	</body>
+</html>

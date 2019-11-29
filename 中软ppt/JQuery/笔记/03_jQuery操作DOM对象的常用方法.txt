@@ -1,0 +1,87 @@
+jQuery中attr和css是不一样的，一样要区分设置的是样式还是属性，例如，
+attr('display','none')和css('display','block')
+这样标签中就会多出display='none' style="display:block" 这两个
+
+$.each() 和jQuery对象.each()的区别：
+   $.each()是绑定在jQuery类里的静态方法
+   jQuery对象.each()是绑定在原型里的
+$.each()可以遍历不是jQuery对象的数组、集合等
+
+
+每一个函数里的this都是Dom元素，此时不能调用jQuery方法，得把this转成jQuery对象$(this)才能调用
+
+工厂函数里只能跟一个过滤器
+还有尽量不要在工厂函数里写过多代码，会影响阅读，能用方法就用方法
+
+map 遍历一个东西，符合要求返回，放到一个新的jQuery对象里
+
+add()把两个jQuery对象放在一起，有点像字符串的contact()
+
+$("p") 不能说它就是p，jQuery对象相当于一个容器，可添加、可删除
+往jQuery对象里添加元素，选择器只是最初始条件，后续还可调用add()，filter()等执行添加，过滤等操作
+
+|4,5|栈顶  addback()把自身添加到栈顶元素
+|---|
+|p  |
+end()一次栈顶元素抹去一个
+
+|div|栈顶 end()回第二层
+|---|
+|ul | end()回第一层
+|---|
+|li |
+
+如果选择器很复杂，用end()要比再写一遍选择器方便得多
+end()会增加局部的耦合度
+
+耦合度指的是模块与模块之间，而不是局部的  要求 高内聚、低耦合
+
+对Dom主要的操作：值，属性，样式，节点(增删，替换，包裹)
+html()相当于innerHTML()可识别标记
+text()相当于innerText()不可识别标记
+
+attribute attr  只能用于属性值不是布尔类型的属性
+property prop   只能用于属性值是布尔类型的属性 checked readonly disabled 
+
+removeAttr()移除的是属性，而不是css中写的样式
+
+let arr = ['www.baidu.com','www.baidu.com','www.baidu.com']
+$('a').attr('href',function(index,value){
+	console.log(value)
+	return arr[index];
+})   index 代表每一个Dom元素的序号
+     value 代表指定属性的原始值
+     返回的值 将会成为指定属性的新值
+    它和其他attr函数的区别就是，其它函数要设置的话，就只能全部设置成一样的值，而它可以每次都设置不同的值
+
+addClass()是添加，不是覆盖
+css()要设置多个属性，里边传的json
+
+toggleClass('active') 有使用这个类样式，则移除，没有使用，加上
+toggleClass('active',true/false) 第二个参数决定添加还是移除，如果原来有，则保持不变
+
+jQuery里的width 就是指content的宽/高，而不管你在css里设置的是border-box还是content-box
+offset 相对于可视窗口
+width/innerWidth/outerWidth 他们三不能一起设置，以最后一个为准，height也一样
+
+append()和appendTo()的区别
+$('ul').append('li').append('li') 此时栈顶元素始终是ul,如果想一直往ul里添加li可用append()，
+但如果同时相对li设置样式就不行了
+li.appendTo($('ul')).css(...) 此时相对li做dom操作也是可以的
+
+这就是二者的区别，谁作为调用的对象，谁作为参数
+
+clone()包括子节点
+
+empty()相当于innerHTML = ''
+
+replace()替换之后原来节点的事件也都没了
+
+如果是做事件委托，不管remove()还是datach()都一样，因为事件是绑定在父元素上的
+replaceWith()和replaceAll()效果一样，区别与append()和appendTo()的区别一样
+
+offset返回的是一个json对象 position()如果有border，并且父元素也有border,那么border外边开始算的
+占位符只能用于多行字符串
+$('input').prop('disabled',false)  注意布尔值不能加引号
+
+index()指的是当前元素在父元素中的索引

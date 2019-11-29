@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+    xmlns="http://www.springframework.org/schema/beans"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+                        http://www.springframework.org/schema/beans/spring-beans.xsd
+                        http://www.springframework.org/schema/context
+                        http://www.springframework.org/schema/context/spring-context.xsd
+                        http://www.springframework.org/schema/tx
+                        http://www.springframework.org/schema/tx/spring-tx.xsd
+                        http://www.springframework.org/schema/aop
+                        http://www.springframework.org/schema/aop/spring-aop.xsd
+                        http://www.springframework.org/schema/mvc
+                        http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+  <mvc:annotation-driven/>
+  
+  <!-- 开启注解扫描并注册注解处理器-->
+  <context:component-scan base-package="controller"/>
+  
+  <!-- 静态资源解析 -->
+  <mvc:resources location="/html/" mapping="/html/**" /> 
+  <mvc:resources location="/image/" mapping="/image/**" /> 
+  <mvc:resources location="/css/" mapping="/css/**" /> 
+  <mvc:resources location="/js/" mapping="/js/**" />
+  
+  <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+    <property name="prefix" value="/"/>
+    <property name="suffix" value=".jsp"/>
+  </bean>
+  
+  <!-- <bean class="exception.MyExceptionResolver"/>  -->
+  
+  <mvc:interceptors>    
+    <mvc:interceptor>    
+      <mvc:mapping path="/**" />  
+      <bean class="interceptor.Test1Interceptor"></bean>    
+    </mvc:interceptor>
+    <mvc:interceptor>    
+      <mvc:mapping path="/**" />  
+      <bean class="interceptor.Test2Interceptor"></bean>    
+    </mvc:interceptor>
+    <mvc:interceptor>    
+      <!-- 匹配的是url路径， 如果不配置或/**,将拦截所有的Controller -->  
+      <mvc:mapping path="/manager/*" />  
+      <bean class="interceptor.LoginInterceptor"></bean>    
+    </mvc:interceptor>  
+  </mvc:interceptors>
+  
+  <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+    <property name="maxUploadSize" value="5000000"></property>
+  </bean>
+  
+
+</beans>

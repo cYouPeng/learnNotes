@@ -1,0 +1,24 @@
+package oopcore.go;
+
+public abstract class Car {
+	private double price;
+	public Car() {
+		super();
+	}
+	public Car(double price) {
+		super();
+		this.price = price;
+	}
+	
+	public abstract void go();
+	
+	public double getPrice() {
+		return price;
+	}
+	public void setPrice(double price) {
+		this.price = price;
+	}
+	
+	
+	
+}

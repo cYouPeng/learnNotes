@@ -1,0 +1,22 @@
+package a;
+
+import java.util.List;
+
+public class Test4 {
+	public static void main(String[] args){
+		
+	}
+	public void addStu(List<Studnet> list){
+		
+	}
+	public void delStu(List<Studnet> list){
+		
+	}
+	public void showAll(List<Studnet> list){
+		
+	}
+	public void modStu(List<Studnet> list){
+		
+	}
+	
+}

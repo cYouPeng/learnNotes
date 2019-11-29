@@ -1,0 +1,73 @@
+jdbc j java   db  database  c connection
+
+JDK中只实现了一系列接口：Connection Statement ResultSet
+具体的实现是由数据库厂商来完成的
+
+RestultSet 只处理查询的结果集，增删改用不到
+
+直接：jdbc驱动直接操作数据库
+桥接：jdbc 到数据库中间还有一层  效率低
+
+增删改得到的是数字(修改的行数)，查询得到的是结果集
+
+forName()会产生ClassNotFoundException   原因:报名写错/找不到架包
+
+getConnection()会产生SQLException  其内的url又叫连接字符串
+
+rs指向结果集中的每一行
+rs从一开始指向第一行之前，因为无法确保结果集中一定有数据，所以也不能用do while
+
+获取数据列的时候，最好按结果集中列的顺序来，oracle不会出错，但sqlserver一定出错
+
+使用PreparedStatement：1，有占位符，书写方便
+		       2，一定程度解决SQL注入
+		       3，将SQL语句在java程序端进行编译，再将结果传给数据库，也就是预编译，提高效率
+
+————————————————————
+jdbc的封装
+
+dao d:database    a:access  o:object
+
+实体类中代表列的属性要用包装类型
+每一个数据表都要对应一个实体类，表中的列对应具体的属性
+每一个表都对应一个Dao类，内部包含对表操作(CUDR增改删查)的方法
+
+一个实体类(entity)对应一个dao类
+
+stmt的set方法里如果写数字，则代表的是？的顺序，而不是列的顺序
+
+jdbc 绑时间  java.util.Date:1,java.sql.Date 年月日
+	     (年月日时分秒) 2,java.sql.Time 时分秒
+			    3,java.sql.Timestamp 年月日时分秒
+
+实体类里用的util包下的date(因为此类在其它框架中也可以用)
+jdbc操作的是sql包下的以上三个类
+
+日期的处理：查询：在实体类中不能用java.sql下的日期类，只能用util下的date类，直接用getDate(e.getHiredate())就行  java.util.Date d = rs.getDate("hiredate");
+            添加：stmt.setDate(5, new java.sql.Date(e.getHiredate().getTime())); 第2个参数为sql.Date类型            此getDate()返回sql.Date（直接父类util.Date）
+		  stmt.setTimestamp(5.new java.sql.Timestamp(e.getHiredate().getTime())) 这样传的值就是Timestamp类型的，具体看数据库那边是什么类型
+	   
+	    Double comm = null;
+null的处理：if(rs.getObject("comm")!=null){        //查询
+		comm = rs.getDouble("comm");
+	    }
+
+	    if(e.getComm()==null){          //添加
+		stmt.setNull(7, 0);
+	    }else{
+		stmt.setDouble(7, e.getComm());
+	    }
+
+多对一的处理：1，实体类：private Dept dept;          2，操作类：String sql = "select e.empno,d.deptno, from emp e,dept d where e.deptno = d.deptno";  //查询
+			 public Emp() {				Integer deptno = rs.getInt("deptno");
+			    dept = new Dept();(避免空指向	Dept dept = new Dept(deptno,dname,loc);
+				异常的，例 emp.getDept().	Emp e = new Emp(empno,comm,dept);
+			 }	setDname()	                list.add(e);
+								return list;
+
+
+
+
+
+
+

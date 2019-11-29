@@ -1,0 +1,43 @@
+package innerclass;
+
+import innerclass.Outer.Inner;
+import innerclass.Outer.StaticInner;
+
+public class Test2 {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		//创建内部类的对象，
+		Inner in = new Outer().new Inner();
+		StaticInner si = new Outer.StaticInner();
+	}
+	
+}
+class Outer{
+	private int instanceField;
+	private static int staticField;
+	
+	/**
+	 * 成员内部类,可以访问外部类的所有（静态或实例）成员
+	 * @author Administrator
+	 *
+	 */
+	public class Inner{
+		public void method(){
+			instanceField = 10;
+			staticField = 20;
+		}
+	}
+	/**
+	 * 静态内部类，只能访问外部类的静态成员，而无论访问是发生在静态域或非静态域中
+	 * @author Administrator
+	 *
+	 */
+	public static class StaticInner{
+		public void method(){
+//			instanceField = 10;
+			staticField = 20;
+		}
+	}
+	
+}

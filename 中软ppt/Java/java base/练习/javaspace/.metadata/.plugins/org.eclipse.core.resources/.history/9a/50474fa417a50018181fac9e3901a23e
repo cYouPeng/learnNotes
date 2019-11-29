@@ -1,0 +1,25 @@
+package atm;
+
+public class User {
+	static int num;
+	String id;
+	String pwd;
+	String name;
+	double money;
+	static{
+		num = 1000;
+	}
+	{
+		
+	}
+	public User(){
+		this.id = String.valueOf(++num);
+		this.pwd = "000000";
+	}
+	public User(String pwd, String name, double money){
+		this.id = String.valueOf(++num);
+		this.pwd = pwd;
+		this.name = name;
+		this.money = money;
+	}
+}

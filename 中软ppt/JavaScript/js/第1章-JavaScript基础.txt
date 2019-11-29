@@ -1,0 +1,66 @@
+JS以原型为基础来实现面向对象
+
+图片精灵  图标文本
+
+js可写在head或body里
+head 平行加载，谁先加载不一定，不保证加载顺序，没有阻塞(虽然src有阻塞，但浏览器有优化)
+body 按顺序加载，保证加载顺序，必须放body最后，是阻塞的
+
+head里加载文件，会产生新的线程，和主线程并行加载，互相之间并不阻塞。
+body里加载文件，会产生阻塞，只在一个主线程里加载
+
+js的版本命名以ES开头(ECMA负责更新)。es4/5；es6变化较大，es7变化不大
+
+css以css文件为起点
+js以html文件为起点 。。。也就是src和href的区别
+
+要想操作body里元素，需要把js文件放在body最后
+
+一条语句很长，需分行写，不加;的话，就不知在哪里结束。要养成写;的习惯
+;的作用：1，看着方便   2，浏览器确定在哪结束
+
+html多行注释，需要把内容全都选中，不能落下一个字母
+
+变量没有经过var声明，此时它代表underfined，对象的属性
+
+数据类型：1，基本类型：number,boolean,string,null,underfined
+	  2，对象类型：object
+false,0,underfined,null,""  这些值都具有布尔性
+大写s的String 类似于java中的类
+var a = parseInt("123.9");
+a -> 123
+
+NAN --> Not A Number 
+
+js中 10/3 == 3.333...   不像java == 3
+
+var a = 10;
+var b = "10";
+console.log(a==b);true 由于从服务端获取数据常是string类型，所以会自动转换
+console.log(a === b);false 类型要一致,值也要一致
+
+var a = 10;
+document.write(a == '10');
+document.write(a === '10');
+== 先判断类型是否一致，不一致，自动类型转换，再判断值
+=== 先判断类型是否一致，在判断值，如果类型不一致，就不往下判断了
+
+小写s可以直接用==比较
+&& || 也具有开关性
+
+!1 一定是false,,而不是2,3,4
+
+var num;
+console.log(num||10); 确保num是一个有效数字
+
+var a;
+if(a == 10) 不安全，可能出问题，可能少些一个等号，此时条件依然成立，但会造成结果是恒真或恒假
+if(10 == a) 这么写是安全的
+
+JS不要只关注结果，要保证html结构正确的前提下
+
+ul的hegiht默认auto,li浮动之后，脱离文档流。这样ul的height变为0，所有li就会重叠在一起，会造成塌陷，对ul应用clear:both可解决
+
+js出错看控制台，css出错看盒子
+
+===严格相等，，!== 严格不相等

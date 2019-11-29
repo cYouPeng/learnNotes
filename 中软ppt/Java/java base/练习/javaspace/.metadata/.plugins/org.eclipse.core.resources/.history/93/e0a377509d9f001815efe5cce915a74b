@@ -1,0 +1,13 @@
+package oop1;
+
+public class TestMyMath {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		MyMath math = new MyMath();
+		math.num = 99;
+		math.showNum();
+		System.out.println(math.isOdd());
+	}
+
+}

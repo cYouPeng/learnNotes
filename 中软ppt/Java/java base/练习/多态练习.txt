@@ -1,0 +1,11 @@
+Car类
+double price;
+public void go(){
+	输出流程
+}
+子类，Texi、Bus、Train
+覆盖go方法
+
+Test类中
+输出：1-出租 2-公交 3-火车 （创建对象要应用向上造型）
+选择一个出行的工具，调用go方法

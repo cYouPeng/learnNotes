@@ -1,0 +1,21 @@
+package toolsclass;
+
+public class TestEqualeAndHashCode {
+	public static void main(String[] args){
+		String s1 = "hello";
+		String s2 = "hello";
+		System.out.println(s1.equals(s2));//true
+		Student stu1 = new Student(1,"lisi");
+		Student stu2 = new Student(1,"lisi");
+		System.out.println(stu1.equals(stu2));
+	}
+}
+class Student{
+	private int id;
+	private String name;
+	public Student(int id, String name) {
+		super();
+		this.id = id;
+		this.name = name;
+	}
+}

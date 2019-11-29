@@ -1,0 +1,21 @@
+package innerclass.lambda;
+
+public class Test {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Travel t = new Travel();
+		t.toFushun((price)->System.out.println("上车\n投币"+price+"元\n到达\n下车"),11);
+//		t.toFushun(new ICar(){
+//
+		
+//			@Override
+//			public void go(int price) {
+//				// TODO Auto-generated method stub
+//				System.out.println("上车\n投币"+price+"元\n到达\n下车");
+//			}
+//		},11);
+		
+	}
+
+}

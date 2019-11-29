@@ -1,0 +1,71 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<script src="js/jquery-2.1.1.min.js"></script>
+		<script src="js/jquery.validate.min.js"></script>
+		
+		<script>
+			$(function(){
+				var mysubmit = $("#myform").validate(
+					{
+						rules:{   
+            						username:{
+            							required:true,
+            							rangelength:[5,10]
+            						},
+            						password:{
+            							required:true,
+            							digits:true,
+            							rangelength:[6,6]
+            						},
+            						mail:{
+            							required:true,
+            							email:true
+            						},
+            						url:{
+            							required:true,
+            							url:true
+            						}
+        					},
+        					messages:{
+            						username:{
+            							required:"用户名不能为空",
+            							rangelength:"用户名长度必须在5-10之间"
+            						},
+            						password:{
+            							required:"密码不能为空",
+            							digits:"密码必须由6位数字组成",
+            							rangelength:"密码必须由6位数字组成"
+            						},
+            						mail:{
+            							required:"电子邮箱不能为空",
+            							email:"邮箱地址不合法"
+            						},
+            						url:{
+            							required:"个人网站不能为空",
+            							url:"网址不合法"
+            						}
+        					}
+					}
+				);
+				$("#btn").click(function(){   
+					alert(mysubmit.form());   
+				});   
+			});
+			
+		</script>
+	</head>
+	<body>
+		<h3>注册</h3>
+		<form action="#" id="myform" method="post">
+			用户名：<input type="text" name="username" class="required" /><br>
+			密码：<input type="password" name="password" /><br>
+			电子邮箱：<input type="text" name="mail" /><br>
+			个人网站：<input type="text" name="url" /><br>
+			<input type="submit" value=" submit注册 " />
+			<button id="btn"> button注册 </button>
+		</form>
+	</body>
+</html>

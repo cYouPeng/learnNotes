@@ -241,7 +241,8 @@
 				return new Promise((resolve, reject) => {
 					setTimeout(() => {
 						reject('cyp')
-					}, 3000)					
+					}, 3000)
+					
 				})
 			}).then((val) => {
 				console.log("succ"+val)
@@ -252,8 +253,73 @@
 	
 	
 	
+单选框radio和复选框checkbox
+<form>
+	a1:  <input type="checkbox" name="apple" value="a1" />
+	a2:  <input type="checkbox" name="apple" value="a2" />
+	<input type="submit" value="提交">
+</form>	
+
+	全都打勾，点击提交时：xxx?apple=a1&apple=a2，由此可以看到name和value的作用体现在提交表单时，radio也是如此。
+	单选框和复选框不写value，则提交表单时value值默认为on
+	文本框写不写value都是不影响的，但必须要写name
+	
+	至于你想控制对号的显示，则需要操作的是 checked 属性
+	
+	他们的value和文本框的value是不一样的，文本框的value不光会出现url后的参数中，还会显示在界面中
+		
+	有一点要注意，不管是文本框，单选框，复选框都必须要有name属性，否则提交表单时不会添加到参数中
+
+
+
+onchange  要在input内容发生改变，并且失去焦点时才会触发，可用于<input>, <select>, 和 <textarea>
+oninput   在用户输入时触发，它是在元素值发生变化时立即触发，可用于<input>, <textarea>
+onblur    在元素失去焦点时触发
+onfocus   在元素获得焦点时触发
+
+对于单选框和复选框来说，onchange和oninput事件的效果是一样的
+
+例：
+    <input @change="cc($event.target.value)" />
+    <input @blur="cc($event.target.value)" />
+    <input @input="cc($event.target.value)" />
 	
 	
 	
-					
-  
+下拉框
+	<select  id="sel">
+        <option value="aaa">A</option>
+        <option>B</option>
+        <option>C</option>
+    </select>
+	option没有value属性，那么下拉框的value就是<option>包裹的内容
+	option有value属性，那么下拉框的value就是这个option value属性的值，<option>包裹的内容仅是展示用
+	
+	也就是说，有value就用value，没有就用包裹的内容
+	
+	
+let {name: name2, age="123"} = {name: "jack"}
+console.log(name)  // 空串
+console.log(name2) //jack
+console.log(age)  //默认值123   可以用es6中的参数默认值来为解构对象中没有对应属性的变量提供默认值
+这种形式可以使用另一个变量来接收name的值，但注意此时就不能再使用name了，它会是一个空串
+此处为解构赋值两个知识点：1，重命名  2，默认值
+
+
+
+Polyfill 是一块代码（通常是 Web 上的 JavaScript），用来为旧浏览器提供它没有原生支持的较新的功能。
+
+比如说 polyfill 可以让 IE7 使用 Silverlight 插件来模拟 HTML Canvas 元素的功能，或模拟 CSS 实现 rem 单位的支持，或 text-shadow，或其他任何你想要的功能。
+
+
+MVVM      M: model 模型   后端传来的数据   
+		  V: view 视图    显示的页面
+          VM: view model 视图模型
+		  在MVVM的框架下view和model是不能直接通信的，需借助ViewModel进行通信
+		  当model发生变化，ViewModel会监听到这种变化，然后通知view做相应的改变
+		  当view发生变化，ViewModel会监听到这种变化，然后通知model做相应的改变
+		  这实际上就实现了数据的双向绑定
+
+浏览器的兼容性问题已经不再是前端的阻碍。前端的项目越来越大，项目的可维护性和扩展性、安全性等成了主要问题。  
+
+Object.keys(obj) 方法会返回一个由给定对象自身可枚举属性组成的数组

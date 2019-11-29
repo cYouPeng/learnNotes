@@ -1,0 +1,30 @@
+package exception;
+
+import java.util.InputMismatchException;
+import java.util.Scanner;
+
+public class Test2 {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Scanner input = new Scanner(System.in);
+		int result = 0;
+		try{
+			int a = input.nextInt();
+			int b = input.nextInt();
+			result = a/b;
+		}catch(InputMismatchException e){
+			System.out.println("输入的不为数字");
+			e.printStackTrace();
+		}catch(ArithmeticException e){
+			System.out.println("除数不能为0");
+		}
+		
+		System.out.println("结果："+result);
+		//情况1：try中没有任何错误：13->14->15->23
+		//情况2：try中出现错误：try中余下的代码不再执行。
+			//a：catch能够捕获这种异常类型，执行这个catch块中的代码。
+			//
+	}
+
+}

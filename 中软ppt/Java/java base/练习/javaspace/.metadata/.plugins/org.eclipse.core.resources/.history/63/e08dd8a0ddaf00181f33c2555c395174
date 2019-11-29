@@ -1,0 +1,5 @@
+package toolsclass;
+
+public class TestEqualeAndHashCode {
+
+}

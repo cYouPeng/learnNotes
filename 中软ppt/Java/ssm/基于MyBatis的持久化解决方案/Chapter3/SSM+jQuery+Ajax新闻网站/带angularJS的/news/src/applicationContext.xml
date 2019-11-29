@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+    xmlns="http://www.springframework.org/schema/beans"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+                        http://www.springframework.org/schema/beans/spring-beans.xsd
+                        http://www.springframework.org/schema/context
+                        http://www.springframework.org/schema/context/spring-context.xsd
+                        http://www.springframework.org/schema/tx
+                        http://www.springframework.org/schema/tx/spring-tx.xsd
+                        http://www.springframework.org/schema/aop
+                        http://www.springframework.org/schema/aop/spring-aop.xsd
+                        http://www.springframework.org/schema/mvc
+                        http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+                        
+  <context:property-placeholder location="classpath:db.properties"/>
+  
+  <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+    <property name="driverClassName" value="${jdbc.driver}"/>
+    <property name="url" value="${jdbc.url}"/>
+    <property name="username" value="${jdbc.username}"/>
+    <property name="password" value="${jdbc.password}"/>
+    <property name="maxActive" value="100"/>
+    <property name="maxWait" value="5000"/>
+  </bean>   
+  
+  <!-- 配置sqlSessionFactory -->   
+  <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+    <property name="dataSource" ref="dataSource"></property>
+	<property name="configLocation" value="classpath:SqlMapConfig.xml" />
+  </bean>  
+  
+  <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+	<property name="dataSource" ref="dataSource"></property>
+  </bean>  
+  
+  <tx:advice id="txAdvice" transaction-manager="transactionManager" >
+	<tx:attributes>
+	  <tx:method name="insert*" propagation="REQUIRED"/>
+	  <tx:method name="update*" propagation="REQUIRED"/>
+	  <tx:method name="delete*" propagation="REQUIRED"/>
+	  <tx:method name="do*" propagation="REQUIRED"/>
+	  <tx:method name="select*" propagation="SUPPORTS" read-only="true"/>
+	  <tx:method name="*" propagation="SUPPORTS" read-only="true"/>
+	</tx:attributes>	
+  </tx:advice>    
+  
+  <aop:config>
+	<aop:pointcut id="serviceMethods" expression="execution(* com.chinasoft.news.service.*.*(..))"/>
+	<aop:advisor advice-ref="txAdvice" pointcut-ref="serviceMethods"/>
+  </aop:config> 
+
+  <!-- 
+	  mybatis自动扫描加载数据层接口 ，为数据层注入sqlSessionFactory
+	  basePackage:指定sql映射文件/接口所在的包（自动扫描）
+  -->
+  <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+    <property name="basePackage" value="com.chinasoft.news.mapper"></property>
+    <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"></property>
+  </bean>                         
+  
+</beans>                        

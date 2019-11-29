@@ -1,0 +1,14 @@
+package string;
+/**
+ * 4.输入5个姓名，按照字符长度的升序进行排列并输出
+ * @author Administrator
+ *
+ */
+public class Lianxi4 {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		String[] names = new String[]{"张三","张三丰","李四","张三大风","赵"}
+	}
+
+}

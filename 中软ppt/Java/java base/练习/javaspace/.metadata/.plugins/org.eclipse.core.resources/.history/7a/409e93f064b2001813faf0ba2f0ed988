@@ -1,0 +1,19 @@
+package thread;
+
+public class Test {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Thread t1 = new Thread(()->{
+			while(true){
+				System.out.println("我是守护线程，我会一直在的，除非……");
+			}
+		});
+		Thread t2 = new Thread(()->{
+			while(true){
+				System.out.println("我是守护线程，我会一直在的，除非……");
+			}
+		});
+	}
+
+}

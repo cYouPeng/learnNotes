@@ -1,0 +1,116 @@
+大概：1创建 2，装在 3，渲染 4，销毁
+
+钩子函数，当触发某个状态时，执行钩子函数
+
+               创建vue对象
+		   |
+ beforeCreate <--  |
+		   |
+               观察数据(提供一个数据的观察者，观察这个数据，也就是观察$data里的数据)
+ 		   |
+		   |
+		   |
+	       初始化事件
+		   |
+   created   <--   |
+		   |
+		----------
+		| 是否有 |
+		|  el    |
+		----------
+		   |
+		   |yes
+		   |
+		----------
+		| 是否有 |
+		|  模板  |
+		----------
+		   |
+             yes           no
+	  _______________________
+	  |                      |
+	  |                      |
+	  |		         |
+        编译模板                         
+	  |                      |
+	  |                      |
+	  |______________________|
+		  |
+   beforeMount <--|
+          ________|_________		  
+	  |                 | 
+	  |   $el替换el     | 此为装载
+	  |_________________|   
+		  |
+	  ________|_________
+          |                 |	          ______________
+          |    mounted      |      ----> | when data    |  -->beforeUpdate
+          |_________________|            |   change     |       
+	          |                      |______________|               
+                  |
+       when vm.$destray()is called
+		  |
+	  ________|________ 
+          |                |
+          |  destray       |
+          |________________|                 	  
+	
+
+
+data:{
+  message:'hello'           如果message是个基本类型，改变其值，会被观察到，如为引用类型，改变其引用对象，是不会被观察到的
+			 须得改变其内部属性值
+}
+
+修改模型，视图没有更新，可查看钩子函数是否有被启动，是否有被observe观察到
+
+直接通过数组下标去改，是观察不到的，必须依靠splice()等函数
+
+页面启动就要加载的数据放在created，调用methods里的方法
+
+beforeCreate 数据没有被监听，没有挂载对象  $el:undefined  data:undefined   dom:{{}}
+
+created 数据被监听，并绑定到对象实例，但还没有挂载对象  $el:undefined   data:say   dom:{{}}
+
+beforeMount  $el对象挂载完成，模板和数据准备完成，也就是虚拟的dom结构已经创建完成，但还没有挂载到html页面中的dom
+   $el:{{}}  data:say  dom:{{}}
+
+mounted  将虚拟dom结构装载到真正的dom元素上   $el:<div>hello</div>  data:say  dom:<div>hello</div>
+
+beforeUpdate  此时$el对象已经修改完成，但页面上的dom数据还没有改变  $el:<div>world</div> data:world  dom:<div>hello</div>
+
+updated  页面上dom数据也已更新  $el:<div>world</div>   data:world   dom:<div>world</div>
+     
+
+
+                    $el            data        dom
+beforeCreate     undefined      undefined      {{}}
+ 
+created          undefined         say         {{}}
+
+beforeMount      {{}}              say         {{}}
+
+mounted      <div>say</div>        say     <div>say</div>
+
+beforeUpdate <div>talk</div>     talk      <div>say</div>
+
+updated      <div>talk</div>     talk      <div>talk</div>
+
+
+
+不离开原有页面的基础上，更改视图
+三大框架，都支持路由
+angular js不支持路由嵌套，vue可以
+vue对象.mount()可加el
+组件中data必须是一个函数
+
+六种数据类型都是小写
+Jquery没有应用es6
+body里可以保证加载顺序
+%相对有定位的父元素的百分比
+
+
+
+
+
+

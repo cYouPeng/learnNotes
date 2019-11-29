@@ -1,0 +1,11 @@
+1-创建Properties类的对象
+Properties p = new Properties();
+2-创建properties文件的输入流对象
+InputStream in = BaseDao.class.getResourceAsStream("/name.properties");
+3-Properties对象利用输入流读取文本内容
+p.load(in);  
+4-关闭输入流
+in.close(); 
+5-获得文本中的属性值
+p.containsKey("propertyName");//判断属性是否存在，返回boolean值
+p.getProperty("propertyName");//获取属性值，返回字符串  

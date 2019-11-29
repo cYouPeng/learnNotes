@@ -1,0 +1,100 @@
+关键字不区分大小写，字符串里的东西区分大小写
+
+查询有条件的时候，会把表中每一条记录对应的列的值拿来与where = 右边的值进行比较
+真正参与比较的是每一条记录的对应列的列值，真正比较的是两个值
+
+null不能用运算符比较，因为null代表不确定
+
+sal >= 2000 and sal <= 3000  ---------- sal between 2000 and 3000  较小数在前
+
+select * from emp where job = 'a' and job = 'b'
+select * from emp where job in ('a','b')   它俩结果一样，括号里值可任意多个
+
+% 任意多个字符 可为0
+- 一个任意字符  正好一个
+
+select * from emp where ename (可加not)like '%a%'  只要包含a的
+
+is null   is not null
+
+单行函数：每行函数产生一个结果
+
+dual 虚拟表         数据库下标都从1开始
+
+instr()获取指定字符第一次出现的位置
+
+trunc()保留小数位数
+
+小数部分代表秒数
+
+命令行 sqlplus  scott/orcl
+
+删除：1，先停止服务 2，删除app文件夹、开始菜单 3，删除注册表 4，删除环境变量
+
+to_char()  0代表一定要有  9 代表可有可无
+
+nvl 是判断是否为空
+select * from emp where nvl(comm,0)<1000  如果为空,就取0 来跟1000比较
+
+''(空串)就相当于null
+
+select userenvl('language')from dual 字符集
+select lengthb('你') from dual 一个汉字占几个字节
+
+组函数：多行数据产生一个结果
+一旦使用了group by，就不能再出现列名或单行函数，除非这个列是被分组的列，或者是基于被分组的列所形成的单行函数，，但可以使用多行函数
+
+组函数是不考虑null的
+
+只有在order by能用列的别名
+
+where 执行顺序是分组前，操作整个表的数据
+having 执行数序是分组后，操作聚合函数的计算结果
+
+having是对分组之后的结果再进行筛选
+
+select  from  where  group by   having  order by
+  5       1     2        3         4       6
+
+符合where条件才会进行分组函数，参与聚合运算
+不符合where条件不会进行分组           组函数也可叫聚合函数
+
+子查询：一个查询嵌套另一个查询
+除了group by  order外，where select having 列 from 都可以加子查询
+
+where having 后要是单行子查询，写一个不分组的聚合函数可以保证其结果是单行子查询
+
+子表写外键跟主表连
+
+replace(原字段,'原字段旧内容','原字段新内容')
+
+to_char : number->character   date->character
+to_number : character->number
+to_date :character->date
+
+使用了组函数就不能再使用列了
+
+having是对分组产生的聚合结果的筛选
+
+select count(*) from emp where score>60 group by class   每班及格人数
+但不能这么写  select count(*) from emp group by class having score>60  分完组之后就没有原先的数据了，所以说就找不到score了
+
+别名用汉字不用加引号
+_____________________________
+instr()找不到返回0
+instr(name,'王') = 0
+
+限定行：1,mysql:        select * from emp limit start,end
+	2,sqlserver:     select top rownum * from emp
+	3,oracle:      select * from emp where rownum <=(此处只能用<或<=)10  这个rownum代表一个虚拟的行号
+
+select * from (select * from emp order by sal desc) where rownum <=10
+
+内连接：表中的数据相互引用，只显示相互引用的数据
+外连接：1，左外连接：能够显示左表中未被引用的数据
+        2，右外连接：能够显示右表中未被引用的数据
+        3，完全外连接
+	4，交叉连接
+
+where和内连接都是显示相互引用的数据
+		               

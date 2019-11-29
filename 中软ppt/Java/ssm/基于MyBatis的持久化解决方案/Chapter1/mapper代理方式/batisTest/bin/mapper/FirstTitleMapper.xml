@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mapper.FirstTitleMapper">
+
+  <select id="selectFirstTitleById" parameterType="int" resultType="entity.FirstTitle">
+    select * from firsttitle where fid=#{param}
+  </select>
+  
+  <select id="selectFirstTitleAll" resultType="entity.FirstTitle">
+    select * from firsttitle
+  </select>
+  
+  <select id="selectFirstTitleByAll" parameterType="entity.FirstTitle" resultType="entity.FirstTitle">
+    select * from firsttitle where titlename = #{titleName} and creator = #{creator} and createtime = #{createTime}
+  </select>
+  
+  <select id="selectFirstTitleByLike" parameterType="String" resultType="entity.FirstTitle">
+    select * from firsttitle where titlename like #{titlename}
+    <!-- select * from firsttitle where titlename like '%${value}%'  -->
+  </select>
+  
+  <select id="selectFirstTitleByLikeAll" parameterType="entity.FirstTitle" resultType="entity.FirstTitle">
+    select * from firsttitle
+    <where>
+      <if test="titleName!=null and titleName!=''">
+        and titlename like #{titleName}
+      </if>
+      <if test="creator!=null and creator!=''">
+        and creator like #{creator}
+      </if>
+      <if test="createTime!=null and createTime!=''">
+        and createtime like #{createTime}
+      </if>
+    </where>
+    order by fid
+  </select>
+  
+  <insert id="insertFirstTitle" parameterType="entity.FirstTitle">
+    <selectKey keyProperty="fid" resultType="int" order="BEFORE">
+      select first_seq.nextval from dual
+      <!-- select sys_guid() from dual ʹ��uuid������ע����ݿ��ֶ��������Ҫ�ĳ�32λ�ַ�-->
+    </selectKey>
+    insert into firsttitle values(${fid},#{titleName},#{creator},#{createTime})
+  </insert>
+  
+  <update id="updateFirstTitle" parameterType="entity.FirstTitle">
+    update firsttitle set titlename = #{titleName}, creator = #{creator}, 
+                                     createtime = #{createTime} where fid = #{fid}
+  </update>
+  
+  <delete id="deleteFirstTitleById" parameterType="int">
+    delete firsttitle where fid = #{param}
+  </delete>
+  
+  <select id="selectFirstTitleByCount" resultType="int">
+    select count(fid) from firsttitle
+  </select>
+  
+  <insert id="insertFirsttitleBatch" parameterType="java.util.List">  
+    insert into firsttitle(fid,titlename,creator,createtime) 
+    select first_seq.nextval,temp.* from(
+      <foreach collection="list" item="ft" index="index" separator="union all">  
+        select #{ft.titleName},#{ft.creator},#{ft.createTime} from dual
+      </foreach>  
+    ) temp
+  </insert>  
+  
+  <update id="updateFirsttitleBatch"  parameterType="java.util.List">
+    <foreach collection="list" item="ft" index="index" open="begin" close=";end;" separator=";">
+        update firsttitle set
+        titlename = #{ft.titleName},
+        creator = #{ft.creator},
+        createtime = #{ft.createTime}
+        where fid = #{ft.fid}
+    </foreach>
+  </update>
+  
+  <delete id="deleteFirstTitleBatch" parameterType="int">
+    delete from firsttitle where fid in
+    <foreach collection="array" index="index" item="param" open="(" separator="," close=")">     
+      #{param}
+    </foreach>
+  </delete>
+
+</mapper>     

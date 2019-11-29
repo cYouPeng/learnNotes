@@ -1,0 +1,24 @@
+package date;
+
+import java.text.DateFormat;
+import java.util.Date;
+
+public class Test1 {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Date date = new Date();//当前时间
+		System.out.println(date);
+		System.out.println(date.getTime());//时间戳 1970-1-1 0:0:0.0s到date的毫秒数
+		System.out.println(new Date(1536391100000L));
+		DateFormat df1 = DateFormat.getDateInstance();
+		df1.format(date);
+		DateFormat df2 = DateFormat.getTimeInstance();
+		df2.format(date);
+		DateFormat df3 = DateFormat.getDateTimeInstance();
+		df3.format(date);
+		
+		//SimpleDateFormat
+	}
+
+}

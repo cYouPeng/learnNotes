@@ -1,0 +1,30 @@
+package atm;
+
+public class Atm {
+	User currUser;
+	User[] users;
+	
+	public void init(){
+		users = new User[3];
+		users[0] = new User();
+		users[0].id = "123456";
+		users[0].pwd = "111222";
+		users[0].name = "李*四";
+		users[0].money = 10000;
+				
+	}
+	
+	public boolean login(String id,String pwd){
+		return true;
+	}
+	public boolean saveMoney(double money){
+		
+	}
+	public boolean loadMoney(double money){
+		
+	}
+	public double getMoeny(){
+		
+	}
+	
+}

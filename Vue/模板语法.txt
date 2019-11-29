@@ -1,0 +1,86 @@
+模板语法：#app   <template> 这些都是模板语法，全都是合法的html，vue会把模板解析成render函数，你也可以直接写render函数
+
+一，插值
+	1，文本
+		最常见的数据绑定就是使用双大括号的文本插值
+			<span>{{ msg }}</span>
+		msg的值发生改变，插值处的内容也会跟着改变
+		
+		v-once可以实现一次性插值，当数据改变时，插值处的内容不会更新
+			<span v-once>{{ msg }}</span>
+			
+	2，原始 HTML
+		双大括号只会将数据解释为普通文本，如果你想解析成html，可以借助v-html
+			<p v-html="rawHtml"></p>
+			rawHtml: '<span style="color:red,font-size:2em">我是span</span>'
+		最后span会作为p的子元素而存在，而不是替换了p标签
+		
+	3，特性
+		针对html特性进行文本插值，不能使用双大括号语法，应该使用v-bind指令
+			<span v-bind:id="msg"></span>
+		如果msg的值为false, undefined, null其中一个的话，id这个特性会消失，之后你再给msg个别的值，这个特性又会出现
+		
+	4，使用 JavaScript 表达式
+		不管是用双大括号还是v-bind进行文本插值都是支持js表达式的
+			<span>{{ number + 1}}</span>
+			<span>{{ msg.split('').reverse().join('') }}</span>
+			<span v-bind:id="'cyp' + msg"></span>   注意此时msg的值再为false等，id特性不会消失，原因是和字符串拼接，都会转为字符串
+		注意只能使用单个表达式，写多个或写语句是不可以的
+		
+二，指令
+	指令是带有 v- 前缀的特殊特性，他也是一个特性，它的值是一个js表达式，即使被引号包裹，他也是一个表达式
+		<span v-if="seen"></span>
+	1，参数
+		一些指令能够接收一个参数，在指令名称之后以冒号表示
+			<a v-bind:href="url"></a>
+		在这里href是参数，告知v-bind指令将该元素的href特性与表达式url的值绑定
+		
+		还有一个v-on指令，它用于监听DOM事件
+			<a v-on:click="doSomething"></a>
+		在这里参数是监听的事件名
+		
+	2，动态参数
+		从2.6.0开始，可以用方括号括起来的js表达式作为一个指令的参数
+			<a v-bind:[attributename]="url"></a>
+		表达式attributename的值是啥，参数就是啥
+		
+		1，对动态参数的值的约束
+			表达式attributename的值应该是一个字符串，如果是其它类型的值则会报错，但null是一个例外，
+			赋给attributename一个null值可以显式地移除这个特性
+			
+			到此关于显式移除特性有了两种方法：
+				1，指令的值是false,null,undefined可以移除特性
+				2，动态参数表达式的值是null可以移除特性
+				
+		2，对动态参数表达式的约束
+			方括号里不能有引号和空格，否则会报错，变通的办法是使用计算属性
+				<a v-bind:['foo' + msg]="value"></a>    //报错
+				<a v-bind:[computedname]="value"></a>   //正确
+				computedname(){
+					return 'foo' + this.msg
+				}
+			除了不能有引号和空格，还要注意大小写的问题，在DOM中使用模板时，浏览器会把大写字符转换为小写字符
+				v-bind:[attributeName] = "value"  等于 v-bind:[attributename] = "value"
+				
+	3，修饰符
+		修饰符是以半角句号 . 指明的特殊后缀，用于指出一个指令应该以特殊方式绑定。例如，.prevent 修饰符告诉 v-on 指令对于触发的事件调用 event.preventDefault()
+			<form v-on:submit.prevent="onSubmit">...</form>
+	
+三，缩写
+	1，v-bind缩写
+		<a v-bind:href="url"></a>  可以写做  <a :href="url"></a>
+	2，v-on缩写
+		<a v-on:click="doSomething"></a>  可以写做 <a @click="doSomething"></a>
+	3，v-slot缩写
+		<template v-slot="slotProps"></template>  可以写做 <template #default="slotProps"></template>
+		不能写成 #="slotProps" 指令可以缩写的前提是要确保参数的存在，包括v-bind等
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		

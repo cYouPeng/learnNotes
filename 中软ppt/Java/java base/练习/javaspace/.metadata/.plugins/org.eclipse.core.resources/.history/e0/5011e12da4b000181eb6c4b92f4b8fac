@@ -1,0 +1,31 @@
+package io;
+
+import java.io.File;
+import java.io.IOException;
+
+public class TestFile {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+//		File f1 = new File("c:/a/Hello.txt");
+//		File f2 = new File("c:/eclipse");
+//		System.out.println(f1.getName());
+//		System.out.println(f1.getAbsolutePath());
+//		System.out.println(f1.length());
+		
+//		File newFile = new File("c:/a/newFile.abcd");
+//		try {
+//			boolean isOk = newFile.createNewFile();
+//			System.out.println(isOk);
+//			File otherFile = new File("c:/a/other.xxx");
+//			newFile.renameTo(otherFile);
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		newFile.delete();
+		
+		
+	}
+
+}

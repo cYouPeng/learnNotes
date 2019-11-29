@@ -1,0 +1,69 @@
+<el-form-item>中的prop要和<el-form>中的model中的字段和rules中的字段都要一样，否则表单验证不好使，三者都相等
+
+也可以只写prop，不写rule也是可以的，，但是如果要想resetFields()生效，prop是一定要写的，并且还要和model里字段名一样
+
+
+文件上传时判断后缀的三种方式
+ onUploadChange(file)
+  {
+    const isIMAGE = (file.raw.type === 'image/jpeg' || file.raw.type === 'image/png'|| file.raw.type === 'image/gif');
+    const isLt1M = file.size / 1024 / 1024 < 1;
+
+    if (!isIMAGE) {
+      this.$message.error('上传文件只能是图片格式!');
+      return false;
+    }
+    if (!isLt1M) {
+      this.$message.error('上传文件大小不能超过 1MB!');
+      return false;
+    }
+    var reader = new FileReader();
+    reader.readAsDataURL(file.raw);
+    reader.onload = function(e){
+        console.log(this.result)//图片的base64数据
+    }
+  }
+  
+  
+  beforeUploadFile(file) {     
+      let extension = file.name.substring(file.name.lastIndexOf('.')+1)
+      let size = file.size / 1024 / 1024
+      if(extension !== 'xlsx') {
+        this.$notify.warning({
+          title: '警告',
+          message: `只能上传Excel2017（即后缀是.xlsx）的文件`
+        });
+      }
+      if(size > 10) {
+        this.$notify.warning({
+          title: '警告',
+          message: `文件大小不得超过10M`
+        });
+      }
+    },
+	
+	
+	const suffix=/\.[^\.]+$/.exec(file.name); 
+		if(suffix[0].toLowerCase() != '.jpg' && suffix[0].toLowerCase() !='.png'){
+			this.$message({
+				message: '仅支持上传后缀为jpg/png的文件！',
+				type: 'error '
+			});
+			return false;
+		}
+		
+		
+		
+before-close	关闭前的回调，会暂停 Dialog 的关闭   
+
+	/**
+     * @title 打开新增窗口
+     * @detail 调用crud的handleadd方法即可
+     * @param row 为当前的数据
+     * @param index 为当前更新数据的行数
+     * @param done 为表单关闭函数
+     **/
+	 
+	 dialog里刚打开是不识别tinymce的  需要$nextTick()或setTimeout
+	 
+	 str.replace(pattern,str2)  replace会产生一个副本，不会在原字符串本身上进行修改

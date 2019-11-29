@@ -1,0 +1,21 @@
+package oop2;
+
+public class TestGc {
+	public static void main(String[] args){
+		
+	}
+}
+class A{
+	String name;
+	public A(String name){
+		this.name = name;
+		System.out.println("对象:"+name+"被创建");
+	}
+	@Override
+	protected void finalize() throws Throwable {
+		// TODO Auto-generated method stub
+		super.finalize();
+		System.out.println("对象:"+name+"被回收");
+	}
+	
+}

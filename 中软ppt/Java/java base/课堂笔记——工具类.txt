@@ -1,0 +1,66 @@
+Cloneable接口实现克隆是先在内存中开辟一块和原始对象一样的空间，然后原样拷贝原始对象中的内容，对基本数据类型的变量就是值复制，而引用类型变量复制的是对象的引用，所以会导致clone后的对象中所保存的引用数据类型变量和原始对象中的相应的变量所指向的是同一个对象，，这也叫做浅克隆
+
+List<Student> list = new ArrayList<>();
+list.add(stu1);
+list.remove(stu2);
+System.out.println(list.size()); //输出1，这种情况不会报错，要注意
+
+hashcode 对象的身份证号
+
+哈希表不通过equals()
+list通过equals()判断两个对象是否相同
+
+在hash集合中判断两个key是否相同，比较它俩的哈希码是否相同
+
+哈希集合，判断两个key相等，先判断equals是否为true,再判断哈希码
+当使用哈希结构时，判断两个key是否相同，先判断equals是否为true,然后再判断哈希码是否相同
+
+这个类有可能作为哈希结构的key，就必须要重写equals和HashCode方法
+比较两个对象的内容，就必须重写equals()
+
+对象相同，哈希码不一定相同  相反，哈希码相同，对象一定相同
+
+           Object        override
+equals      ==             比较所有属性值
+hashcode    返回内存地址   根据属性值计算
+toString    包，类@地址     返回属性值的字符串
+clone       protected       权限-public
+                            返回类型-子类
+                            实现深克隆
+
+外部比较器进行了排序，优点每次排序都可以采用不同规则，缺点每次排序都要准备比较器，并且类不需要修改
+使用内部比较器进行排序，缺点每次排序都采用相同规则，优点每次排序都不需要准备比较器，类需要实现Comparable接口，重写
+compareTo()方法
+
+Math.ceil(1,1)  -> 2.0    向上取整       都变负    --> 1.0  
+Math.floor(1.7) -> 1.0    向下取整                 --> 2.0
+Math.round(1.1) -> 1      四舍五入                 --> 1
+Math.round(1.7) -> 2        。。                   --> 2
+
+long round(double d)  和  int round(float f)  返回类型要注意
+
+double pi = 3.1415926;
+System.out.println(Math.round(pi*10000)/10000);
+代码明天抄
+
+文件名=逻辑名+扩展名
+File对应文件或文件夹（目录）
+File中地址   /  打一个就行
+            \\ 得打两个，否则被认为是转义字符
+路径名，文件名不区分大小写
+
+要保证调用listFiles()的对象是一个目录
+delete是彻底的删除，不仅回收站
+Java不能对文件进行复制，粘贴
+
+方法的递归调用：在一个方法中对自身进行调用
+空文件夹才能delete
+
+String path = TestFile2.class.getResource("/").getPath();
+
+Date date = new Date();
+date.getTime()  获取时间戳  从1970年1月1日到date的毫秒数
+
+客户端和服务端大多以时间戳来传递    时间戳没有时区
+
+hh 12小时制里的12 输出的是0

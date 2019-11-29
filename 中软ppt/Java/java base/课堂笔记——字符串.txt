@@ -1,0 +1,137 @@
+String s = "hello"; 这是一个字面量      任何一个字符串字面量，都被认为是一个String对象
+String s1 = new String("hello");
+	
+赋值表达式的值是被赋的值(=右边的值)
+
+String s = "lisi";
+s = null;
+System.out.println("lisi".equals(s));  字符串常量在前，字符串变量在后    这么写不会报错
+System.out.println("s".equals("lisi"));  这么写会报错
+
+System.out.println("abc".equalsIgnoreCase("ABC"));  结果为true  判断两个字符串的内容，不区分大小写
+
+char c = 'a';
+c += 25;   可以通过
+c = c+25;  不可以通过   c+25结果为int型   再把它赋给char需要进行强制类型转换
+char ch = 97;  可以通过
+
+学习方法：1，读懂 2，默写，写到一半断了，没有思路，再看源码，然后重新开始写，不要续写。
+没必要做大量题，把老师留下弄熟，，，如果方法名，参数名啥的忘了，可以先不管，不要纠结于此
+
+
+String str = "abcde|fghigk";     str.substring(5);    在下标为5之前画线    -->fghigk
+String str1 = "abcde|fg|higk";	str1.substring(5,7); 在下标为5和7之前分别画线  -->fg
+
+.bmp .jpg .png  .gif  为html可用    123(帐户名)@qq.com(服务名)
+
+new Random().nextInt(9000) + 1000   返回10000以内随机数  最小1000       都是0<=   <1  的
+对于Random来说，如果你想获取0到N之间的随机数，那么就是nextInt(N+1)就完事了，如果你想获取X到N之间那就是nextInt(N)+(X-0)
+Math.random()*9000+1000     System.out.println((int)(Math.random()*100+1));   一定注意后面表达式的括号，如果不加，先把random()产生的0.几的随机数强转成int,
+就剩个0,0乘任何数都得0
+
+System.out.println("abcdddd".compareTo("abc"));  如果长度不一样，如果是前边多出N个字符，那就输出正N
+System.out.println("abc".compareTo("abcdddd"));  如果是后边多出N个字符，那就输出负N
+
+System.out.println("abcd".compareTo("abca"));    长度相等的情况下，从第0个字符开始，两个字符串进行相同索引位置上的字符的
+相减，前边字符的ASCII码减去后边字符ASCII码，如果为0，代表两个字符串相等，接下来继续相减索引为2的两个字符串所对应的字符
+如果，输出两个ASCII码相减结果，为正数或负数，则程序执行到此结束，为0继续向下执行，
+
+
+try{
+	byte[] chars = "你好".getBytes("utf-8");
+	String s = new String(chars,"iso-8859-1");
+	System.out.println("iso"+s);
+	chars = s.getBytes("iso-8859-1");
+	System.out.println("utf-8:"new String(chars,"utf-8"));
+}catch(unsupportedEncodingException e){
+	e.printStackTrace();
+}
+
+换行 \n   回车\r  不一样
+
+
+
+分割hello11world   String[] arr = str.split("\\d"); 会分割成三份，一份hello 一份空白 一份world  
+                                                     两个数字1之间也会被拆分
+可以这么解决 String newStr = str.split("\\d+");
+
+
+
+String[] strArr = {"a","b","c"};
+System.out.println(String.join(",",strArr));   将数组按照指定分隔符给它合起来、78
+
+正则表达式：1，边界  匹配模式下才有意义 ^ $
+	    2，元字符 匹配某一特定范围的转义字符     [^]表示不再某一个范围之内     .匹配任一字符
+
+转义：1，\( ).+{ }[ ] ? * & 这些都需要转义才能代表它们本身
+      2，[ ]方括号里的内容不需要转义，即可代表本身，但 - \ 在方括号里是有特殊含义的
+
+
+普通字符加\变成特殊字符 ;   特殊字符再加\又成了普通字符
+
+  标识符中的 _ 用来间隔常量   final USER_NAME = "lisi";
+  字节码文件名里有其它类 加 $
+
+
+
+在调用split(reg)的时候，如果字符串中没有和正则表达式相匹配的子串，那就不能拆分，直接把整个字符串放到数组里
+String join(String str,String[] arr)    如果数组里只有一个元素，那么不会拼接，直接返回这个元素
+
+
+三种正则验证方式：
+String regex = "^\\d{6}$";
+1，System.out.println("110000".matches(regex));
+2, System.out.println(Pattern.matches(regex,"110000"));
+3, Pattern p = Pattern.compile(regex);
+   Matcher m = p.matcher("110000");
+   System.out.println(m.matches());
+
+1的实现是2 ， 2的实现是3  越往下越接近底层
+
+第3种方式详解：String regex = "\\d";
+	       Pattern p = Pattern.compile(regex);   //对正则进行编译
+ 	       Matcher m = p.matcher("abc1hello22");  //生成Matcher比对对象
+               while(m.find()){     //查找能够匹配正则的部分  返回boolean
+
+		String str = m.group();     //获取匹配正则的部分
+                System.out.println(str);
+	       } 
+         最后结果为  1
+		     2
+                     2
+ 
+        	System.out.println("hello"+3);
+		System.out.println("hello".concat("3"));   体会两者区别
+
+String : 使用简单，可像基本数据类型那样使用，也就是字面量
+类名不是关键字
+StringBuffer不能用+拼接，可使用append()         str.append("a").append("b")    在尾部追加， 这种调用方式称为链式调用
+
+String和StringBuffer , StringBuilder  三者之间区别
+
+1，定义方式有区别 
+   String有2种定义方式
+	String s1 = "hello";
+	String s2 = new String("hello");
+StringBuffer和StringBuilder只有1种定义方式     StringBuffer sb = new StringBuffer("hello");
+
+2，String不可修改自身内容，每一次对它的更改都会产生一个新的副本  ； 但StringBuffer和StringBuilder可修改自身内容，不会产生副本
+
+
+StringBuffer和StringBuilder的区别：StringBuilder是StringBuffer的简化版，StringBuilder是同步的，非线程安全
+
+根据"."来进行拆分的时候一定要注意 str.split("."); 这么写不是根据.来进行拆分，此时它代表任意一个字符，一定要加上\\.
+
+char[] arr = new char[]{'h','e','l','l','o'};
+		
+		System.out.println(arr);
+
+		String str = "abc bcd	faf";
+		String newStr = str.replaceFirst("\\s", "");  把字符串第一个满足正则的子串替换成第二个参数(String)
+
+
+
+		String classRegex = "^[\w[$]]+$";  []代表只能选取其中一个，你选了\\w，就不能再选$了
+		String classRegex = "^([A-Z][a-z]+)+([$]\\d+)*$";   ()表示一个组，你必须得写$，或者全不写
+
+			String[] arr = str.split("\\.");  或者split("[.]");  []里除了- \二者之外其它字符都不需要转义，即可代表它们自身

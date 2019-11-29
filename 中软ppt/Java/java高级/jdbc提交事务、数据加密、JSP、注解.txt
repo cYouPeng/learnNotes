@@ -1,0 +1,199 @@
+平常我们写的jdbc会自动提交事务
+
+如何设置手动提交：
+1，设定提交方式为非自动提交  setAuto:false
+2，反复创建statement对象并执行executeUpdate()
+3，手动提交事务(全部执行成功)
+4，在catch中回滚
+
+
+JS->JS库(JQuery,est)->JS框架(angular js,vue,react) 这三个框架都基于MVVM react只能单向绑定
+
+es6=es2015
+TypeScript出现在es6之前    iviewui.com iview官网
+
+iview中<Button></Button>等等类似只是一个组件，而不是标签，大写B只是为了方便区分
+
+前端不负责设计、图标、切图
+
+
+
+
+数据加密：
+
+       ---明文：未经加密的数据 <--
+  加密|                          |解密
+       -->密文：加密之后的数据 ---
+          秘钥：明文到密文，由秘钥和算法共同作用
+          算法：
+
+对称加密：一套算法和秘钥
+非对称加密：不共用一套，各有各的
+
+摘要 MD5 MD6
+Base64编码:只有算法(公开) 没有秘钥
+
+公钥 私钥 都是密码
+
+安装MD5  npm install --save js-md5
+在main.js里：import md5 from 'js-md5';
+	     Vue.prototype.md5 = md5;
+
+
+
+
+jsp:java server page
+
+jsp2.0:jsp + servlet
+
+servlet：java里写html
+jsp:html里写java
+
+jsp组成:1,html静态内容:| html标记    由浏览器进行渲染
+		       | html样式
+		       | js脚本
+        2，指令：由 <%@(再之后的单词为指令文字，然后为指令属性) 开头  以 %> 结尾
+           三个常见指令：page  include  target
+       
+        3,小脚本：由<% 开头  以 %> 结尾  中间书写java代码
+        4,表达式 <%=  %>   将表达式的值显示到html页面上
+        5,注释：<%--   --%>  jsp注释(不会存在于响应内容中)       <!--  -->  html注释
+        6,方法声明   不能在小脚本里定义方法
+        7,标准动作
+
+生命周期：翻译          它和编译只在第一次访问时会存在      jsp文件 转变  java文件
+         编译           java文件  转变 class文件
+         执行
+
+jsp的内置对象：9个   其中有5个特别常用  request response session application(上下文对象) out
+			            例外4个：config page  exception pageContext
+
+jsp作用范围：页面级别
+	    请求级别
+	    会话级别
+	    应用程序级别
+
+服务端页面跳转：2种方式 :请求转发   forward
+			请求重定向 redirect        注：这2种方式不能同时执行
+
+		//请求转发
+		//request.getRequestDispatcher("/Two").forward(request, response);
+		
+		//请求重定向
+		response.sendRedirect("/jspproject/Two");
+
+请求转发：url不变，它是把servlet容器传给自己的request,response对象再传给下一个页面，也就是说用的是同一套对象，在上一个页面的对象存值，在下一个页面的对象中也能取到，，对客户端来说         都是一次请求，一次响应
+请求重定向：客户端是两次请求，两次响应
+
+C -> tomcat -> one -> two ->    这是请求转发              
+			   |
+|_____<________<___________|	
+
+
+C -> tomcat -> one ->   然后C又发第二次请求  C -> tomcat -> two ->       这是请求重定向
+|		    |                        |                    |
+|____<_______<______|		    	     |_______<________<___|
+
+
+区别：1，转发是容器内部跳转，两个页面处理同样的请求和响应内容，重定向是两次请求，两次响应
+      2，转发 url不变 因为处理同一个请求响应，，重定向url会变，因为是两套请求响应
+      3，重定向没有限制跳转的范围，，转发被限制，只能是当前应用的一个动态页面   
+      4，转发不能写绝对路径，服务名，，重定向咋写都行  (指的是java代码)
+
+
+
+
+改变vm，v跟着变  但改变v的话，只是暂时的，input例外
+
+
+2种情况下表单不仅FormData  1，表单加disabled  2，name没有值
+
+type=file的表单是改变不了其样式的，只能改变label，点击也可传文件   for <=> id
+
+
+注解：
+约定优于配置
+只要JDK当中没有定义的注解就是自定义注解
+
+@Override  编译阶段执行   重写
+@FunctionalInterface  函数式接口
+@Deprecated  声明已过时方法
+@SupperWarings  警告
+@safeVarags  堆污染
+
+元注解： 定义注解的基础、工具、材料
+
+4个元注解：1，@Retention(设置自定义注解在什么阶段(编译or运行)使用)：CLASS 只有这里的东西才能被java虚拟机获取
+								    RUNTIME 运行期执行  因为其注解内容存在CLASS里，所以才是运行期运行
+								    SOURCE 编译期执行  因为其注解内容不存在CLASS里，所以不是运行期运行
+	   2，@Target 设置自定义注解能修饰的目标
+	   3，@Documented 是否形成文档
+	   4，@Inherited 注解是否具有继承性
+
+注解的成员必须得是方法
+配置注解：                       		使用注解：
+	  @Retention(RUNTIME) 				@MyAnno("/user")  //只有value可简写，，但必须保证注解所有成员都有值，默认值也算
+          @Target({TYPE,METHOD})		        public class MyClass {
+	  public @interface MyAnno {			   private int a;
+	     String value();				   @MyAnno(value="/login.do",method="GET")
+	     String method() default "POST";		   public void login(){
+	  }						   }
+	//注解的成员必须得是方法，数据类型可以使简单类型   @MyAnno(value="/register.do",method="GET")
+	// int double都可以				   public void register(){
+							   }
+					    	  	}
+测试注解：
+	Class c = MyClass.class;
+	if(c.isAnnotationPresent(MyAnno.class)){
+		MyAnno anno = (MyAnno)c.getAnnotation(MyAnno.class);
+	      //System.out.println(anno.value()+anno.method());
+		String basePath = anno.value();
+		Method[] methods = c.getMethods();       前边的c测试的应该是Type，如果只有method的注解呢？懒得测试了
+		for(Method m : methods){
+			if(m.isAnnotationPresent(MyAnno.class)){
+				MyAnno an = (MyAnno)m.getAnnotation(MyAnno.class);
+				String path = an.value();
+				String method = an.method();
+				System.out.println("访问url:"+basePath+path+"，递交方式："+method);
+			}
+		}
+	}
+isAnnotationPresent(Class c) 判断一个类型(类，方法，属性...)是否被某个参数注解注释
+
+先判断这个类有没有用这个注解，有的话，就获取这个注解，然后根据配置注解的成员获取值(肯定都能获取到值，因为使用注解时要求必须保证所有成员都有值)
+	
+	
+	
+		
+	
+	
+	
+		
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

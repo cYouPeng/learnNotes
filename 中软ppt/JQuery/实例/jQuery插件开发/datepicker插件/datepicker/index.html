@@ -1,0 +1,35 @@
+﻿<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>jQuery UI Datepicker</title>
+		<link rel="stylesheet" href="themes/base/jquery.ui.all.css">
+		<script src="js/jquery-2.1.1.min.js"></script>
+		<script src="js/jquery.ui.core.js"></script>
+		<script src="js/jquery.ui.widget.js"></script>
+		<script src="js/jquery.ui.datepicker.js"></script>
+		<link rel="stylesheet" href="css/demos.css">
+		<script>
+			$(function() {
+				$( "#datepicker" ).datepicker(
+					{
+    					dateFormat: 'yy-mm-dd',           //日期格式
+						showButtonPanel: true,            //面板上是否显示按钮
+						currentText:"今天",               //toTay按钮上的文字（必须与showButtonPanel结合使用）
+						closeText:"关闭",                 //close按钮上的文字（必须与showButtonPanel结合使用）
+						//changeYear:true,                  //年份使用下拉列表选择
+						//定义星期文字
+						dayNamesMin:['一', '二', '三', '四', '五', '六', '日'],
+						yearRange: '2000:2050',           //年份范围
+						numberOfMonths:1,                 //显示月份数量。如果是数组，则代表行列形式显示
+						//定义月份文字
+    					monthNames:['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月']      
+    				}
+				);
+			});
+		</script>
+	</head>
+	<body>
+		<p>日期: <input type="text" id="datepicker"></p>
+	</body>
+</html>

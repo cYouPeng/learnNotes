@@ -1,0 +1,64 @@
+package io;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
+public class TestInputStream1 {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+//		File file = new File("c:/a/hello.txt");
+//		InputStream is = new FileInputStream(file);
+		InputStream is = null;
+		OutputStream os = null;
+		try {
+			is = new FileInputStream("F:/1813/录屏/javaoop/8-31#泛型1.wmv");
+			os = new FileOutputStream("c:/new.wmv");
+//			int len = is.available();
+//			System.out.println(len);
+//			byte[] b = new byte[len];
+//			is.read(b);
+//			os.write(b);
+			byte[] b = new byte[1024*10];
+			while(true){
+				int readLen = is.read(b, 0, b.length);
+				System.out.println(readLen);
+				os.write(b, 0, readLen);
+				if(readLen<b.length){
+					break;
+				}
+			}
+			
+			
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally{
+			if(is!=null){
+				try {
+					is.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			if(os!=null){
+				try {
+					os.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		
+	}
+
+}

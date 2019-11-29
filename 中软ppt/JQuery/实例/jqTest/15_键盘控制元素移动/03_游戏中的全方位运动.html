@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<style>
+			#box{
+				position: absolute;
+				width: 100px;
+				height: 100px;
+				background: red;
+				left: 100px;
+				top: 100px;
+			}
+		</style>
+		<script type="text/javascript" src="../js/jquery-1.11.3.js" ></script>
+		<script>
+			$(function(){
+				var speed = 6;
+				
+				var flagLeft = false;
+				var flagRight = false;
+				var flagTop = false;
+				var flagBottom = false;
+
+				var box = $("#box");
+				
+				var x = 100;
+				var y = 100;
+				
+				$(document).keydown(function(event){
+					//37:左    39：右    38：上   40：下
+					if(event.which == 37){
+						flagLeft = true;
+					}
+					if(event.which == 39){
+						flagRight = true;
+					}
+					if(event.which == 38){
+						flagTop = true;
+					}
+					if(event.which == 40){
+						flagBottom = true;
+					}
+				});
+				
+				$(document).keyup(function(event){
+					if(event.which == 37){
+						flagLeft = false;
+					}
+					if(event.which == 39){
+						flagRight = false;
+					}
+					if(event.which == 38){
+						flagTop = false;
+					}
+					if(event.which == 40){
+						flagBottom = false;
+					}
+				});
+				
+				setInterval(function(){
+					if(flagLeft){
+						x -= speed;
+					}
+					if(flagRight){
+						x += speed;
+					}
+					if(flagTop){
+						y -= speed;
+					}
+					if(flagBottom){
+						y += speed;
+					}
+					box.css("left",x).css("top",y);
+				},24);
+			});
+		</script>
+	</head>
+	<body>
+		<div id="box"></div>
+	</body>
+</html>

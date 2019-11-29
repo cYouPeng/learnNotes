@@ -1,0 +1,46 @@
+package toolsclass;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class TestEqualeAndHashCode {
+	public static void main(String[] args){
+		String s1 = new String("hello");
+		String s2 = new String("hello");
+		System.out.println(s1.equals(s2));//true
+		Student stu1 = new Student(1,"lisi");
+		Student stu2 = new Student(1,"lisi");
+		System.out.println(stu1.equals(stu2));//?
+		
+		ArrayList<Student> list = new ArrayList();
+		list.add(stu1);
+		list.remove(stu2);
+		System.out.println(list.size());
+	}
+}
+class Student{
+	private int id;
+	private String name;
+	public Student(int id, String name) {
+		super();
+		this.id = id;
+		this.name = name;
+	}
+	@Override
+	public boolean equals(Object obj) {
+		// TODO Auto-generated method stub
+		if(this == obj){
+			return true;
+		}
+		Student other = (Student)obj;
+		if(this.id != other.id){
+			return false;
+		}
+		if(this.name==null || !this.name.equals(other.name)){
+			return false;
+		}
+		return true;
+		
+	}
+	
+}

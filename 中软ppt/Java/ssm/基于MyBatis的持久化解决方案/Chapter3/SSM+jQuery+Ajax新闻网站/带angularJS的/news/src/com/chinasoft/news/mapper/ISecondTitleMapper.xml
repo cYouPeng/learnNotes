@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.chinasoft.news.mapper.ISecondTitleMapper">
+
+  <resultMap type="secondTitle" id="stResultMap">
+    <id column="sid" property="sid"/>
+    <result property="titleName" column="titlename" />
+    <result property="newContent" column="newcontent" />
+    <result property="creator" column="creator" />
+    <result property="createTime" column="createtime" />
+    <result property="parentTitleId" column="parenttitleid" />
+    <association property="ft" javaType="firstTitle">
+	  <id property="fid" column="fid"/>
+	  <result property="titleName" column="ftTitleName"/>
+	  <result property="creator" column="ftCreator"/>
+	  <result property="createTime" column="ftCreateTime"/>
+	</association>
+  </resultMap>
+
+  <select id="selectSecondTitleByFid" parameterType="int" resultType="secondTitle">
+    select * from secondtitle where parentTitleId = #{param} order by sid
+  </select>
+  
+  <select id="selectSecondTitleById" parameterType="int" resultType="secondTitle">
+    select * from secondtitle where sid = #{param}
+  </select>
+  
+  <select id="selectSecondTitleAll" resultMap="stResultMap">
+    select s.*,
+           f.fid,
+           f.titlename ftTitleName,
+           f.creator ftCreator,
+           f.createtime ftCreateTime
+    from firsttitle f,secondtitle s 
+    where f.fid=s.parentTitleId
+    order by s.sid
+  </select>
+  
+  <resultMap type="secondTitle" id="stResultMapByLazy">
+    <id column="sid" property="sid"/>
+    <result property="titleName" column="titlename" />
+    <result property="newContent" column="newcontent" />
+    <result property="creator" column="creator" />
+    <result property="createTime" column="createtime" />
+    <result property="parentTitleId" column="parenttitleid" />
+    <association property="ft" 
+                 javaType="firstTitle" 
+                 select="com.chinasoft.news.mapper.IFirstTitleMapper.selectFirstTitleById" 
+                 column="parenttitleid"/>
+  </resultMap>
+  
+  <select id="selectSecondTitleAllByLazy" resultMap="stResultMapByLazy">
+    select * from secondtitle order by sid
+  </select>
+  
+  <insert id="insertSecondTitle" parameterType="secondTitle">
+    insert into secondtitle values(second_seq.nextval,#{titleName},#{newContent},#{creator},#{createTime},#{parentTitleId})
+  </insert>
+  
+  <update id="updateSecondTitle" parameterType="secondTitle">
+    update secondtitle set titlename = #{titleName}, newcontent = #{newContent},creator = #{creator}, createtime = #{createTime}, parenttitleid = #{parentTitleId} where sid = #{sid}
+  </update>
+  
+  <delete id="deleteSecondTitleByFid" parameterType="int">
+    delete secondtitle where parenttitleid = #{fid}
+  </delete>
+  
+  <delete id="deleteSecondTitleById" parameterType="int">
+    delete secondtitle where sid = #{sid}
+  </delete>
+ 
+</mapper>

@@ -1,0 +1,132 @@
+一，绑定 HTML Class
+	1，对象语法
+		可以传给v-bind:class一个对象，以动态地切换class
+			<span class="a1" :class="{a2: isshow, a3: isshow2}">123</span>
+		a2 a3 的存在与否取决于isShow是true还是false，当这个值变化时，class列表将相应地更新
+		可以与普通class属性共存，渲染之后都是在一个class里  class="a1 a2 a3"
+		
+		这个对象也可以写在data里
+			<span :class="classObject"></span>
+			data(){
+				return{
+					classObject: {
+						a2: true,
+						a3: false
+					}
+				}
+			}
+		也可以使用计算属性，更加强大
+			<span :class="classlist"></span>    
+			computed: {
+				classlist(){
+					return {
+						a2: this.isshow && this.isshow2,
+						'a3-a': this.isshow || this.isshow2    //属性名如果带 - 的话，需要加引号
+					}
+				}
+			}
+			
+	2，数组语法
+		可以传给v-bind:class一个数组，以应用一个 class 列表
+			<span class="a1" :class="[a2, a3]">123</span>
+			data: {
+				a2: 'apple',
+				a3: 'pear'
+			}
+			渲染为
+			<span class="a1 apple pear">123</span>
+			
+		如果你想根据条件来切换class，可以用三元表达式
+			<span class="a1" :class="[isshow ? a2 : '', a3]">123</span>
+			data: {
+				isshow: false,
+				a2: 'apple',
+				a3: 'pear'
+			}
+		但这样的class有多个时，这么写就有点麻烦了，可以使用对象语法
+			<span class="a1" :class="[{a2: isshow}, a3]">123</span>
+			data: {
+				isshow: true,
+				a2: 'apple',
+				a3: 'pear'
+			}
+		a3将始终添加，a2将根据isshow的值决定是否添加
+			
+	3，用在组件上
+		当在一个自定义组件上使用class属性时，这些class将被添加到组件的根元素上面，这个元素上已经存在的class不会被覆盖，
+		而是合并
+			<my-component class="baz boo"></my-component>
+			Vue.component('my-component', {
+				template: '<p class="foo bar">Hi</p>'
+			})
+			渲染为
+			<p class="foo bar baz boo">Hi</p>
+			
+		你也可以使用对象或数组语法
+			<my-component :class="{baz: isBaz}"></my-component>   //baz是字符串  isBaz是变量
+			<my-component :class="[baz, boo]"></my-component>     //baz和boo都是变量
+			
+二，绑定内联样式
+	1，对象语法
+		和class差不多
+			<span :style="{color: acolor, fontSize: size + 'px', 'font-weight': weight}">123</span>
+			data: {
+				acolor: 'red',
+				size: 30,
+				weight: 700
+			}
+		css属性名可以使用驼峰式，或者短横线分隔(但是这种要加引号)	
+			
+		也可以把对象写在data里
+			<span :style="cssObject">123</span>
+			data: {
+				cssObject: {
+					color: 'red',
+					fontSize: '30px'
+				}
+			}
+		也可以写在计算属性里
+			computed: {
+				csslist(){
+					return {
+					   color: 'red',
+					   fontSize: '30px'
+					}
+				}
+			}
+			
+	2，数组语法
+		v-bind:style 的数组语法可以将多个样式对象应用到同一个元素上
+			<span :style="[cssObject, cssObject2]">123</span>
+			data: {
+				cssObject: {
+					color: 'red',
+					fontSize: '30px'
+				},
+				cssObject2: {
+					fontWeight: 700
+				}
+			}
+			渲染为
+			<span style="color: red; font-size: 30px; font-weight: 700;">123</span>
+			
+	3，自动添加前缀
+
+	4，多重值
+		属性值可以是一个数组
+			<div :style="{ display: ['flex', '-webkit-box', '-ms-flexbox'] }"></div>
+			渲染为
+			<div style="display: -webkit-box;"></div>
+		这样写只会渲染数组中最后一个被浏览器支持的值
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			

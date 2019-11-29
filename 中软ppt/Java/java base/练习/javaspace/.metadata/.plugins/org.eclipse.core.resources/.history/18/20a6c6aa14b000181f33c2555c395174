@@ -1,0 +1,13 @@
+package io;
+
+public class Test {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		//方法的递归调用，在一个方法中对自身进行调用
+		new Test().method();
+	}
+	public void method(){
+		this.method();//递归调用
+	}
+}

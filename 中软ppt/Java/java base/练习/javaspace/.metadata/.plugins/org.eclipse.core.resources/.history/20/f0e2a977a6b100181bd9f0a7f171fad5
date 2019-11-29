@@ -1,0 +1,48 @@
+package net;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.Socket;
+import java.net.UnknownHostException;
+
+public class Client {
+	public static void main(String[] args){
+		String ip = "33.33.33.100";
+		int port = 8000;
+		try {
+			//建立客户端Socket对象，设定访问的服务的ip和端口
+			Socket socket = new Socket(ip,port);
+			System.out.println("建立连接");
+			//获取输出流，
+			//BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+
+			//发送请求报文
+			//bw.write("hello");
+			OutputStream os = socket.getOutputStream();
+			os.write("\nhello\n".getBytes());
+			
+			System.out.println("请求报文发送完毕");
+			//获取输入流
+			BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			//接受响应报文
+			System.out.println("接受响应报文");
+			while(br.ready()){
+				System.out.println(br.readLine());
+			}
+			//关闭资源
+			
+			br.close();
+			//bw.close();
+			os.close();
+			socket.close();
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+}

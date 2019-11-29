@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<script type="text/javascript" src="../js/jquery-1.11.3.js" ></script>
+		<script>
+			$(function(){
+				var userInput = $("#userInput");
+				var filterText = $("#filterText");
+				var btn = $("#btn");
+				btn.click(function(){
+					var reg = /<[^<>]+>/g;
+					filterText.val(userInput.val().replace(reg, ""));
+				});
+			});
+		</script>
+	</head>
+
+	<body>
+		<textarea id="userInput" rows="10" cols="50"></textarea>
+		<textarea id="filterText" rows="10" cols="50"></textarea><br>
+		<input id="btn" type="button" value="过滤文本">
+	</body>
+
+</html>

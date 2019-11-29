@@ -1,0 +1,104 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		<style>
+			#picture{
+				width: 420px;
+				height: 280px;
+				background: #999;
+				margin:0 auto;
+				position: relative;
+			}
+			img{
+				position: absolute;
+				left: 10px;
+				top:10px;
+				display: none;
+			}
+			img:first-child{
+				display: block;
+			}
+			#picture div{
+				width: 200px;
+				height: 10px;
+				position: absolute;
+				left: 120px;
+				top:250px;
+			}
+			#picture div table{
+				width: 20px;
+				height: 10px;
+				background: #CCC;
+				float: left;
+				margin-right: 5px;
+				outline: none;
+			}
+			#picture div table:first-child{
+				background: #FFF;
+			}
+		</style>
+		<script type="text/javascript" src="../js/jquery-1.11.3.js" ></script>
+		<script>
+			$(function(){
+				var imgArr = $("#picture").find("img");
+				var tableArr = $("#picture").find("table");
+				
+				var index = 0;
+				var myTimer = null;
+				
+				myTimer = setInterval(move,3000);
+				
+				function move(){
+					if(index==imgArr.size()-1){
+						index = 0;
+					}else{
+						index++;
+					}
+					init();
+					imgArr.eq(index).fadeIn("fast");
+					tableArr.eq(index).css("background-color","#FFF");
+				}
+				
+				tableArr.click(function(){
+					index = $(this).index();
+					clearInterval(myTimer);
+					init();
+					imgArr.eq(index).fadeIn("fast");
+					tableArr.eq(index).css("background-color","#FFF");
+					myTimer = setInterval(move,3000);
+				});
+				
+				function init(){
+					imgArr.hide();
+					tableArr.css("background-color","#CCC");
+				};
+				
+			});
+
+		</script>
+	</head>
+	<body>
+		<div id="picture">
+			<img src="images/0.jpg">
+			<img src="images/1.jpg">
+			<img src="images/2.jpg">
+			<img src="images/3.jpg">
+			<img src="images/4.jpg">
+			<img src="images/5.jpg">
+			<img src="images/6.jpg">
+			<img src="images/7.jpg">
+			<div>
+				<table><tr><td></td></tr></table>
+				<table><tr><td></td></tr></table>
+				<table><tr><td></td></tr></table>
+				<table><tr><td></td></tr></table>
+				<table><tr><td></td></tr></table>
+				<table><tr><td></td></tr></table>
+				<table><tr><td></td></tr></table>
+				<table><tr><td></td></tr></table>
+			</div>
+		</div>
+	</body>
+</html>

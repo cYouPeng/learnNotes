@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<script type="text/javascript" src="js/jquery-1.11.3.js" ></script>
+		<script type="text/javascript" src="js/fdj.js" ></script>
+	</head>
+	<script>
+		$(function(){
+			//可根据图片和放大倍数，自动调整插件尺寸
+			$("#fdj1").fdj({
+				"width":900,                                             //原始图片宽度
+				"height":900,                                           //原始图片高度
+				"times":3,                                                  //放大倍数
+				"mengbanColor":"yellow",                    //放大区域颜色
+				"opacity":0.4,                                            //放大区域透明度
+			});
+		})
+	</script>
+
+	<body>
+		<!--这里是大图片-->
+		<div id="fdj1"><img src="images/d1.jpg" ></div>
+	</body>
+
+</html>

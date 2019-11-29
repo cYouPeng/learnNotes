@@ -1,0 +1,27 @@
+package exception;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Test1 {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+//		List list = new ArrayList();
+//		list.add(1, "hello");
+		Integer.parseInt("abc");
+		
+//		Object num = 1;
+//		System.out.println((Double)num); 
+//		
+//		Scanner input = new Scanner(System.in);
+//		int a = input.nextInt();
+//		int b = input.nextInt();
+//		if(b!=0){
+//			int c = a/b;
+//	
+//			System.out.println(c);
+//		}
+	}
+
+}

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<style>
+		        #container{
+		        	        width: 240px;
+		        	        height: 160px;
+		        	        border: solid 1px #AAA;
+		        	        margin: 0 auto;
+		        	        position: relative;
+		        }
+		         #container table{
+		         	margin-top: 10px;
+		         	margin-left: 20px;
+		         }
+			#div1 {
+				width: 160px;
+				height: 40px;
+				background: yellow;
+				border: solid 1px darkorange;
+				display: none;
+				position: absolute;
+				left: 40px;
+				top: 105px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="container">
+			<table>
+				<tr>
+					<th colspan="2">登录</th>
+				</tr>
+				<tr>
+					<td>用户名</td>
+					<td><input type="text" /></td>
+				</tr>
+				<tr>
+					<td>密码</td>
+					<td><input type="password" /></td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						<label><input type="checkbox" >一个月内自动登录</label>
+						<div id="div1">请不要在网吧等公共场合使用该功能！</div>
+					</td>
+				</tr>
+				<tr>
+					<td></td>
+					<td><input type="submit" /> <input type="reset" /></td>
+				</tr>
+			</table>
+		</div>
+
+	</body>
+
+</html>

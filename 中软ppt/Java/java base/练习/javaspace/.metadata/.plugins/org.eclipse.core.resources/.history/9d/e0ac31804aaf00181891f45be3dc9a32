@@ -1,0 +1,21 @@
+package exception;
+
+public class TestThrow1 {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		double s1 = calcArea(10);
+		System.out.println(s1);
+		double s2 = calcArea(-10);
+		System.out.println(s2);
+		
+	}
+	public static double calcArea(int r){
+		if(r<=0){
+			throw new RuntimeException();
+		}
+		return r*r*Math.PI;
+		
+	}
+
+}

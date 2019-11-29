@@ -1,0 +1,29 @@
+自定义类型转换器
+springmvc配置文件中增加以下节点
+    <mvc:annotation-driven conversion-service="conversionService"/>
+   
+    <bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+        <property name="converters">
+            <set>
+                <ref bean="dateConvert"/>
+            </set>
+        </property>
+    </bean>
+
+    <bean id="dateConvert" class="com.convert.DateConvert"/>
+
+实现org.springframework.core.convert.converter.Converter接口的convert方法
+public class DateConvert implements Converter<String, Date> {
+
+    @Override
+    public Date convert(String stringDate) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            return simpleDateFormat.parse(stringDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+}

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>二级标题列表</title>
+		<link rel="stylesheet" href="css/common.css" />
+		<script type="text/javascript" src="../js/jquery-1.11.3.js"></script>
+		<script type="text/javascript" src="../js/authorization.js"></script>
+		<script type="text/javascript" src="../js/common.js"></script>
+		<script>
+			$(function(){
+				var str = "";
+				$.ajax({
+		    		type:"post",
+		        	url:"../st/selectSecondTitleAll.do",
+		        	success:function(data,stutas,xhr){
+		        		for(i in data){
+			        		str += "<tr>"+
+								       "<td>"+data[i].sid+"</td>"+
+									   "<td>"+data[i].titleName+"</td>"+
+									   "<td>"+data[i].creator+"</td>"+
+									   "<td>"+data[i].createTime+"</td>"+
+									   "<td>"+data[i].ft.titleName+"</td>"+
+									   "<td><a href='updateSecond.html?sid="+data[i].sid+"'>更新</a></td>"+
+									   "<td><button onclick='del("+data[i].sid+")'>删除</button></td>"+
+									"</tr>";
+			        	}
+		        		$("#stList").html(str);
+		        	},
+		        	error:function(xhr,error){
+		        		alert("请求失败！");
+		        	}
+				});
+			});
+			function del(sid){
+				if(!window.confirm("你确认要删除吗？")){
+					return false;
+				}
+				$.ajax({
+		    		type:"post",
+		        	url:"../st/deleteSecondTitleById.do",
+		        	data:{
+		        		"sid":sid
+		        	},
+		        	success:function(data,stutas,xhr){
+		        		if(data=="1"){
+			        		window.location.href="secondList.html";
+			        	}else{
+			        		window.location.href="error.html";
+			        	}
+		        	},
+		        	error:function(xhr,error){
+		        		alert("请求失败！");
+		        	}
+				});
+			}
+		</script>
+	</head>
+	<body>
+		<div class="container">
+			<div class="box">
+				<div class="title">
+					<span>二级标题列表</span>
+				</div>
+				<div class="content">
+					<table class="dataList">
+						<tr>
+							<th>二级标题ID</th>
+							<th>二级标题名称</th>
+							<th>创建者</th>
+							<th>创建时间</th>
+							<th>所属一级标题</th>
+							<th>更新</th>
+							<th>删除</th>
+						</tr>
+						<tbody id="stList"></tbody>
+						<tr>
+							<td colspan="6"><a href="">上一页</a>&nbsp;|&nbsp;<a href="">下一页</a></td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

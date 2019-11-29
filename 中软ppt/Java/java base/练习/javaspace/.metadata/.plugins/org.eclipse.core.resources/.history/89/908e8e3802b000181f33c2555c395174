@@ -1,0 +1,54 @@
+package toolsclass;
+
+import java.util.Arrays;
+import java.util.Comparator;
+
+public class TestComparable {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Stu[] arr = new Stu[]{
+				new Stu(1,"lisi"),
+				new Stu(3,"wangwu"),
+				new Stu(2,"zhaoliu")
+		};
+		Arrays.sort(arr, new Comparator<Stu>(){
+
+			@Override
+			public int compare(Stu stu1, Stu stu2) {
+				// TODO Auto-generated method stub
+				return stu1.getId()-stu2.getId();
+			}
+			
+		});
+		
+	}
+
+}
+
+class Stu{
+	private int id;
+	private String name;
+	public Stu(int id, String name) {
+		super();
+		this.id = id;
+		this.name = name;
+	}
+	@Override
+	public String toString() {
+		return "Stu [id=" + id + ", name=" + name + "]";
+	}
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+}

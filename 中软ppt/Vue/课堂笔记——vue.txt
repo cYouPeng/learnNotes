@@ -1,0 +1,216 @@
+mvc m 模型 v 视图  c控制(控制器在程序中只有一个，管理前面两者的关系)
+mvvm  vm视图模型
+
+angular js 谷歌的  react适合大型目  vue适合小项目
+
+new Vue里的data必须给值，true "" 这些都行
+v-html优先于模板{{}}  模板只能处理纯文本
+表达式一定会产生一个结果  
+v-on可简写@
+v-if和v-else一定要挨着
+
+data的值不能直接是个数组，得是一个json
+
+easyui validate等插件 bootstrap  响应、弹式布局
+
+表单元素才有v-model
+el:vue对象能够作用的区域
+
+axios调用方法返回的是promise对象
+get用params来提交，，post用data提交
+params中的内容不能放到请求体中，data的内容可以是json一定要放在请求体中
+
+
+axios中一定要有baseURL
+
+请求结构：
+url
+baseURL
+method
+headers
+params
+data
+responseType(默认json)
+timeout
+
+发送请求时配置对象中的值 > 全局默认值 > 实例库中的值    优先级
+
+[]代表可有可无  <>代表必须有
+
+提交数据的方式：
+请求：请求参数  (get只能提交这种) js:手动拼，jq:$().serialize()，axios:构建json
+      json     js jq要调用JSON.stringify()  vue不用
+      FormData  new FormData
+
+提交的文件中有二进制数据时，必须用FormData(声音，图片)
+
+只有表单控件才会有双向绑定，类似p标签只有单向绑定，从data到控件，只改变控件的内容是不会影响到data的
+
+$refs  里包含了使用ref属性的dom元素或子组件
+ref 被用来给元素或子组件注册引用信息。引用信息将会注册在父组件的 $refs 对象上。如果在普通的 DOM 元素上使用，引用指向的就是 DOM 元素; 如果用在子组件上，引用就指向组件实例:
+
+typeof this.$el  => object  确实是小写的o
+也可这样写 typeof(this.$el)
+
+<div @click="b1">你好    //如果子节点没有声明点击事件，那么点击子节点也会触发b1，但是如果子节点也同时声明了点击事件，那么再点击子节点就会b2，
+	<div @click="b2">胖麦浪</div>
+</div>
+
+
+<form @submit.prevent="b1"     @submit.prevent>		 //默认提交按钮点击之后会刷新页面，想阻止这种情况，可以在增加prevent修饰符，第一种情况同时还会执行b1方法,							  	//有一点注意：@submit只能放在form里
+	<input type="submit" value="提交" />
+</form>  
+
+
+v-if v-for都可以用在<template>上，v-show不能用在其上
+
+<li v-for="(value,key,index) in/of object">{{value}}---{{key}}--{{index}}</li> //遍历对象，最多有三个参数，值，键，索引
+<li v-for="value in/of object">{{value}}</li>
+
+<li v-for="item in/of items">{{item}}</li>                                     //遍历数组，最多有两个参数，元素，索引
+<li v-for="(item,index) in/of items"></li>
+
+<button @click="count += 1">增加1</button>
+<button @click="count = 0">归零</button>    //可以直接在click后写简单的表达式
+
+
+<input type="checkbox" value="jack" v-model="arr" />
+<input type="checkbox" value="milk" v-model="arr" />   //arr是一个数组，复选框的v-model，点上对号会把value放进数组里，取消对号则会把value从数组里移除
+
+<input type="radio" value="jack" v-model="arr" />
+<input type="radio" value="milk" v-model="arr" />   //checkbox与radio的区别不在于name，而在于v-model上
+
+select  v-model的值就是所选option的value
+
+
+<!-- 当选中时，`picked` 为字符串 "a" -->
+<input type="radio" v-model="picked" value="a">
+<!-- `toggle` 为 true 或 false -->
+<input type="checkbox" v-model="toggle">
+<!-- 当选中时，`selected` 为字符串 "abc" -->
+<select v-model="selected">
+  <option value="abc">ABC</option>
+</select>
+
+
+			let tem = {template:'hello world'}
+			new Vue({
+				el:'#app',
+				components:{
+					'my-component':tem
+				}
+			})
+
+
+
+
+组件名定义为tagName,那么在html中使用组件时需要这么写<tag-name></tag-name>  这是由js转到了html  才需要如此转换
+在js中使用驼峰命名的，在html里都要加个-
+
+
+不应该在子组件自身内操作props
+
+Vue.component('example', {
+  props: {
+    // 基础类型检测 （`null` 意思是任何类型都可以）
+    propA: Number,
+    // 多种类型
+    propB: [String, Number],
+    // 必传且是字符串
+    propC: {
+      type: String,
+      required: true
+    },
+    // 数字，有默认值
+    propD: {
+      type: Number,
+      default: 100
+    },
+    // 数组／对象的默认值应当由一个工厂函数返回
+    propE: {
+      type: Object,
+      default: function () {
+        return { message: 'hello' }
+      }
+    },
+    // 自定义验证函数
+    propF: {
+      validator: function (value) {
+        return value > 10
+      }
+    }
+  }
+})
+type 可以是下面原生构造器：
+
+String
+Number
+Boolean
+Function
+Object
+Array
+
+
+子传父通信组件中  事件  命名：不能有大写字母，可以用短横分隔
+
+vue中函数命名：不能用短横分隔(报: Unexpected token -)，其它类似驼峰命名都可以
+
+组件命名：因为html是不区分大小写，而js是区分大小写的，所以你在js里使用大写字母，那么在html里使用的得在大写字母前加个短横，或者都使用短横命名，这样更规范一些。。
+
+template命名：没有什么限制，两边都保持一致即可
+
+props命名：全小写
+
+props: ['initialCounter'],
+props: {
+    // 基础类型检测 （`null` 意思是任何类型都可以）
+    propA: Number,
+    // 多种类型
+    propB: [String, Number],
+    // 必传且是字符串
+    propC: {
+      type: String,
+      required: true
+    },
+    // 数字，有默认值
+    propD: {
+      type: Number,
+      default: 100
+    },
+    // 数组／对象的默认值应当由一个工厂函数返回
+    propE: {
+      type: Object,
+      default: function () {
+        return { message: 'hello' }
+      }
+    },
+    // 自定义验证函数
+    propF: {
+      validator: function (value) {
+        return value > 10
+      }
+
+<my-component @click="show"></my-component>   //给根元素添加点击事件
+<my-component @open="show"></my-component>   //子组件$emit触发open事件
+需要注意的是第一种情况，如果你想给普通html标签添加事件,@click="xx"即可；但是如果你想给组件的根元素添加事件，直接这么写是不会起作用的，必须使用.native修饰符，即@click.native="xx"，这样不管你点击组件上的任何地方，都会触发这个事件
+
+语法糖：语法层面没有什么改变，只是在使用上更加方便程序员理解和使用
+
+is:可以在这些受限制的html元素中使用vue模板
+<ul>
+  <li is="my-component"></li>
+</ul>
+而不能使用下面的方式，因为下面的方式会将自定义组件<my-component>当做无效的内容，导致错误的渲染结果
+<ul>
+  <my-component></mu-component>
+<ul>
+
+<my-Comp>
+   <p>hello</p>
+   <a>href</a>
+   <span slot="wrap">hello world</span>
+</my-Comp>
+<template>
+   <slot></slot>  //注意这里要是没有不具名插槽，那么上面的p和a标签不会被渲染出来
+   <slot name="wrap"></slot>
+</template>

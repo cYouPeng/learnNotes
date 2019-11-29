@@ -1,0 +1,85 @@
+一，计算属性
+	模板中的表达式是非常便利的，但如果表达式比较复杂，就会导致模板过重且难以维护，此时你可以使用计算属性
+	1，基础例子
+		<span>{{reversedMessage}}</span>
+		computed: {
+			reversedMessage(){
+				return this.message.split('').reverse().join('')
+			}
+		}
+		这里我们声明了一个计算属性 reversedMessage。我们提供的函数将用作属性 vm.reversedMessage 的 getter 函数
+		你可以像绑定普通属性一样在模板中绑定计算属性。Vue 知道 vm.reversedMessage 依赖于 vm.message，因此当 vm.message 发生改变时，所有依赖 vm.reversedMessage 的绑定也会更新
+	
+	2，计算属性缓存 vs 方法
+		其实上述我们调用方法也可以达到同样的效果
+			<span>{{ reversedMessage() }}</span>
+			methods: {
+				reversedMessage(){
+					return this.message.split('').reverse().join('')
+				}
+			}
+		他们俩肯定是有区别的
+			计算属性的getter在第一次执行的时候，会把返回的值缓存起来，以后再次访问该计算属性得到的是缓存的值，
+			同时计算属性是基于响应式依赖的，就像上述的message，只有响应式依赖改变了，计算属性的getter函数才会重新执行
+				computed: {
+					now(){
+						return Date.now();
+						//没有响应式依赖，该函数只会执行一次，每次获取的都是缓存的值
+					}
+				}
+		
+			方法在每次访问的时候都会重新执行函数，它是没有缓存的
+			
+			这也就意味着在做一些开销比较大的操作时，使用计算属性可以提高性能，因为它可以把结果缓存起来
+			
+	3，计算属性 vs 侦听属性
+		
+		
+	4，计算属性的 setter
+		计算属性默认是只有getter的，如果你想给计算属性重新赋值是会报错的，此时你必须写上setter
+			computed: {
+				now: {
+					get: function(){
+						return this.time + '123'
+					},
+					set: function(newValue){
+						this.time = newValue;
+						//如果计算属性不是响应式依赖，那么setter就没用了
+					}
+				}
+			}
+			methods: {
+				this.now = '2019'
+			}
+		
+二，侦听器
+	当需要在数据变化时执行异步或开销较大的操作时，这个方式是最有用的。
+		data(){
+			return{
+				name: 'Jack'
+			}
+		}
+		watch: {
+			name(newValue, oldValue){
+				doSomething...
+			}
+		}
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		

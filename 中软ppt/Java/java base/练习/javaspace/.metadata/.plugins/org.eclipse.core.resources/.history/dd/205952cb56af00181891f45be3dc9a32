@@ -1,0 +1,5 @@
+package exception.car;
+
+public class CarTypeException extends RuntimeException{
+
+}

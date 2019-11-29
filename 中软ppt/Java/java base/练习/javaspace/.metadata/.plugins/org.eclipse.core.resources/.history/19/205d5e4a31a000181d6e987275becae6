@@ -1,0 +1,39 @@
+package oop1;
+
+import java.util.Scanner;
+
+public class WanNianLi {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		RiLi rl = new RiLi();
+		Scanner input = new Scanner(System.in);
+		int year = input.nextInt();
+		int month = input.nextInt();
+		int sumDayNum = 0;
+		for(int i = 1900; i < year; i++){
+			sumDayNum += rl.getDayNumByYear(i);
+		}
+		for(int i = 1; i < month; i++){
+			sumDayNum += rl.getDayNumByMonth(year, i);
+		}
+		int week = (sumDayNum+1)%7;
+		int site = 0;
+		int currNum = rl.getDayNumByMonth(year, month);
+		int lastNum = rl.getDayNumByMonth(year, month!=1?month-1:12);
+		for(int i=0,j=lastNum-week-1; i<week; i++, j++){
+			System.out.print(j+"\t");
+			site++;
+		}
+		
+		for(int i=1; i<=currNum; i++){
+			System.out.print(i+"\t");
+			site++;
+			if(site>=7){
+				System.out.println();
+				site=0;
+			}
+		}
+	}
+
+}

@@ -1,0 +1,1 @@
+children 只包含元素子节点   childnodes  包含三种类型的子节点

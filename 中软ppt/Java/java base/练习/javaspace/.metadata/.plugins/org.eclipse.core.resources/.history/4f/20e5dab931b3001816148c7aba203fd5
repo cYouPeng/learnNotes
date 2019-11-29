@@ -1,0 +1,22 @@
+package a;
+
+public class Test3 {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		int [] arr = new int[11];
+		arr[0] = 1;
+		arr[1] = 2;
+		for(int i=2; i<arr.length; i++){
+			arr[i] = arr[i-1] + arr[i-2];
+		}
+		double sum = 0;
+		for(int i=0; i<arr.length-1; i++){
+			sum+=(double)arr[i]/arr[i+1];
+		}
+		
+
+		
+	}
+
+}

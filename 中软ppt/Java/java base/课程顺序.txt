@@ -1,0 +1,3 @@
+javase--html css javascript jquery vue ajax --oracle  jdbc  servlet(javaee)
+
+其中javase会讲三周  css会讲两周  以上讲完，会做一个中期项目两周

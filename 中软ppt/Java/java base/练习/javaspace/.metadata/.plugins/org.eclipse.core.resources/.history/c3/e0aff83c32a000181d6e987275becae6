@@ -1,0 +1,43 @@
+package oop1;
+
+public class RiLi {
+	int year;
+	int month;
+	public int getWeekByMonth(){
+		int sumDayNum = 0;
+		for(int i = 1900; i < year; i++){
+			sumDayNum += getDayNumByYear(i);
+		}
+		for(int i = 1; i < month; i++){
+			sumDayNum += getDayNumByMonth(year, i);
+		}
+		return (sumDayNum+1)%7;
+	}
+	public void print(){
+		int week = getWeekByMonth()
+	}
+	public boolean isRunNian(int year){
+		return year%4==0 && year%100!=0 || year%400==0;
+	}
+	public int getDayNumByYear(int year){
+		return isRunNian(year)?366:365;
+	}
+	public int getDayNumByMonth(int year, int month){
+		switch(month){
+		case 1:
+		case 3:
+		case 5:
+		case 7:
+		case 8:
+		case 10:
+		case 12: return 31;
+		case 4:
+		case 6:
+		case 9:
+		case 11: return 30;
+		case 2: return isRunNian(year)?29:28;
+		default:
+			return -1;
+		}
+	}
+}

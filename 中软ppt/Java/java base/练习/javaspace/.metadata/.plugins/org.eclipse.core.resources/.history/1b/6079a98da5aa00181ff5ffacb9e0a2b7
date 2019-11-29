@@ -1,0 +1,40 @@
+package innerclass;
+
+import innerclass.B.Child;
+
+public class Test1 {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		B b = new B();
+		Child c = b.new Child();
+		c.setField(100);
+		System.out.println(b.getA());
+	}
+
+}
+class A{
+	public void m1(){
+		
+	}
+}
+class B{
+	private int a;
+	public void m2(){
+		
+	}
+	
+	public int getA() {
+		return a;
+	}
+
+	class Child extends A{
+		public void test(){
+			m2();
+			m1();
+		}
+		public void setField(int value){
+			a = value;
+		}
+	}
+}

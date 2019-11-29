@@ -1,0 +1,107 @@
+一，监听事件
+	可以用 v-on 指令监听 DOM 事件，并在触发时运行一些 JavaScript 代码
+		<button v-on:click="counter += 1">Add 1</button>
+		
+二，事件处理方法
+	然而许多事件处理逻辑会更为复杂，所以直接把 JavaScript 代码写在 v-on 指令中是不可行的。因此 v-on 还可以接收一个需要调用的方法名称
+		<button v-on:click="greet">Greet</button>
+	
+三，内联处理器中的方法
+	有时也需要在方法中访问原始的 DOM 事件。可以用特殊变量 $event 把它传入方法	
+		<button @click="add('hello', $event)">add</button>
+		add(message, event) {
+			console.log(message)
+			console.log(event)			
+		}
+	
+四，事件修饰符
+	.stop 如果事件是在捕获阶段触发，那么stop阻止的只是事件的向内传播
+		  如果事件是在冒泡阶段触发，那么stop阻止的只是事件的向外传播
+	
+	.capture 事件默认在冒泡阶段触发，使用此修饰符可以让事件在捕获阶段触发
+	
+	.self 只当在 event.target 是当前元素自身时触发处理函数。确保事件不是因为捕获或冒泡而触发 
+	
+	.passive  执行默认行为，每次事件产生，浏览器都会去查询一下是否有preventDefault阻止默认动作
+		尤其在移动端手势滚动的时候，每滚动一个像素都会触发一次事件，每次触发都要查询一下会使滑动卡顿
+		使用.passive把查询这步跳过，极大地提升了性能，告诉浏览器你执行就完事了
+		
+	.prevent 阻止默认行为  不能和.passive一起用，.prevent会被忽略，同时浏览器可能会向你展示一个警告
+	
+五，按键修饰符
+	Vue 允许为 v-on 在监听键盘事件时添加按键修饰符：
+		<input @keyup.c="log($event.key)" />
+	当 $event.key 是 c 时触发事件
+	
+	当修饰符由多个单词组合而成，要使用 kebab-case 命名方式
+		<input @keyup.page-down="" />
+		
+	如果你不知道某个按键的修饰符，可以 <input @keyup="alert($event.key)" /> 这么做
+	也可以去这里 KeyboardEvent.key 查
+		
+	1,按键码
+	
+六，系统修饰键
+	就是为了配合其他按键一起使用
+	.ctrl
+	.alt
+	.shift
+	.meta   在windows里是win键
+		
+	其实就是你在按某个键之前，必须先得按下上述修饰键之一才可以触发事件，要两个键一起按下才可以
+		<input @keyup.ctrl.control="log($event.key)" />
+		
+	1，.exact 修饰符
+		<button @click.ctrl="onClick">A</button> 
+		//ctrl配合左键单击触发事件，但是...ctrl+shift+单击 ctrl+e+单击  也都可以触发，这就尴尬了
+		//如何进行精确匹配呢，使用.exact修饰符，它的意思是必须正好匹配上，不能多也不能少
+		<button @click.ctrl.exact="onClick">A</button>  //只有ctrl加单击才会触发
+		
+		<button @click.exact="onClick">A</button> //只有单击才会触发，加上其他都不好使
+	
+	2，鼠标按钮修饰符
+		.left
+		.right
+		.middle
+		只有在配合click事件时才有效
+			<input @click.right.prevent="log($event.key)" />  == @click.prevent.right
+
+
+
+
+
+
+
+
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	

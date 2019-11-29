@@ -1,0 +1,16 @@
+package oop1;
+
+public class MyMath {
+	int num;
+	public boolean isOdd(){
+		if(num%2==0){
+			return false;
+		}else{
+			return true;
+		}
+		System.out.println("end");
+	}
+	public void showNum(){
+		System.out.println(num);
+	}
+}

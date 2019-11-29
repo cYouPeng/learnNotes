@@ -1,0 +1,9 @@
+package thread;
+
+
+
+public class TestDeamon {
+	public static void main(String[]args){
+		Thread t1 = new Thread(()->System.out.println("我是用户线程，看到我时我就结束了"));
+	}
+}

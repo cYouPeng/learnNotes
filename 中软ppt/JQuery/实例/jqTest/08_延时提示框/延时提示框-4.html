@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<style>
+		        #container{
+		    	    width: 395px;
+				height: 220px;
+		    	}
+			#container .box{
+				width: 150px;
+				height: 220px;
+				margin-right: 5px;
+				float: left;
+			}
+			#container .box img{
+				width: 150px;
+				height: 220px;
+			}
+			#container .content{
+				width: 240px;
+				height: 220px;
+				display: none;
+				float: left;
+			}
+			#container .content img{
+				width: 240px;
+				height: 220px;
+			}
+		</style>
+		<script type="text/javascript" src="../js/jquery-1.11.3.js" ></script>
+		<script>
+		        $(function(){
+		        		var content = $("#container").find(".content");
+		        		$("#container").find("div").on({
+      					mouseover: function() {
+      						//清楚元素上所有动画。
+      						content.stop(true);
+      						content.show();
+      					},
+      					mouseout: function() {
+      						//hide必须要设置一个参数0；只有后延的事情才会被加入delay()的延迟队列当中。而hide只有设置动画时间才会被放入到延迟队列中
+      						content.delay(300).hide(0);
+      					}
+				});
+		        });
+		</script>
+	</head>
+	<body>
+		<div id="container">
+			<div class="box"><img src="images/dy.jpg"></div>
+			<div class="content"><img src="images/dydg.png"></div>
+		</div>
+	</body>
+</html>

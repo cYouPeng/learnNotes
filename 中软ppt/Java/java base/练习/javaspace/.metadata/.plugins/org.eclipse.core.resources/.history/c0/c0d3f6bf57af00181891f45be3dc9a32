@@ -1,0 +1,12 @@
+package exception.car;
+
+public abstract class CarFactory {
+	public static Car getCar(String carType) throws CarTypeException{
+		switch(carType.toLowerCase()){
+		case "bus": return new Bus();
+		case "taxi": return new Taxi();
+		case "train": return new Train();
+		default : throw new CarTypeException("cartype exitist");
+		}
+	}
+}

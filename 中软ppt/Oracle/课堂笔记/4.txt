@@ -1,0 +1,27 @@
+不同对象 加不同前缀
+create table bumen(
+	bumenid number(4) primary key,  主键加不加not null 都一样
+	bumenname varchar2(20) not null,
+	bumendizhi varchar2(100) 不写not null代表允许为空
+
+)
+用逗号间隔，而不是用逗号结尾
+
+四个约束：主键(primary key)，唯一(unique)，非空(not null)，默认值(default)
+
+drop table 表名 删除表  表结构也没了
+
+DML都没有事务
+
+constraint pk_score primary key(scoreid)
+constraint un_sut_course unique(stuid,courseid)  这种可同时针对多列
+constraint ck_score check(score>=0 nad score<=100)  
+外键：constraint fk_yg_bm foreign key(bumenid) references bumen(bumenid)
+
+可以用2个列表来做一个主键，但不能分别在后面写primary key，这时就得用constraint了
+
+drop constraint fk_yg_bm  删除约束
+
+也可以在表外面使用add constraint 添加外键约束
+alter table bumen add constraint fk_yg_bm foreign key(bumenid) references bumen(bumenid)
+

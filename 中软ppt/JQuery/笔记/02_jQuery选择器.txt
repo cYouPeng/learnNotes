@@ -1,0 +1,23 @@
++ 其后第一个如果是其它元素，失效
+~ 之间有其它元素隔着的话也生效
+nextutil 从哪到哪之间，不包括两头
+:header 匹配h1到h6
+:lang ch中文 cn英文
+:root 大多数时候都是html,如有iframe，那么iframe也有一个html，要注意区分
+
+为什么要少用id选择器，因为容易造成混乱
+get 返回的是Dom元素   ect返回的是jQuery对象
+
+利用parents()可知道自己在第几层，除此之外，想不到还有什么用处
+parents('div')父元素中所有是div的
+parentsunti('div')从自己到父div之间的所有父元素
+parents包括自身，clost不包括自身
+jQuery有$  Dom对象没有  我自己的区别
+
+不可见 指定是不占空间的元素：display:none type="hidden" width/height都为0 这些才算
+而visibility:hidden或opacity:0不算
+
+$("ul li:first").text() first   唯一 把所有ul下的li当成一个整体，找第一个li
+$("ul li:first-child").text() first-child   在每个ul里找是first-child状态的li
+
+p[class~=b] p标签的类样式只有一个b也可以

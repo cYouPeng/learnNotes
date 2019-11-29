@@ -1,0 +1,19 @@
+.container .content h4{
+	text-align: center;
+	margin-top: 10px;
+	margin-bottom: 20px;
+	color: #444;
+}
+.container .content div{
+	width: 900px;
+	margin: 0 auto;
+	color: #444;
+}
+.container .content div p{
+	text-indent:30px;
+}
+.container .content>p{
+	text-align: right;
+	margin: 10px;
+	color: #444;
+}

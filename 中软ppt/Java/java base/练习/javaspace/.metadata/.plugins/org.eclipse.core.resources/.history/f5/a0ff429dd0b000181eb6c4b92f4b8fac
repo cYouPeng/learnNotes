@@ -1,0 +1,36 @@
+package io;
+
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
+
+public class TestReaderAndWriter {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		String fileName = "c:/a/hello.txt";
+		try {
+			Reader reader = new FileReader(fileName);
+			StringBuffer sb = new StringBuffer();
+			while(true){
+				int ch = reader.read();
+				if(ch<0){
+					break;
+				}
+				sb.append(ch);
+			
+			}
+			System.out.println(sb);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+	}
+
+}

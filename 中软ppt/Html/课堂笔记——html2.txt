@@ -1,0 +1,53 @@
+框里值和value属性值相互影响
+文本框和密码框不推荐size，它不是以像素为单位
+maxlength 文本密码都能用
+
+readonly和disabled都不能改，值都是各自名，可省略
+但外观略有区别，readonly可以提交，，disabled不可以提交
+
+placeholder="xx" 点击还有xx,但输入的时候就没了。。不会把其值提交上去，只是一个单独的提示，，另外如果value有值的话，就没它什么事了
+
+textarea也有placeholder，只要是输入框就都有
+
+radio的name值的相同，可实现单选。。checkbox的name值相同，可实现多选
+
+uri指的是服务名和资源名
+
+select的最大宽度由option里的最大内容长度决定，但一般用JS
+默认选择是selected
+
+textarea，多行文本区，里边的空格和回车是生效的，里边的内容就是要提交的内容
+
+file文件域，不使用enctype是提交文件名
+如果想提交图片本身有两个前提：
+1，method="post"
+2，enctype="multpart/form-data"
+
+注解：想提交文件本身，必须用post，因为文件很大，必须放在请求体中，不能用get提交
+     使用了enctype="multpart/form-data，请求结构会发生变化
+大概是这样的：
+	Accept-Encoding:gzip deflate
+	Referer:URL
+	Content Type:包含分隔符(不同浏览器分隔符长的不一样)
+	Content-length:字节数
+	Connection:keep-alive
+	upgrade-Instance-Requests:1
+	分隔符
+	...name="名"
+	值
+	分隔符1
+	...name="名1"
+	值1
+	......
+
+result 回到出事状态   button 用JS写入功能
+按钮value只是提示文字，没有name，也不会提交数据，只是代表一种功能
+
+超链接也可提交数据，但一定是get，，服务器是无法区分你从什么地方发送的请求报文
+
+type="date" 日期   但不推荐，因为很丑，在后期还不能修改样式
+
+两个网站：easyUI  bootstrap
+
+有文件 密码都要用post
+

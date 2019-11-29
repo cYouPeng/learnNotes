@@ -1,0 +1,22 @@
+package oop1;
+
+import java.util.Scanner;
+
+public class WanNianLi {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		//RiLi rl = new RiLi();
+//		Scanner input = new Scanner(System.in);
+//		int year = input.nextInt();
+//		int month = input.nextInt();
+//		rl.year = year;
+//		rl.month = month;
+//		rl.print();
+		RiLi rl = new RiLi();
+		rl.year = 2018;
+		rl.month = 9;
+		rl.print();
+	}
+
+}

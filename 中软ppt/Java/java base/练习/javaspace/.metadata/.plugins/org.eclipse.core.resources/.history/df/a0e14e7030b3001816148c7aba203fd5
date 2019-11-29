@@ -1,0 +1,19 @@
+package a;
+
+public class Test2 {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		//2-有数列，1+2+3+5+8+...求前10项总和
+//		num1 1 2 3
+//		temp 2 3 5
+		int num1 = 1;
+		int temp = 2;
+		for(int i=1; i<10; i++){
+			System.out.println(num1+",");
+			temp += num1;
+			num1=temp;
+		}
+	}
+
+}
