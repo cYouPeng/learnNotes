@@ -1,0 +1,51 @@
+过滤器可以用在两个地方：双花括号插值和 v-bind 表达式
+	<!-- 在双花括号中 -->
+	{{1+1 | f1('hello') | f2}}
+
+	<!-- 在 `v-bind` 中 -->
+	 <div v-bind:id="2/1 | add | del">123</div>
+	
+	局部注册：
+		filters: {
+            del(value){               
+                return value - 1
+            }
+        }		
+	全局注册：	
+		Vue.filter('add', function(value){
+			return value + 2
+		})
+		
+		new Vue({
+		  // ...
+		})
+		
+	过滤器函数总接收表达式的值 (之前的操作链的结果) 作为第一个参数
+	
+	过滤器可以串联：
+		{{messsage | f1 | f2}}
+	f1 接收 表达式 message 作为其第一个参数，返回的结果作为 f2 的第一个参数，返回的结果为最终值
+	
+	message 必须是一个表达式，data   1+1   fun() 都可以，但不能是过滤器函数
+	f1 f2 ...3    必须是一个局部或全局注册的过滤器函数，总是接收前一个操作链上的结果作为其第一个参数
+		
+	过滤器函数还可以接收额外参数
+		{{messsage | f1('hello', 'Julia') | f2}}
+		filters: {
+            f1(value, other1, other2){
+                console.log(other1, other2);
+                return value + ', '
+            }
+        }
+	但这些额外的参数必须从第二个形参开始接收，第一个形参总是前一个操作链的结果
+	
+	
+	最后一个过滤器函数返回的结果 会作为最终的值
+		
+		
+		
+		
+		
+		
+		
+		

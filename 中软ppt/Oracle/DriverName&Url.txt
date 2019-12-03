@@ -1,2 +1,0 @@
-DriverName: 	"oracle.jdbc.driver.OracleDriver"
-URL:		"jdbc:oracle:thin:@Ip:1521:สตภýร๛"

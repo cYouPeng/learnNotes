@@ -1,0 +1,349 @@
+11，函数中的this
+		1,this是什么
+			任何函数本质上都是通过某个对象来调用的，如果没有直接指定，就是window
+			所有函数内部都有一个变量this
+			他的值是调用函数的当前对象
+		2，如何确定this的值
+			test() : window
+			p.test() : p
+			new test() : 新创建的对象
+			p.call(obj) : obj
+	
+12，关于语句分号问题
+	1，js一条语句的后面可以不加分号
+	2，是否加分号是编码风格问题，没有应该不应该，只有你自己喜欢不喜欢
+	3，在下面2种情况下不加分号会有问题
+		小括号开头的前一条语句
+			var a = 3
+			;(function(){
+				
+			})()
+			//错误理解成  var a = 3(function(){})()
+							
+		中方括号开头的前一条语句
+			var b = 4
+			[1, 3].forEach(function(item, index, arr))
+			//错误理解成  var b = 4[1, 3].forEach(function(item, index, arr))
+	4，解决办法：在行首加分号
+	5，强有力的例子：vue.js
+	6，https://www.zhihu.com/question/20298345
+	
+13，webstorm设置
+	
+14，复习
+
+15，函数的prototype
+	1，函数的prototype属性
+		每个函数都有一个prototype属性，它默认指向一个Object空对象(即称为：原型对象)
+		原型对象中有一个属性constructor，它指向函数对象
+	2，给原型对象添加属性(一般都是方法)
+		作用：函数的所有实例对象自动拥有原型中的属性(方法)
+		
+		<script>
+		    //每个函数都有一个prototype属性，它默认指向一个Object空对象(即称为：原型对象)
+			console.log(Date.prototype, typeof Date.prototype);
+			function Funun(){
+			
+			}
+			console.log(Fun.prototype); //默认指向一个object空对象(没有我们的属性)
+			
+			console.log(Fun.prototype); 
+			
+			
+			//原型对象中有一个属性constructor，它指向函数对象
+			console.log(Date.prototype.constructor === Date); // true
+			console.log(Fun.prototype.constructor === Fun); //true
+			
+			
+			//给原型对象添加属性(一般都是方法) ==> 实例对象可以访问
+			Fun.prototype.test = function(){
+				console.log("test");
+			}
+			var fun = new Fun();
+			fun.test(); //test
+		</script>
+		
+16，显式原型与隐式原型
+	1，每个函数function都有一个prototype，即显式原型(属性)
+	2，每个实例对象都有一个__proto__，可称为隐式原型(属性)
+	3，对象的隐式原型的值为其对应构造函数的显式原型的值
+	4，内存结构
+	5，总结：
+		函数的prototype属性：在定义函数时自动添加的，默认值是一个空object对象
+		对象的__proto__属性：创建对象时自动添加的，默认值为构造函数的prototype属性值
+		程序员能直接操作显式原型，但不能直接操作隐式原型(ES6之前)
+		
+		<script>
+			function Fn(){ //内部语句：this.prototype = {}
+			}
+			//1，每个函数function都有一个prototype，即显式原型(属性)，默认指向一个空的object对象
+			console.log(Fn.prototype);
+			//2，每个实例对象都有一个__proto__，可称为隐式原型(属性)，
+			var fn = new Fn(); //内部语句：this.__proto__ = Fn.prototype
+			console.log(fn.__proto__);
+			
+			console.log(Fn.prototype === fn.__proto__); //true
+			
+			//给原型添加方法
+			Fn.prototype.test = function(){
+				console.log(123);
+			}
+			fn.test(); //123
+		</script>
+	
+17，原型链
+	1，原型链(图解)
+		访问一个对象的属性时
+			先在自身属性中查找，找到返回
+			如果没有，再沿着__proto__这条链向上查找，找到返回
+			如果最终没找到，返回undefined
+		别名：隐式原型链
+		作用：查找对象的属性(方法)
+	2，构造函数/原型/实体对象的关系
+	
+	
+18，19，原型链补充
+	1，读取对象的属性值时：会自动到原型链中查找
+	2，设置对象的属性值时：不会查找原型链，如果当前对象中没有此属性，直接添加此属性并设置其值
+	3，方法一般定义在原型中，属性一般通过构造函数定义在对象本身上
+	
+	
+20，instanceof
+	1，instanceof是如何判断的
+		表达式 A instanceof B
+			如果B函数的显式原型对象在A对象的原型链上，返回true，否则返回false
+	2，Function是通过new自己产生的实例
+	
+21，
+
+22，变量提升与函数提升
+	1，变量声明提升
+		通过var定义(声明)的变量，在定义语句之前就可以访问到
+		值：undefined
+	2，函数声明提升
+		通过function声明的函数，在之前就可以直接调用
+		值：函数定义(对象)
+	
+23，执行上下文
+	1，代码分类(位置)
+		全局代码
+		函数代码
+	2，全局执行上下文
+		在执行全局代码前将window确定为全局执行上下文
+		对全局数据进行预处理
+			var定义的全局变量 => undefined，添加为window的属性
+			function声明的全局函数 => 赋值(fun)，添加为window的方法
+			this => 赋值(window)
+	3，函数执行上下文
+		在调用函数，准备执行函数之前，创建对应的函数执行上下文对象
+		对局部数据进行预处理
+			形参变量=>赋值(实参)==>添加为执行上下文的属性
+			arguments=>赋值(实参列表)，添加为执行上下文的属性
+			var定义的局部变量=>undefined，添加为执行上下文的属性
+			function声明的函数 =>赋值(fun)，添加为执行上下文的方法
+			this=>赋值(调用函数的对象)
+		开始执行函数体代码
+		
+24，执行上下文栈
+	1，在全局代码执行前，js引擎就会创建一个栈来存储管理所有的执行上下文对象
+	2，在全局执行上下文(window)确定后，将其添加到栈中(压栈)
+	3，在函数执行上下文创建后，将其添加到栈中(压栈)
+	4，在当前函数执行完后，将栈顶的对象移除(出栈)
+	5,当所有的代码执行完后，栈中只剩下window
+	
+25,26
+
+27,作用域与作用域链
+	1，理解
+		就是一块'地盘'，一个代码段所在的区域
+		它是静态的(相对于上下文对象)，在编写代码时就确定了
+	2，分类
+		全局作用域
+		函数作用域
+		没有块作用域(ES6有了)
+	3，作用
+		隔离变量，不同作用域下同名变量不会有冲突
+		
+28，
+
+29，循环遍历加监听
+
+30，闭包理解
+	1，如何产生闭包
+		当一个嵌套的内部(子)函数引用了嵌套的外部(父)函数的变量(函数)时，就产生了闭包
+	2，闭包到底是什么
+		使用chrome调试查看
+		理解一：闭包是嵌套的内部函数(绝大部分人)
+		理解二：包含被引用变量(函数)的对象(极少部分人)
+		注意：闭包存在于嵌套的内部函数中
+	3，产生闭包的条件
+		函数嵌套
+		内部函数引用了外部函数的数据(变量/函数)
+		
+31，32，常见闭包
+	1，将函数作为另一个函数的返回值
+	2，将函数作为实参传递给另一个函数调用
+		function fn1(){
+			var a = 2;
+			function fn2(){
+				a++;
+				console.log(a);
+			}
+			return fn2;
+		}
+		var f = fn1(); //外部函数调用几次，就会创建几个闭包
+		f(); //3
+		f(); //4
+		
+		//产生闭包的两个条件：1，有内部函数，2，内部函数里使用了外部函数的变量或函数
+		
+		function showDelay(msg, time){
+			setTimeout(function(){
+				alert(msg);
+			}, time)
+		}
+		showDelay('hello', 2000);
+		
+		
+	闭包的作用
+		1，使用函数内部的变量在函数执行完后，仍然存活在内存中(延长了局部变量的生命周期)
+			一般是不存在，存在于闭包中的变量才可能存在			
+		2，让函数外部可以操作(读写)到函数内部的数据(变量/函数)
+			不能，但我们可以通过闭包让外部操作它
+		
+33，闭包的生命周期
+	1，产生：在嵌套内部函数定义执行完时就产生了(不是在调用)
+	2，死亡：在嵌套的内部函数成为垃圾对象时
+		function fn1(){
+			//此时闭包就已经产生了(函数提升，内部函数对象已经创建了)
+			var a = 2;
+			function fn2(){
+				a++;
+				console.log(a);
+			}
+			return fn2;
+		}
+		var f = fn1(); 
+		f(); //3
+		f(); //4
+		f = null //闭包死亡
+		
+34，闭包应用
+	闭包的应用：定义js模块
+		具有特定功能的js文件
+		将所有的数据和功能都封装在一个函数内部(私有的)    //封装在对象内不算私有，因为你可以对象名.属性名去访问
+		只向外暴露一个包含n个方法的对象或函数
+		模块的使用者，只需要通过模块暴露的对象调用方法来实现对应的功能
+		
+			myModule.js
+				function myModule(){
+					//私有数据
+					var msg = 'hello';
+					//操作数据的函数
+					function doSomething(){
+						console.log(msg.toUpperCase());
+					}
+					function doOtherthing(){
+						console.log(msg.toLowerCase());
+					}
+					//向外暴露对象(给外部使用的方法)
+					return {
+						doSomething: doSomething,
+						doOtherthing: doOtherthing
+					}
+				}
+			<script src="myModule.js"></script>
+			var module = myModule()
+			module.doSomething()
+			module.doOtherthing()
+			
+			myModule2.js
+				(function(){
+					//私有数据
+					var msg = 'hello';
+					//操作数据的函数
+					function doSomething(){
+						console.log(msg.toUpperCase());
+					}
+					function doOtherthing(){
+						console.log(msg.toLowerCase());
+					}
+					//向外暴露对象(给外部使用的方法)
+					window.Module2 = {
+						doSomething: doSomething,
+						doOtherthing: doOtherthing
+					}
+				})()
+			<script src="myModule2.js"></script>
+			module2.doSomething()
+			module2.doOtherthing()
+			
+35，闭包的缺点
+	缺点
+		函数执行完后，函数内的局部变量没有释放，占用内存时间会变长
+		容易造成内存泄漏
+	解决
+		能不用闭包就不用
+		及时释放
+			function fn1(){
+				var name = 'jack'
+				function fn2(){
+					console.log(name);
+				}
+				return fn2;
+			}
+			var f = fn1()
+			f()
+			
+			f = null   //让内部函数成为垃圾对象 ==> 回收闭包
+			
+	内存溢出与内存泄露
+		1，内存溢出
+			一种程序运行出现的错误
+			当程序运行需要的内存超过了剩余的内存时就会抛出内存溢出的错误
+		2，内存泄露
+			占用的内存没有及时释放
+			内存泄露积累多了就容易导致内存溢出
+			常见的内存泄露
+				意外的全局变量
+					function fn(){
+						a = 3;
+					}
+					fn()
+				没有及时清理的计时器或回调函数
+					var timer = setInterval(function(){
+						console.log(112);
+					}, 1000)
+					// clearInterval(timer);
+				闭包
+					上方 f = null 没写的话
+					
+36，面试题
+	//片段一
+	var name = 'the window';
+	var object = {
+		name: 'the object',
+		getNameFun: function(){
+			return function(){
+				return this.name
+			}
+		}
+	}
+	alert(object.getNameFun()())  //the window
+	
+	//片段二
+	var name = 'the window';
+	var object = {
+		name: 'the object',
+		getNameFun: function(){
+			var that = this;
+			return function(){
+				return that.name
+			}
+		}
+	}
+	alert(object.getNameFun()())  //the object
+	
+	
+	
+	

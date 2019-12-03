@@ -1,0 +1,184 @@
+30 31，深度克隆
+	拷贝数据
+		基本数据类型：
+			拷贝后会生成一份新的数据，修改拷贝以后的数据不会影响原数据
+		对象/数组
+			拷贝后不会生成新的数据，而是拷贝的引用。修改拷贝以后的数据会影响原来的数据
+	拷贝数据的方法：
+		1，直接赋值给一个变量     //浅拷贝
+		2，Object.assign()   //浅拷贝
+		3，Array.prototype.concat()   //浅拷贝
+		4，Array.prototype.slice()   //浅拷贝
+		5，JSON.parse(JSON.stringify())  //深拷贝（深度克隆），拷贝的数据里不能有函数，处理不了
+	基本数据类型没有浅深拷贝一说，浅拷贝深拷贝针对的只是对象/数组
+	浅拷贝(对象/数组)
+		特点：拷贝的引用，修改拷贝以后的数据会影响原来的数据，使得原数据不安全
+	深拷贝(深度克隆)
+		特点：拷贝的时候生成新数据，修改拷贝以后的数据不会影响原数据
+	
+		let obj = {userName: 'kobe'}
+		
+		let obj2 = Object.assign(obj)
+		console.log(obj2)
+		obj.userName = 'wade'
+		console.log(obj)
+		
+		let arr = [1, 3, {userName: 'kobe'}, function fun(){}]
+		let arr2 = arr.concat()
+		console.log(arr2)
+		arr2[2].userName = 'wade'
+		console.log(arr)
+		
+		let arr3 = arr.slice()
+		arr3[2].userName = 'anverson'
+		console.log(arr)
+		
+		let arr3 = JSON.parse(JSON.stringify(arr))
+		console.log(arr3)
+		arr3[2].userName = 'duncan'
+		console.log(arr)  //函数会变为null，JSON.stringify()要求你放入的是原生的js对象或数组
+		
+
+
+	思考：
+		如何实现深拷贝
+			造成浅拷贝就是因为拷贝的数据里有对象/数组
+		拷贝的数据里不能有有对象/数组，即使有对象/数组可以继续遍历对象/数组，拿到里边每一项值，一直到拿到的都是基本数据类型，然后再去复制，就是深拷贝
+
+	//知识点储备
+	如何判断数据类型：arr ---> Array    null ---> Null
+
+
+	let result = 'abcd'
+	result = null;
+	result = [1, 3]
+	console.log(Object.prototype.toString.call(result).slice(8 -1));
+	
+	//for in 循环 对象(属性名) 数组(下标)
+	let obj = {userName: 'kobe', age: 39}
+	for(let i in obj){
+		console.log(i)
+	}
+	let arr = [1, 3, 'abc']
+	for(let i in arr){
+		console.log(i)
+	}
+	
+	//定义检测数据类型的功能函数
+	function checkedType(target){
+		return Object.prototype.toString.call(target).slice(8 -1)
+	}
+	//实现深度克隆 ---> 对象/数组
+	function clone(target){
+		//判断拷贝的数据类型
+		//初始化变量result，成为最终克隆的数据
+		let result, targetType = checkedType(target)
+		if(targetType === 'Object') {
+			result = {}
+		}else if(targetType === 'Array') {
+			result = []
+		}else {
+			return target
+		}
+		
+		//遍历目标数据
+		for(let i in target){
+			//获取遍历数据结构的每一项值
+			let value = target[i]
+			//判断目标结构里的每一项值是否存在对象/数组
+			if(checkedType(value) === 'Object' || checkedType(value) === 'Array') {  //对象/数组里嵌套了对象/数组
+				//继续遍历获取到的value值
+				result[i] = clone(value)
+			}else { //获取到的value值是基本数据类型或者是函数
+				result[i] = value;
+			}
+		}
+		return result;
+	}
+	
+	let arr = [1, 2, {userName: 'kobe', age: 39}]
+	let arr2 = clone(arr)
+	console.log(arr2)
+	arr2[2].userName = 'wade'
+	console.log(arr, arr2)
+	
+	let obj = {userName: 'kobe', age: 39}
+	let obj2 = clone(obj)
+	console.log(obj2)
+	obj2.userName = 'wade'
+	console.log(obj, obj2)
+
+
+32，set  map容器详解
+	1，Set容器：无序不可重复的多个value的集合体
+		* Set()
+		* Set(array)
+		* add(value)
+		* delete(value)
+		* has(value)
+		* clear()
+		* size
+	2，Map容器：无序的key 不重复的多个key-value的集合体
+		* Map()
+		* Map(array)
+		* Set(key, value) //添加
+		* get(key)
+		* delete(key)
+		* has(key)
+		* clear()
+		* size
+
+	let set = new Set([1,2,4,5,2,3,6])   //Set(array)  set的构造方法只接受数组，
+	conosle.log(set)  //6  因为set里的value不可重复,回忽略重复的多余元素
+	set.add(7)
+	conosle.log(set.size, set)
+	console.log(set.has(8)); //false
+	console.log(set.has(7)); //true
+	set.clear();
+	console.log(set)
+
+	let map = new Map([['aaa', 'userName', 25],[36, 'age']]);
+	//Map(array)  map构造函数里接收二维数组，每个二维数组只前两个元素有效，第三个以后都是无效的，第一个元素作为key
+	//第二个元素作为value，无所谓数据类型    36是key 'age'是value
+	console.log(map)
+	map.set(78, 'haha')
+	conosle.log(map)
+	map.delete(36)
+	conosle.log(map)
+
+
+33，ES6 for of用法详解
+	for(let value of target){} 循环遍历
+		1，遍历数组
+		2，遍历Set
+		3，遍历Map
+		4，遍历字符串
+		5，遍历伪数组
+		
+	//数组去重
+	let arr = [1, 2, 3, 4, 2, 1]
+	let arr2 = arr
+	arr = [];
+	let set = new Set(arr1)
+	for(let i of set){
+		arr.push(i)
+	}
+	console.log(arr)
+
+34，ES7 方法介绍
+	1，指数运算符(幂)：**
+	2，Array.prototype.includes(value)：判断数组中是否包含指定value
+		
+		console.log(3 ** 3)  //27
+		
+		let arr = [1,3,'abc']
+		console.log(arr.includes('abc')) //true
+		console.log(arr.includes('a')) //false
+		
+		
+		
+		
+		
+		
+		
+		

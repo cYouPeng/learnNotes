@@ -1,0 +1,239 @@
+14，ES6 promise对象原理详解
+	1，理解：
+		Promise对象：代表了未来某个将要发生的事件(通常是一个异步操作)
+		有了promise对象，可以将异步操作以同步的流程表达出来，避免了层层嵌套的回调函数(俗称'回调地狱')
+		ES6的Promise是一个构造函数，用来生成Promise实例
+	2，使用promise基本步骤(2步)：
+		创建promise对象
+		let promise = new Promise((resolve, reject) => {
+			//初始化promise状态为pending
+			//执行异步操作
+			if(异步操作成功){
+				resolve(value); //修改promise状态为fullfilled
+			}else{
+				reject(errMsg); //修改promise状态为rejected
+			}
+		})
+	3，promise对象的3个状态
+		pending: 初始化状态
+		fullfilled: 成功状态
+		rejected: 失败状态
+	4，应用：
+		使用promise实现超时处理
+		
+		使用promise封装处理ajax请求
+		let request = new XMLHttpRequest()
+		request.onreadystatechange = function(){
+			
+		}
+		request.responseType = 'json';
+		request.open('GET', url);
+		request.send();
+		
+		
+	//创建promise对象
+	let promise = new Promise((resolve, reject) => { //该函数为同步执行
+		//初始化promise状态：pending：初始化状态
+		console.log(111)    
+		//执行异步操作，通常是发送ajax请求，开启定时器
+		setTimeout(() => {
+			console.log(333)
+			//根据异步任务的返回结果去修改promise的状态
+			//异步任务执行成功
+			//resolve('哈哈'); //修改promise的状态为 fullfilled：成功的状态
+			
+			//异步任务执行失败
+			reject(555); //修改promise的状态为 rejected: 失败的状态
+		}, 2000)
+	})
+	console.log(222)
+	
+	//promise
+		//.then(() => {  //成功的回调
+			//console.log('成功了...')
+		//}, () => {
+			//console.log('失败了...')
+		//})
+		
+	promise
+		.then((data) => {  //成功的回调
+			console.log(data, '成功了...')    //可以传参，也可以不传。可以写形参，也可以不写
+		}, (error) => {
+			console.log(error, '失败了...')
+		})
+		
+	
+15，ES6 promise对象案例练习	
+	//定义获取新闻的功能函数
+	function getNews(url){
+		let promise = new Promise((resolve, reject) => {
+			//状态：初始化
+			//执行异步任务
+			//创建xmlHttp实例对象
+			let xmlHttp = new XMLHttpRequest();
+			//绑定监听 readyState
+			xmlHttp.onreadystatechange = function(){   state从0变化到5，该函数被执行4次，第一次从0到1，函数执行if条件不满足
+				执行else，promise状态为rejected，执行失败回调，所以这样的逻辑是不对的
+				//if(xmlHttp.readyState === 4 && xmlHttp.status == 200){   //请求成功
+					//console.log(xmlHttp.responseText)
+					//修改状态
+					//resolve(xmlHttp.responseText) //修改promise的状态为成功
+				//}else {  //请求失败
+					//reject('暂时没有新闻内容')
+				//}
+				
+				if(xmlHttp.readyState === 4){   
+					if(xmlHttp.status == 200){  //请求成功
+						//console.log(xmlHttp.responseText)
+						//修改状态
+						resolve(xmlHttp.responseText) //修改promise的状态为成功
+					}else {  //请求失败
+						reject('暂时没有新闻内容')
+					}					
+				}
+				
+			}
+			//open 设置请求的方式以及url
+			xmlHttp.open('GET', url)
+			//发送
+			xmlHttp.send();
+		})
+		return promise;
+	}
+	
+	getNews('http://localhost:3000/news?id=2')
+		.then((data) => {
+			console.log(data)  //typeof data 为string，因为后端返回数据就是json字符串，至于为什么有的网络插件返回的数据
+							   //为js对象，是因为这个插件替你进行了转换，此处我们得手动转换一下
+			//发送请求获取评论内容 准备url
+			let commentsUrl = JSON.parse(data).commentsUrl;
+			let url = 'http://localhost:3000' + commentsUrl;
+			//发送请求
+			return getNews(url)
+		}, (error) => {
+			console.log(error)
+		})
+		.then((data) => {
+			console.log(data)
+		}, () => {
+		
+		})
+		
+16 17，ES6 Symbol属性介绍-01
+	前言：ES5中对象的属性名都是字符串，容易造成重名，污染环境
+	Symbol：
+		概念：ES6中添加了一种原始数据类型symbol(已有的原始数据类型：string, number, boolean, null, undefined, 对象)
+		特点：
+			1，Symbol属性值对应的值是唯一的，解决命名冲突问题
+			2，Symbol值不能与其他数据进行计算，包括同字符串拼串
+			3，for in, for of遍历时不会遍历symbol属性
+		使用：
+			1，调用Symbol函数得到symbol值
+				let symbol = Symbol();
+				let obj = {name: 'Jack'};
+				obj[symbol] = 'hello';
+			2，传参标识
+				let symbol = Symbol('one');
+				let symbol2 = Symbol('two');
+				console.log(symbol); // Symbol('one')
+				console.log(symbol2);  //Symbol('two')
+			3，内置Symbol值
+				* 除了定义自己使用的Symbol值以外，ES6还提供了11个内置的Symbol值，指向语言内部使用的方法
+				- Symbol.iterator
+					* 对象的Symbol.iterator属性，指向该对象的默认遍历器方法(后边讲)
+				
+18 19 20，ES6 iterator接口机制
+	概念：iterator是一种接口机制，为各种不同的数据结构提供统一的访问机制
+	作用：
+		1，为各种数据结构，提供一个统一的、简便的访问接口
+		2，使得数据结构的成员能够按某种次序排列
+		3，ES6创造了一种新的遍历命令for...of循环，Iterator接口主要供for...of消费
+	工作原理：
+		- 创建一个指针对象(遍历器对象)，指向数据结构的起始位置
+		- 第一次调用next方法，指针自动指向数据结构的第一个成员
+		- 接下来不断调用next方法，指针会一直往后移动，直到指向最后一个成员
+		- 每调用next方法返回的是一个包含value和done的对象，{value: 当前成员的值,done: 布尔值}
+			* value表示当前成员的值，done对应的布尔值表示当前的数据的结构是否遍历结束
+			* 当遍历结束的时候返回的value是undefined，done值为true
+	原生具备iterator接口的数据(可用for of遍历)
+		扩展理解：
+		1，当数据结构上部署了Symbol.iterator接口，该数据就可以用for of遍历
+		2，当使用for of去遍历目标数据的时候，该数据会自动去找Symbol.iterator属性
+		//Symbol。iterator 属性指向对象的默认遍历方法。(承接上一章节：iterator接口)
+		 1, Array
+		 2, arguments
+		 3, set容器
+		 4, map容器
+		 5,string
+		 ...
+		 
+		<script>
+			//模拟指针对象(遍历器对象)
+			function myIterator(arr) {  //iterator接口
+				let nextIndex = 0;  //记录指针的位置
+				return {  //遍历器对象
+					next: function() {
+						return nextIndex < arr.length?(value: arr[nextIndex++], done: false):(value: undefined, done: true)
+					}
+				}
+			}
+			//准备一个对象
+			let arr = [1, 4, 88, 'aaa'];
+			let iteratorObj = myIterator(arr);
+			console.log(iteratorObj.next())
+			console.log(iteratorObj.next())
+			console.log(iteratorObj.next())
+			console.log(iteratorObj.next())
+			console.log(iteratorObj.next())
+			
+			
+			//将iterator接口部署到指定的数据类型上，可以使用for of去循环遍历，这是es6做好的
+			//有 数组、字符串、arguments、set容器、map容器
+			for(let i of arr){
+				console.log(i)
+			}
+			
+			let str = 'abcsefeg';
+			for(let i of str){
+				console.log(i)
+			}
+			
+			function fun(){
+				for(let i of arguments){
+					console.log(i)
+				}
+			}
+			fun(2,3,'hello');
+			
+			//对象没有实现iterator接口，不能使用for of 遍历
+			let obj = {name: 'kobe', age: 39}
+			for(let i of obj){
+				console.log(i)  
+			}
+			
+			//等同于在指定的数据结构上部署了iterator接口
+			//当使用for of去遍历某一个数据结构的时候，首先去找Symbol.iterator，找到了就去遍历，没有找到的话不能遍历
+			//xxx is not iterable
+			let targetData = {
+				[Symbol.iterator]: function(){
+					let nextIndex = 0;  //记录指针的位置
+					return {  //遍历器对象
+						next: function() {
+							return nextIndex < arr.length?(value: arr[nextIndex++], done: false):(value: undefined, done: true)
+						}
+					}
+				}
+			}
+			//使用三点运算符、解构赋值，默认去调用iterator接口
+			let arr2 = [1, 6];
+			let arr3 = [2, 3, 4, 5];
+			arr2 = [1, ...arr3, 6];
+			console.log(arr2)
+			
+			let [a, b] = arr2;
+			console.log(a,b)
+		</script>
+		
+		
+		
+		

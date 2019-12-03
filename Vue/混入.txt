@@ -1,0 +1,115 @@
+一，基础
+	混入类似于把两个人所有的财产都合在一起了。你可以把每个组件都要用到的基础选项放到混入对象里，需要的时候拿过来混一下
+		// 定义一个混入对象
+		var mixin = {
+			data(){
+				return{
+					name: 'Jack'
+				}
+			}
+		}
+		Vue.component('my-component', {
+			template: `<div>{{ name }}</div>`,
+			mixins: [ mixin ]
+		})
+		
+		
+二，选项合并
+	当组件和混入对象含有同名选项时，这些选项将以恰当的方式进行“合并”。
+		1)，数据对象发生合并，发生冲突时以组件数据优先
+			Vue.component('my-component', {
+				template: `<div>{{ name }}</div>`,
+				mixins: [ mixin ],
+				data(){
+					return{
+						name: 'Selina'
+					}
+				}
+			})
+		//最后渲染出 Selina
+		
+		2)，同名钩子函数将合并为一个数组，因此都将被调用。另外，混入对象的钩子将在组件自身钩子之前调用。
+			 var mixin = {				
+				created(){
+					console.log('我是混入对象的钩子')
+				}
+			}
+			let vm = new Vue({
+				el: '#app',
+				mixins: [ mixin ], 
+				created(){
+					console.log('我是组件的钩子')
+				}      
+			})
+		
+		3)，值为对象的选项，例如 methods、components 和 	 directives，将被合并为同一个对象。两个对象键名冲突时，取组件对象的键值对。
+			var mixin = {
+				methods: {
+					log(){
+						console.log('我是混入对象里的方法')
+					}
+				}
+			}
+			let vm = new Vue({
+				el: '#app',
+				mixins: [ mixin ], 
+				methods: {
+					log(){
+						console.log('我是组件里的方法')
+					}
+				}     
+			})
+			vm.log()  //我是组件里的方法
+		
+三，全局混入
+	混入也可以进行全局注册。使用时格外小心！一旦使用全局混入，它将影响每一个之后创建的 Vue 实例。
+		Vue.mixin({
+			created(){
+				let option = this.$options.hello
+				if(option){
+					console.log(option)
+				}
+			}
+		})       
+		let vm = new Vue({
+			hello: 'hello world'          
+		})	
+		// =>  hello world
+		
+四，自定义选项合并策略
+	如果你有自定义选项，那么在合并时会使用默认策略，即简单地覆盖已有值。如果想让自定义选项以自定义逻辑合并，可以向 Vue.config.optionMergeStrategies 添加一个函数
+	
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		

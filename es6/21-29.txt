@@ -1,0 +1,293 @@
+21 22 23， ES6  Generator函数简介
+	概念：
+		1，ES6提供的解决异步编程的方案之一
+		2，Generator函数是一个状态机，内部封装了不同状态的数据
+		3，用来生成遍历器对象
+		4，可暂停函数(惰性求值),yield可暂停，next方法可启动，每次返回的是yield后的表达式结果
+	特点：
+		1，function 与函数名之间有一个星号
+		2，内部用yield表达式来定义不同的状态
+		例如：
+			function* gengratorExample() {
+				let result = yield 'hello'; //状态值为hello
+				yield 'generator'; //状态值为genetator
+			}
+		3，generator函数返回的是指针对象(上节的iterator，也就是遍历器对象)，而不会执行函数内部逻辑 
+		4，调用next方法函数内部逻辑开始执行，遇到yield表达式停止，返回{value: yield后的表达式结果/undefined, done: true/false}
+		5，再次调用next方法会从上一次停止时的yield处开始，直到最后
+		6，yield语句返回结果通常为undefined，当调用next方法时传参内容会作为启动yield语句的返回值
+
+		<script>
+			function* myGenerator() {
+				console.log('开始执行');
+				yield 'hello';
+				console.log('暂停后，再次执行');
+				console.log(yield 'generator')  //本来是undefined，传参之后是aaaaaaaaaaa
+				console.log('遍历完毕。。。');
+				return '结果';
+			}
+			let MG = myGenerator();  //返回的是指针对象
+			console.log(MG.next());
+			console.log(MG.next('aaaaaaaaa'));
+			//第一个next从函数内部顶部开始执行代码，遇到第一个yield，执行这个yield，并暂停
+			//遇到第二个next，从这个暂停的yield开始启动，传的参数会作为你启动出发的这个yield语句的返回值
+			console.log(MG.next());
+			
+			//以promise哪个例子举例，前一个yield ajax获取标题，只有获取成功才手动 next()执行下一个yield获取内容
+			
+			
+			//对象的symbol.iterator属性，指向遍历器对象
+			let obj = {name: 'kobe', age: 39};
+			obj[Symbol.iterator] = function* myTest() {
+				yield 1
+				yield 2
+				yield 3
+			}
+			for(let i of obj){
+				console.log(i)
+			}
+			
+			
+			
+			//案例练习(上promise)
+			/*
+			 *	需求
+			 *	1，发送ajax请求获取新闻内容
+			 *	2，新闻内容获取成功后再次发送请求，获取对应的新闻评论内容
+			 *	3，新闻内容获取失败则不需要再次发送请求
+			 */
+			function getNews(url) {
+				$.get(url, function(data){
+					console.log(data);
+					let url = 'http://localhost:3000' + data.commentsUrl;
+					SX.next(url);
+				})
+			}
+			function* sendXml() {
+				let url = yield getNews('http://localhost:3000/news?id=3');
+				yield getNews(url)
+			}
+			//获取遍历器对象
+			let SX = sendXml();
+			SX.next();
+		</script>
+
+24，async函数详解及应用
+	async函数(源自ES2016)
+	概念：真正意义上去解决异步回调的问题，同步流程表达异步操作
+	本质：Generator的语法糖
+	语法：
+		async function foo() {
+			await 异步操作;
+			await 异步操作;
+		}
+	特点：
+		1，不需要像Generator去调用next方法，遇到await等待，当前的异步操作完成就往下执行
+		2，返回的总是Promise对象，可以用then方法进行下一步操作
+		3，async取代Generator函数的星号，await取代Generator的yield
+		4，语意上更为明确，使用简单，经临床验证，暂时没有任何副作用以及不良反应
+
+		//async基本使用
+		async function foo() {
+			return new Promise(resolve => {
+				//setTimeout(function(){
+					//resolve()
+				//}, 2000)
+				//相当于
+				setTimeout(resolve, 2000)
+			})
+		}
+		async function test() {
+			console.log('开始执行', new Date().toTimeString);
+			await foo();
+			console.log('执行完毕。。。', new Date().toTimeString);
+		}
+
+
+		--------------------------------------
+		//async里await返回值
+		function test2() {
+			return 'xxx'
+		}
+		async function asyncPrint(){
+			let result = await test2();
+			console.log(result)
+		}
+		asyncPrint();  //xxx
+		改为
+		async function asyncPrint(){
+			let result = await Promise.resolve('Promise');
+			console.log(result)  // Promise
+			result = await Promise.reject('失败了。。。');
+			console.log(result)  //失败了。。。
+		}
+		asyncPrint()
+
+
+		//获取新闻内容
+		async function getNews(url) {
+			return new Promise((resolve, reject) => {
+				$.ajax({
+					method: 'GET',
+					url,
+					success: data => resolve(data),
+					error: error => resolve(false)   //全都为成功状态，这样await就会继续执行下去，根据送的值判断是否请求成功
+				})
+			})
+		}
+		async function sendXml() {
+			let result = await getNews('http://localhost:3000/news?id=7');
+			console.log(result)
+			if(!result){
+				alert('暂时没有新闻内容');
+				return;
+			}
+			result = await getNews('http://localhost:3000' + result.commentsUrl);
+			if(!result){
+				alert('暂时没有评论内容');
+				return;
+			}
+			console.log(result);
+		}
+		sendXml();
+
+
+
+	该例子  从promise 到generator  到async  一个比一个好用
+
+26，ES6 class类使用详解
+	1，通过class定义类/实现类的继承
+	2，在类中通过constructor定义构造方法
+	3，通过new来创建类的实例
+	4，通过extends来实现类的继承
+	5，通过super调用父类的构造方法
+	6，重写从父类中继承的一般方法
+	
+	//定义一个人物的类
+	class Person {
+		//类的构造方法
+		constructor(name, age){
+			this.name = name;
+			this.age = age;
+		}
+		//类的一般方法    在class里不能使用showName: function(){} 这种形式，必须要使用这种简写方式，否则会报错
+		showName(){   //该方法被定义在原型上
+			console.log('调用父类的方法');
+			console.log(this.name,this.age)
+		}
+	}
+	let person = new Person('kobe', 39);
+	console.log(person)
+	person.showName();
+	//子类
+	class StarPerson extends Person {
+		constructor(name, age, salary){
+			super(name, age);  //调用父类的构造方法
+			this.salary = salary;
+		}
+		//父类的方法重写
+		showName(){
+			console.log('调用子类的方法');
+			console.log(this.name,this.age,this.salary)
+		}
+	}
+	let p1 = new StarPerson('wade', 36, 100000);
+	console.log(p1);
+	p1.showName();
+
+
+27，ES6 字符串、数组的扩展
+	字符串扩展
+		1，includes(str)：判断是否包含指定的字符串      是返回true，否则返回false
+		2，startWith(str)：判断是否以指定字符串开头     ...
+		3，endWith(str)：判断是否以指定字符串结尾       ...
+		4，repeat(count)：重复指定次数   就是把一个str重复几次，全部拼在一起
+		
+		let str = 'cyp';
+		console.log(str.includes('t'));
+		console.log(str.startWith('e'))
+		console.log(str.endWith('i'));
+		console.log('str.repeat(3)');  //cypcypcyp
+		
+	数值扩展
+		1，二进制与八进制数值表示法：二进制用0b，八进制0o
+		2，Number.isFinite(i)：判断是否是有限大的数
+		3，Number.isNan(i)：判断是否是NaN
+		4，Number.isInteger(i)：判断是否是整数
+		5，Number.parseInt(str)：将字符串转换为对应的数值
+		6，Math.trunc(i)：直接去除小数部分
+		
+		console.log(0b1010);  //10
+		console.log(0o56);  //46
+		console.log(Number.isFinite(Infinity));  //false   
+		
+		console.log(Number.isNan(NaN)); //true
+		
+		console.log(Number.isInteger(123.12)); //false
+		console.log(Number.isInteger(123.0)); //true   .0也是整数
+		
+		console.log(Number.parseInt('123abc123')); //123
+		console.log(Number.parseInt('a123abc123')); //NaN
+		
+		console.log(Math.trunc(123.123));  //123
+
+28，ES6  数组方法的扩展
+	1，Array.from(v)：将伪数组对象或可遍历对象转换为真数组
+	2，Array.of(v1, v2, v3)：将一系列值转换成数组
+	3，find(function(value, index, arr){return true})：找出第一个满足条件返回true的元素
+	4，findIndex(function(value, index, arr){return true})：找出第一个满足条件返回true的元素下标
+
+	
+	<button>01</button>
+	<button>02</button>
+	<button>03</button>
+	
+	let btns = document.getElementsByTagName('button');  //btns是个伪数组
+	btns.forEach(function(item, index){
+		console.log(item)  //报错
+	})
+	Array.from(btns).forEach((item, index) => console.log(item))  //正常
+	
+	let arr =Array.of(1, 4, 'abc', true);
+	console.log(arr)
+	
+	let arr2 = [2, 3, 4, 8, 22]
+	let result = arr2.find(function(item, index){
+		return item > 4;
+	})
+	console.log(result)  //8
+
+	let result = arr2.findIndex(function(item, index){
+		return item > 4;
+	})
+	console.log(result)  //3
+
+29，ES6 对象方法的扩展
+	1，Object.is(v1, v2)
+		判断2个数据是否完全相等
+	2，Object.assign(target, source1, source2...)
+		将源对象的属性复制到目标对象上
+	3，直接操作__proto__属性
+		let obj2 = {};
+		obj2.__proto__ = obj1;
+
+	console.log(0 == -0); //true
+	console.log(NaN == NaN) //false
+	console.log(Object.is(0, -0)); //false
+	console.log(Object.is(NaN, NaN)) //true    Object.is实际上是以字符串的形式来判断的
+	
+	let obj = {};
+	let obj1 = {name: 'kobe', age: 39};
+	let obj2 = {sex: '男'};
+	Object.assign(obj, obj1, obj2);
+	console.log(obj)
+	
+	//在es6之前是不可以操作隐式原型__proto__的，但到了es6就可以了
+	let obj3 = {};
+	let obj4 = {money: 100}
+	obj3.__proto__ = obj4;
+	console.log(obj3.money); //100
+
+
+		
+
