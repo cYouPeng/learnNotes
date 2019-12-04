@@ -323,3 +323,5 @@ MVVM      M: model 模型   后端传来的数据
 浏览器的兼容性问题已经不再是前端的阻碍。前端的项目越来越大，项目的可维护性和扩展性、安全性等成了主要问题。  
 
 Object.keys(obj) 方法会返回一个由给定对象自身可枚举属性组成的数组
+
+return str.charAt(0).toUpperCase() + str.slice(1)
