@@ -325,3 +325,6 @@ MVVM      M: model 模型   后端传来的数据
 Object.keys(obj) 方法会返回一个由给定对象自身可枚举属性组成的数组
 
 return str.charAt(0).toUpperCase() + str.slice(1)
+
+沿着作用域链找，没找到，会报错
+沿着原型链找，没找到，会是undefined

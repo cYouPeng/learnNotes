@@ -1,0 +1,4 @@
+1，在严格模式下，给未经声明的变量赋值会抛出ReferenceError
+2，在严格模式下，不能定义名为eval 或 arguments的变量，否则会报语法错误。但非严格模式下正常执行
+3，八进制在严格模式下是无效的，会报错
+	Uncaught SyntaxError: Octal literals are not allowed in strict mode

@@ -1,0 +1,49 @@
+9，包简介
+	package.json 包描述文件  必需
+	json文件中不能写注释
+	
+10，npm简介
+	- NPM(Node Package Manager)
+	CommonJS包规范是理论，NPM是其中一种实践
+	对于Node而言，NPM帮助其完成了第三方模块的发布、安装和依赖等，借助NPM，Node与第三方模块之间形成了很好的一个生态系统
+	
+	- npm的命令
+		- npm -v 查看npm的版本
+		- npm version 查看所有模块的版本
+		- npm search 包名 搜索包
+		- npm install/i 包名 安装包
+		- npm remove/r 包名 删除包
+		- npm install 包名 --save 安装包并添加到依赖中 ***
+		- npm install 下载当前项目所依赖的包
+		- npm install 包名 -g 全局安装包（全局安装的包一般都是一些工具）
+		
+		把你当前包所依赖的模块都写入package.json中，以后上传到npm等包管理器时，就可以只上传当前模块，而不必上传node_modules里
+		所依赖的模块，别人使用你这个包时，可以根据package.json中所述依赖从npm包管理器中下载所需依赖。同时也解决了版本更新问题
+		
+11，配置cnpm	
+	npm install -g cnpm --registry=https://registry.npm.taobao.org
+	cnpm和npm的用法是一样的，指令也都一样
+	
+12，node搜索包的流程
+	通过npm下载的包都放到node_modules文件夹中
+		我们通过npm下载的包，直接通过包名引入即可
+		
+	node在使用模块名字来引入模块时，它会首先在当前目录的node_modules中寻找是否含有该模块
+		如果有则直接使用，如果没有则去上一级目录的node_modules中寻找
+		如果有则直接使用，如果没有则再去上一级目录寻找，直到找到为止
+		直到找到磁盘的根目录，如果依然没有，则报错
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
