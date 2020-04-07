@@ -2,7 +2,7 @@
 	1，对象语法
 		可以传给v-bind:class一个对象，以动态地切换class
 			<span class="a1" :class="{a2: isshow, a3: isshow2}">123</span>
-		a2 a3 的存在与否取决于isShow是true还是false，当这个值变化时，class列表将相应地更新
+		a2 a3 的存在与否取决于isShow的值，当这个值变化时，class列表将相应地更新
 		可以与普通class属性共存，渲染之后都是在一个class里  class="a1 a2 a3"
 		
 		这个对象也可以写在data里
@@ -10,13 +10,13 @@
 			data(){
 				return{
 					classObject: {
-						a2: true,
-						a3: false
+						a2: 10,  10可以转换成true，所以a2存在
+						a3: ''   ''可以转换成false，所以a3不存在
 					}
 				}
 			}
 		也可以使用计算属性，更加强大
-			<span :class="classlist"></span>    
+			<span :class="classlist"></span>
 			computed: {
 				classlist(){
 					return {
@@ -43,7 +43,7 @@
 				a2: 'apple',
 				a3: 'pear'
 			}
-		但这样的class有多个时，这么写就有点麻烦了，可以使用对象语法
+		但这样的class有多个时，这么写就有点麻烦了，可以使用对象语法。			
 			<span class="a1" :class="[{a2: isshow}, a3]">123</span>
 			data: {
 				isshow: true,
@@ -51,8 +51,14 @@
 				a3: 'pear'
 			}
 		a3将始终添加，a2将根据isshow的值决定是否添加
+		
+	3，对象语法和数组语法的区别
+		对象语法：class的名字是固定了的，你能改的只是它的显示与否，甭管你是把对象写在模板、data、或计算属性里
+		数组语法：class的名字可以改变，但它的显示是不可更改的。但配合三元可以进行更改，而配合对象二者产生的只是并集不是交集      
+		正常数组、数组里写三元、数组里写对象
+		
 			
-	3，用在组件上
+	4，用在组件上
 		当在一个自定义组件上使用class属性时，这些class将被添加到组件的根元素上面，这个元素上已经存在的class不会被覆盖，
 		而是合并
 			<my-component class="baz boo"></my-component>
@@ -68,7 +74,7 @@
 			
 二，绑定内联样式
 	1，对象语法
-		和class差不多
+		和class比较相似，可以写在模板、data、或计算属性里
 			<span :style="{color: acolor, fontSize: size + 'px', 'font-weight': weight}">123</span>
 			data: {
 				acolor: 'red',
@@ -117,7 +123,8 @@
 			<div :style="{ display: ['flex', '-webkit-box', '-ms-flexbox'] }"></div>
 			渲染为
 			<div style="display: -webkit-box;"></div>
-		这样写只会渲染数组中最后一个被浏览器支持的值
+			从后往前找，找到一个被浏览器支持的值就停止
+		
 			
 			
 			

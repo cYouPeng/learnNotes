@@ -1,0 +1,8 @@
+1，fatal: remote origin already exists.
+	致命   远程    源            存在
+2，Permission denied
+	权限      拒绝
+3，Please make sure you have the correct access rights
+										 访问   权限
+   and the repository exists
+			仓库

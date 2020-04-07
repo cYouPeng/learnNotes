@@ -1,5 +1,5 @@
 一，v-if
-	v-if 指令可以根据表达式的值是true还是false来决定是否渲染这块内容
+	v-if 指令可以根据  表达式  的值是true还是false来决定是否渲染这块内容
 	
 	1，在 <template> 元素上使用 v-if 条件渲染分组
 		<template>是一个不可见的包裹元素，如果想同时切换多个元素，可以在template上应用v-if
@@ -11,14 +11,14 @@
 		最后的渲染结果将不会包含<template>
 		
 	2，v-else
-		有if肯定会有else
+		你可以使用 v-else 指令来表示 v-if 的“else 块”：
 			<span v-if="seen">123</span>
-            <span>456</span>
+            <span v-else>456</span>
 			
 		v-else必须紧跟在v-if或v-else-if后
 
 	3，v-else-if
-		有了if和else，就肯定会有else if
+		v-else-if，顾名思义，充当 v-if 的“else-if 块”，可以连续使用：
 			<span v-if="seen == 1">1</span>
             <span v-else-if="seen == 2">2</span>
             <span v-else-if="seen == 3">3</span>

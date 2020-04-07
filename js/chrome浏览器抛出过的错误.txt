@@ -1,6 +1,12 @@
 1,	Uncaught ReferenceError: message is not defined   
-	未捕获   引用错误                       定义
+	未捕获   引用      错误                  定义
 2,  Uncaught SyntaxError: Unexpected eval or arguments in strict mode
 			 语法错误     意外的
 3,  Uncaught SyntaxError: Octal literals are not allowed in strict mode
 						  八进制 字面量
+4， Property or method "reversedmessage" is not defined on the instance but referenced during render. Make sure that this property is
+	属性                                                       实例                            渲染
+    reactive, either in the data option, or for class-based components, by initializing the property
+	有反应的                      选项            基于类                      初始化
+5， Syntax Error: Unexpected token, expected ; 
+							  标记   应为
