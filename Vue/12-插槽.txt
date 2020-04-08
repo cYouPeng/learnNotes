@@ -83,10 +83,8 @@
 		</base-layout>
 	现在 <template> 元素中的所有内容都将会被传入相应的插槽。任何没有被包裹在带有 v-slot 的 <template> 中的内容都会被视为默认插槽的内容。
 
-	这个默认插槽其实也是具名插槽的一种，就像es6的默认参数，难道你能说给了它默认值，它就不是参数了吗
-	同理，虽然默认插槽没有显式声明name特性，但它也是一个具名插槽
+	虽然默认插槽没有显式声明name特性，但它也是一个具名插槽
 
-	<slot></slot> 和 <slot name="header"></slot> 都属于具名插槽，只不过<slot></slot>同时还是默认插槽
 
 	然而，如果你希望更明确一些，仍然可以在一个 <template> 中包裹默认插槽的内容：
 		<base-layout>
@@ -116,9 +114,9 @@
 				<p>Here's some contact info</p>
 			</footer>
 		</div>
-	注意 v-slot 只能添加在一个 <template> 上 (只有一种例外情况)，这一点和已经废弃的 slot 特性不同。
+	"注意 v-slot 只能添加在 <template> 上 (只有一种例外情况)，这一点和已经废弃的 slot attribute 不同。"  --官网 
 
-	下面我来说一下关于具名插槽新旧语法的区别，看完你应该就明白了上面这句话的意思
+	下面我来说一下关于具名插槽新旧语法的区别，看完你就应该明白了上面这句话的意思
 	在2.6.0以前，使用slot特性将内容从父级传给具名插槽，具有相同值的slot特性可以重复使用，并且可以应用在一个普通元素上
 		<ex-component>
 			<h1 slot="header">123</h1>
@@ -131,7 +129,7 @@
 			</template>
 		</ex-component>		
 	但有一种例外情况，就是子组件模板里只有一个插槽，此时给插槽传递内容的话，v-slot可以直接写在组件标签上
-		template: ` 
+		template: `
 			<div>
 			 <slot:data="post"></slot>
 			</div>
@@ -165,11 +163,11 @@
 						name: 'Jack'
 					}
 				}
-			}		
+			}
 		<ex-component>
-			{{user.name}}         
+			{{user.name}}
 		</ex-component>
-	运行是会报错的，因为只有 <ex-component> 组件可以访问到 user 而我们提供的内容是在父级渲染的。
+	运行是会报错的，因为只有在子组件里可以访问到 user 而我们提供的内容是在父级渲染的。
 
 	为了让 user 在父级的插槽内容中可用，我们可以将 user 作为 <slot> 元素的一个特性绑定上去：
 		template: ` 

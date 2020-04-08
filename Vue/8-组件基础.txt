@@ -50,7 +50,7 @@
 			<p>{{ post.content }}</h1>
 		`
 	会报  every component must have a single root element (每个组件必须有一个根元素) 的错误
-	可以将模板的内容包裹在一个父元素内，来修复这个问题
+	可以将模板的内容包裹在一个父元素内，来解决这个问题
 		template: `
 			<div>
 				<h1>{{ post.title }}</h1>
@@ -69,7 +69,7 @@
 			$emit('game-over', 'hello')
 		然后在父级组件监听这个事件时，使用$event接收这个值
 			<my-component @game-over="user += $event"></my-component>
-		如果这个事件处理函数是一个方法，这个值将会作为第一个参数传入这个方法
+		如果v-on的值是一个响应函数，传过来的值将会作为第一个参数传入这个方法		
 			methods: {
 				log(n1) {
 					alert(n1)  //在这里使用不了$event
@@ -103,7 +103,7 @@
 九，解析 DOM 模板时的注意事项	
 	is 特性也可以放在其他html标签上
 		<div is="my-component"></div>   //相当于 <my-component></my-component>   当然了 没使用 v-bind 就不是动态的了
-		这只是一个例子，实际在div标签上使用 is 特性没什么意义，以下是有意义的
+		这只是一个例子，实际在div标签上使用 is 特性没什么意义，但以下是有意义的
 		<ul>
 			<li is="my-component" v-for="item in items"></li>
 			//相当于<my-component v-for="item in items"></my-component>

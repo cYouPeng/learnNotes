@@ -58,7 +58,8 @@
 					event: 'hello'
 				},
 				props: [ 'checked' ]
-		 })				
+		 })
+		 <ex-component v-model="val"></ex-component>  //此时v-model使用名为checked的prop和名为hello的事件
 		“注意你仍然需要在组件的 props 选项里声明 checked 这个 prop” --官网
 
 
@@ -70,7 +71,7 @@
 	1，定义组件时在根元素上传一个监听事件，但这种写法会把事件名和执行方法写死，限制比较大
 	2，在调用组件时传一个监听事件，这样事件名和执行方法就可以由调用者决定，但需要借助.native修饰符
 		<base-input v-on:focus.native="onFocus"></base-input>
-		不借助.native修饰符的话，这个事件是不会生效的，native修饰符的作用可以确保父组件传的事件监听可以作用在根元素上
+		不借助.native修饰符的话，这个事件是不会生效的，native修饰符的作用是可以确保父组件传的事件监听可以作用在根元素上
 
 	有一点需要注意，这个focus事件只会作用在组件根元素上，如果<base-input>组件的模板是这么写的	
 		<div>
@@ -78,7 +79,7 @@
 		</div>
 	这时这个focus事件依然会作用在组件根元素上，但div也没聚焦这个功能啊！所以这个事件监听就相当于失效了
 
-	我们还想让focus事件作用在input标签上，可以借助 $listeners 属性，里面保存了从父组件传过来的所有事件
+	我们若想让focus事件作用在input标签上，可以借助 $listeners 属性，里面保存了从父组件传过来的所有事件
 
 	<div>
 		<input placeholder="enter something" v-on="$listeners" />

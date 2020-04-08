@@ -1,5 +1,7 @@
 一，用 v-for 把一个数组对应为一组元素
-	可以使用v-for来遍历一个数组，可以提供第二个参数代表索引
+	可以使用v-for来遍历一个数组，可以提供第二个参数代表索引，没有第三个参数
+	只有一个参数item，此时它代表遍历的每个元素，不需要加小括号
+	null,undefined是遍历不到的
 		<ul>
 		  <li v-for="(item, index) in items">
 			{{ parentMessage }} - {{ index }} - {{ item.message }}
@@ -43,14 +45,14 @@
 四，数组更新检测
 	1，变异方法
 		会影响到原数组的vue中管它叫做变异方法，包括：
-			push()  pop()   shift()  unshift()  splice()  sort()  reverse()
+			push()  pop()   unshift()   shift()    splice()  sort()  reverse()
 		
-		调用这些方法都会触发试图更新
+		调用这些方法都会触发视图更新
 		
 	2，替换数组
 		不会影响到原数组，而总是返回一个新数组的vue中管它叫做非变异方法，比如：
 			filter()、concat() 和 slice()
-		当使用非变异方法时，要想触发试图更新，可以用新数组替换旧数组
+		当使用非变异方法时，要想触发视图更新，可以用新数组替换旧数组
 			this.items = this.items.concat([{text: 123}])
 			
 		你可能认为这将导致 Vue 丢弃现有 DOM 并重新渲染整个列表，幸运的是，事实并非如此，vue做了一些骚操作使得相同的

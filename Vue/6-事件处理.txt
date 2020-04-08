@@ -36,7 +36,7 @@
 	当修饰符由多个单词组合而成，要使用 kebab-case 命名方式
 		<input @keyup.page-down="" />
 		
-	如果你不知道某个按键的修饰符，可以 <input @keyup="alert($event.key)" /> 这么做
+	如果你不知道某个按键的修饰符，可以 <input @keyup="alert($event.key)" /> 这么做  注意这里查到的会是驼峰命名，使用修饰符时改成kebab-case
 	也可以去这里 KeyboardEvent.key 查
 		
 	1,按键码

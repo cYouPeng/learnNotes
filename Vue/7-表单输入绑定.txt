@@ -46,7 +46,7 @@
 			如果 v-model 表达式的初始值未能匹配任何选项，<select> 元素将被渲染为“未选中”状态
 			
 		多选时 (绑定到一个数组)：
-			<select v-model="selected" multiple style="width: 50px;">  //selected初始类型为对象数组
+			<select v-model="selected" multiple style="width: 50px;">  //selected初始类型为对象数组，不是强制
 				<option>A</option>
 				<option>B</option>
 				<option>C</option>
