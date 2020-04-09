@@ -72,34 +72,30 @@
 			this.items.splice(2)   //length=2 保留前2个元素    splice(2)从下标为2的元素开始删除，保留0和1，也是2个元素
 		
 五，对象变更检测注意事项
-	对于已经创建的实例，Vue 不允许动态添加根级别的响应式属性
-		var vm = new Vue({
-		  data: {
-			a: 1
-		  }
-		})
-		vm.b = 2;  //不允许 使用Vue.set()也是一样
-		
-	可以向嵌套对象添加属性
-	但由于js的限制，Vue 不能检测对象属性的添加或删除
-		data: {
-			userProfile: {
-				name: 'Jack'
-			}
+	Vue 无法检测 property 的添加或移除
+	<span v-for="value in params">{{ value }}
+	var vm = new Vue({
+  	     data:{
+    		params: {
+		   name: 'Jason'
 		}
-		this.userProfile.age = 12   //这么写是vue检测不到的
+  	     }
+         })
+	 //vm.params.age = 25
+	 //delete vm.params.name    vue检测不到，不会触发视图更新 
+         vm.name = 'Selina'            //检测得到，会触发视图更新
+         
 		
-	可以借助Vue.set()
-		Vue.set(this.userProfile, 'age', 12)  
-	总结起来就是两点：得是嵌套对象，得用Vue.set()方法， 这样给对象添加属性视图才会自动更新
+	但可以使用 Vue.set(object, propertyName, value) 方法向嵌套对象添加响应式属性
+	Vue.set(this.params, age: 25)   //Vue可以检测到，会触发视图更新
+	还可以使用 vm.$set 实例方法，这也是全局 Vue.set 方法的别名：	
 	
-	有时你可能需要为已有对象赋值多个新属性，
-	你应该用两个对象的属性创建一个新的对象。所以，如果你想添加新的响应式属性，不要像这样
-		Object.assign(this.items, {addr: 'hello'})
-		或
-		this.items = Object.assign(this.items, {addr: 'hello'})
-		应该这样
-		this.items = Object.assign({},this.items, {addr: 'hello'})
+	
+	 有时你可能需要为已有对象赋值多个新属性，
+	 你应该这样：this.params = Object.assign({},this.params, {addr: 'new York'})
+	 而不是这样：Object.assign(this.params, {addr: 'new York'}) 或 this.items = Object.assign(this.params, {addr: 'new York'})
+				
+		
 	
 六，显示过滤/排序后的结果	
 
