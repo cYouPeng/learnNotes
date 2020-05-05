@@ -1,0 +1,157 @@
+一，导航守卫
+	导航守卫类似于组件生命周期的钩子函数
+	有 全局的, 单个路由独享的, 或者组件级的。
+		let router = new VueRouter({           
+            routes
+        })
+	
+	1，全局前置守卫：router.beforeEach   路由跳转前触发，主要用于登录验证，在跳转前验证用户是否已经登录		
+		router.beforeEach((to, from, next) => {
+			let isLogin = sessionStorage.getItem('userInfo')
+			if(isLogin){
+				//如果用户信息存在则往下执行
+				next()
+			}else{
+				//如果不存在则跳转到登录页面
+				next('/login')
+			}			
+		})
+		next() 和 next('/login') 是不一样的：
+			next() 表示路由成功，直接进入to路由，不会再次调用router.beforeEach()
+			next('/login') 表示路由拦截成功，重定向至login，会再次调用router.beforeEach()
+		所以上述代码是错误的，如果isLogin为false，那么beforeEach就会被无限重复调用
+		
+		next('/') 或者 next({ path: '/' }): 跳转到一个不同的地址。当前的导航被中断，然后进行一个新的导航。 --官网
+		
+		router.beforeEach(async (to, from, next) => {
+		  const localId = localStorage.getItem('userId');		 
+		  if (to.name === 'login') { // 访问login,缓存判断
+			if (localId) { //有缓存，访问主页
+			  next({ name: 'main' });
+			} else {// 无缓存，跳转登录页
+			  next();
+			}
+		  } else if (to.name !== 'login' && localId) { // 访问非登录页，有缓存，继续跳转该页面
+			next();
+		  } else if (to.name !== 'login' && !localId) {
+			next({ name: 'login' }); // 访问非登录页，无缓存，跳转login
+		  }
+		});
+		这段代码我觉得逻辑比较完整，beforeEach也不会无限重复
+		
+	2，全局解析守卫：router.beforeResolve   路由跳转前触发
+		这和 router.beforeEach 类似，区别是在导航被确认之前，同时在所有组件内守卫和异步路由组件被解析之后，解析守卫就被调用。
+			router.beforeResolve((to, from, next) => {
+				console.log("beforeResolve")
+				next()
+			})
+	3，全局后置钩子：router.afterEach   路由跳转后触发，它没有 next 参数
+		router.afterEach((to, from) => {
+            console.log("afterEach")           
+        })
+		
+		
+	4，路由独享的守卫：beforeEnter   路由跳转前触发
+		在进入到 home 页面前，判断是不是从 about 这个路由跳转而来的，是则跳转，不是则不能跳转
+		{
+			path: '/',
+			name: "home",
+			component: Home,
+			beforeEnter: (to, from, next) => {
+			  if(from.name === 'about'){
+				next();
+			  }else{
+				next(false);
+			  }
+			  
+			}
+		 }
+
+
+	5，组件内的守卫
+		const Foo = {
+		  template: `...`,
+		  
+		  // 这个钩子调用的时候，组件实例还没有被创建出来，因此获取不到this
+		  beforeRouteEnter (to, from, next) {
+			console.log(to.name);
+			// 如果想获取到实例的话
+			// next(vm=>{
+			//   // 这里的vm是组件的实例（this）
+			// });
+			next();
+		  },
+		  
+		  beforeRouteUpdate (to, from, next) {
+			// 在当前路由改变，但是该组件被复用时调用
+			// 举例来说，对于一个带有动态参数的路径 /foo/:id，在 /foo/1 和 /foo/2 之间跳转的时候，
+			// 由于会渲染同样的 Foo 组件，因此组件实例会被复用。而这个钩子就会在这个情况下被调用。
+			// 可以访问组件实例 `this`
+		  },
+		  
+		  
+		  beforeRouteLeave (to, from, next) {
+			// 导航离开该组件的对应路由时调用
+			// 可以访问组件实例 `this`
+			// 比如说，用户编辑了一个东西，但是还么有保存，这时候他要离开这个页面，就要提醒他一下，还没保存，是否要离开
+			const leave = confirm("确定要离开吗？");
+			if(leave) next()    // 离开
+			else next(false)    // 不离开
+		  }
+		}
+
+	
+	
+	
+	to：目标路由对象
+	from：即将要离开的路由对象
+	next: 但凡涉及到有next参数的钩子，必须调用next() 才能继续往下执行下一个钩子，否则路由跳转会停止
+		next(): 进行管道中的下一个钩子。如果全部钩子执行完了，则导航的状态就是 confirmed (确认的)。
+		next(false): 中断当前的导航。
+		next('/') 或者 next({ path: '/' }): 跳转到一个不同的地址。当前的导航被中断，然后进行一个新的导航。可传递
+			参数与 router.push() 中选项一致
+		next(error): 如果传入 next 的参数是一个 Error 实例，则导航会被终止且该错误会被传递给 router.onError() 注册过的回调。
+
+
+
+	全局路由钩子：beforeEach(to,from, next)、beforeResolve(to,from, next)、afterEach(to,from)；
+
+	独享路由钩子：beforeEnter(to,from, next)；
+
+	组件内路由钩子：beforeRouteEnter(to,from, next)、beforeRouteUpdate(to,from, next)、beforeRouteLeave(to,from, next)
+	
+	
+	从 /bar 跳转到 /foo 时：
+		组件路由守卫beforeRouteLeave   这是bar组件的，再往下的beforeEnter, beforeRouteEnter, 生命周期都是 foo 路由及组件的
+		全局前置守卫：beforeEach
+		路由beforeEnter守卫            
+		组件路由守卫beforeRouteEnter，此时this并不指向该组件
+		全局解析守卫：beforeResolve
+		全局后置守卫：afterEach
+		组件生命周期beforeCreate
+		组件生命周期created
+		组件生命周期beforeMount
+		组件生命周期mounted
+		组件路由守卫beforeRouteEnter的next回调
+	
+
+	从 /foo/lisi  跳转到 /foo/zhangsan 时：
+		全局前置守卫：beforeEach
+		组件路由守卫：beforeRouteUpdate
+		全局解析守卫：beforeResolve
+		全局后置守卫：afterEach
+	因为是复用组件，所以 beforeRouteEnter, beforeRouteLeave, 以及生命周期钩子 都不会调用
+	
+	
+	tips：通过 这七个钩子函数的名字，以 before 开头的就是在路由跳转前执行，以 after 开头的就是在跳转后执行
+	
+	定义方式：
+		全局的钩子是传一个回调函数   router.beforeEach((to, from, next) => {...})
+		路由独享的是以 key:value 的形式  {..., beforeEnter: (to, from, next) => {...}}
+		组件路由钩子是以函数定义的方式   {..., beforeRouteEnter(to, from, next){...}}
+		  
+
+
+
+
+

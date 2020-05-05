@@ -1,0 +1,285 @@
+一，起步
+	用 Vue.js + Vue Router 创建单页应用，是非常简单的。使用 Vue.js ，我们已经可以通过组合组件来组成应用程序，当你要把 Vue Router 添加进来，我们需要做的是，将组件 (components) 映射到路由 (routes)，然后告诉 Vue Router 在哪里渲染它们。
+	
+	
+	
+	路由中有三个基本的概念 route, routes, router。
+
+　　　　1， route，它是一条路由，由这个英文单词也可以看出来，它是单数， Home按钮  => home内容， 这是一条route,  about按钮 => about 内容， 这是另一条路由。
+
+　　　　2， routes 是一组路由，把上面的每一条路由组合起来，形成一个数组。[{home 按钮 =>home内容 }， { about按钮 => about 内容}]
+
+　　　　3， router 是一个机制，相当于一个管理者，它来管理路由。因为routes 只是定义了一组路由，它放在哪里是静止的，当真正来了请求，怎么办？ 就是当用户点击home 按钮的时候，怎么办？这时router 就起作用了，它到routes 中去查找，去找到对应的 home 内容，所以页面中就显示了 home 内容。
+
+　　　　4，客户端中的路由，实际上就是dom 元素的显示和隐藏。当页面中显示home 内容的时候，about 中的内容全部隐藏，反之也是一样。客户端路由有两种实现方式：基于hash 和基于html5 history api.
+
+	“通过注入路由器，我们可以在任何组件内通过 this.$router 访问路由器，也可以通过 this.$route 访问当前路由” --官网
+	$route对象：
+		{
+			"meta": {                       		//路由元信息
+				"auth": "cyp"
+			},
+			"path": "/foo/star/bar",				//导航路径
+			"hash": "",
+			"query": {								//查询参数
+				"name": "lisi"
+			},
+			"params": {								
+				"pathMatch": "star",				//被通配符匹配的路径
+				"id": "bar"							//动态路径参数的值
+			},
+			"fullPath": "/foo/star/bar?name=lisi",  //完整的路径，没有 查询参数 则与 path 相同
+			"matched": [							//一个路由匹配到的所有路由记录
+				{
+					"path": "/foo/*/:id",			
+					"regex": {
+						"keys": [
+							{
+								...
+							},
+							{
+								...
+							}
+						]
+					},
+					"components": {},
+					"instances": {},
+					"name": "foo",          		//路由中 name 的值
+					"meta": {						//路由中 meta 的值
+						"auth": "cyp"
+					},
+					"props": {}
+				}
+			]
+		}
+	
+二，动态路由匹配
+	一个“路径参数”使用冒号 : 标记。当匹配到一个路由时，参数值会被设置到 this.$route.params，可以在每个组件内使用。
+	1，响应路由参数的变化
+		当使用路由参数时，例如从 /user/foo 导航到 /user/bar，原来的组件实例会被复用。因为两个路由都渲染同个组件，比起销毁再创建，复用则显得更加高效。不过，这也意味着组件的生命周期钩子不会再被调用。
+
+		复用组件时，想对路由参数的变化作出响应的话，你可以简单地 watch (监测变化) $route 对象：
+		watch: {
+			'$route' (to, from) {
+			  // 对路由变化作出响应...
+			}
+		  }
+	2，捕获所有路由或 404 Not found 路由
+		常规参数只会匹配被 / 分隔的 URL 片段中的字符。如果想匹配任意路径，我们可以使用通配符 (*)
+		当使用一个通配符时，$route.params 内会自动添加一个名为 pathMatch 参数
+			// 给出一个路由 { path: '/user-*' }
+			this.$router.push('/user-admin')
+			this.$route.params.pathMatch // 'admin'
+			
+		<router-link :to="{ path: '/foo/abc/def', query: { id: '789' } }">go to foo</router-link>
+		let routes = [
+            { path: '/foo/*/:id', component: foo},  // 表示以 /foo 开头，中间是N个任意字符，然后以 /:id 结尾   {"pathMatch":"abc","id":"def"}
+			{ path: '/foo/:id/*', component: foo}   // 表示以 /foo/:id 开头，以N个任意字符结尾     {"pathMatch":"def","id":"abc"}
+        ]
+		通配符 * 表示 任意路径，记住 => 任意
+		
+	3，匹配优先级
+		谁先定义的，谁的优先级就最高。
+		所以当使用通配符路由时，请确保路由的顺序是正确的，也就是说含有通配符的路由应该放在最后
+		
+三，嵌套路由
+					
+	[vue-router] Non-nested routes must include a leading slash character. Fix the following routes
+	“非嵌套路由必须包含前导斜杠”，也就是说一级路由的 path 必须以 / 开头	
+		const routes = [
+			{ path: 'foo/bar', component: foo}  //错误
+			{ path: '/foo/bar', component: foo}  //正确
+		]
+		
+		同时导航地址里也必须以 / 开头，否则连续点击同一个导航，地址栏中地址会产生叠加
+			以 / 开头代表的是根路径
+			<router-link :to="{ path: 'foo/bar' }">foo</router-link> //连续点击，地址会进行叠加
+			<router-link :to="{ path: '/foo/bar' }">foo</router-link>
+			
+	嵌套路径加 / 与不加 / 的区别：
+		要注意，以 / 开头的嵌套路径会被当作根路径。 这让你充分的使用嵌套组件而无须设置嵌套的路径。
+			let routes = [
+				{ path: '/foo/:id', component: foo ,children: [
+					{ path: 'profile', component: profile }
+				]}
+			]
+			你只能这样访问 /foo/lisi/profile ，这也是我们通常的做法
+			
+			let routes = [
+				{ path: '/foo/:id', component: foo ,children: [
+					{ path: '/profile', component: profile }
+				]}           
+			]
+			此时 /profile 是一个根路径，你可以直接访问 /profile ，渲染的效果和上面是一样的
+			
+			
+		
+		默认子路由：嵌套路由的 path 的值为 '' 或 '/' ，当你只是访问父路由时，默认子路由也会被渲染
+			let routes = [
+				{ path: '/foo/:id', component: foo, children: [
+					{ path: '' , component: profile }
+					//{ path: '/', component: profile }
+				]}
+			]
+		<router-link :to="{path: '/foo/lisi'}">go to foo</router-link>
+		<router-link to="/foo/lisi">go to foo</router-link>		
+		
+		【注意】如果存在默认子路由，那么父级路由就不能有 name 属性，否则 vue 会发出警告
+		
+四，编程式的导航
+	导航分为 声明式 和 编程式
+		声明式：就是 <router-link :to="{}"></router-link>
+		编程式：就是调用 this.$router.push/replace/go 等方法
+		
+		push 和 replace 方法的参数可以是一个字符串路径，或者一个描述地址的对象
+			// 字符串
+			router.push('home')
+
+			// 对象
+			router.push({ path: 'home' })
+
+			// 命名路由
+			router.push({ name: 'user', params: { userId: '123' }})
+
+			// 带查询参数，变成 /register?plan=private
+			router.push({ path: 'register', query: { plan: 'private' }})
+		
+		路由：{ path: '/foo/:id', name: 'foo'}
+		
+		path: 路由地址  
+			this.$router.push({ path: '/foo/lisi', query: { plan: 'private' }})   
+			最后变成 /foo/lisi?plan=private
+		
+		name: 路由名字  params: 路径参数赋值   params 就是配合 name 的
+		const id = 'lisi'
+		this.$router.push({ name: 'foo', params: { id }, query: { plan: 'private' }}) 最后变成 /foo/lisi?plan=private
+		id: id 当属性值是一个变量，并且名字和 key 名相同，可简写成：id
+		
+		query: 查询参数
+		
+		path 本身已经完成了 路径参数 的赋值，所以 path 和 params 在一起，params 会被忽略
+		
+		以上规则同样适用于 to 属性
+		
+		push 和 replace 的区别：
+			push 会向 history 栈添加记录，因此浏览器的回退前进是好使的
+			replace 不会向其添加记录，因此是不好使滴
+五，命名路由			
+		带 name 属性的路由
+		
+六，命名视图
+	有时候想同时 (同级) 展示多个视图，而不是嵌套展示，可以借助命名视图。
+	如果 router-view 没有设置名字，那么默认为 default。
+		<router-view></router-view>
+		<router-view name="a"></router-view>
+		<router-view name="b"></router-view>
+	一个视图使用一个组件渲染，因此对于同个路由，多个视图就需要多个组件。确保正确使用 components 配置 (带上 s)：	
+		const router = new VueRouter({
+		  routes: [
+			{
+			  path: '/',
+			  components: {
+				default: foo,
+				a: bar,
+				b: profile
+			  }
+			}
+		  ]
+		})	
+		default 视图渲染 foo 组件；a 视图渲染 bar 组件；b 视图渲染 profile 组件
+		
+	1，嵌套命名视图
+		其实就是上面的 嵌套路由 ，只不过多了一个带 name 的 <router-view>
+		<div id="app">
+			<router-link to="/foo/bar" class="blue">go to foo</router-link>       
+			<router-view></router-view>
+		</div>
+
+		<script>
+			let foo = {
+				template: `<div>
+						foo
+						<router-view></router-view>
+						<router-view name="user"></router-view>
+					</div>`,      
+			}
+			let bar = { template: '<div>bar</div>' }
+			let profile = { template: '<div>profile</div>' }
+			
+			let routes = [
+				{
+					path: '/foo', component: foo,  children: [
+						{ path: 'bar', components: {
+							default: bar,
+							user: profile
+						}}
+					]
+				}
+			]
+		
+七，重定向和别名
+	1，重定向
+		重定向的目标可以是 字符串路径
+			{ path: '/a', redirect: '/b' }
+		可以是 路径对象
+			{ path: '/a', redirect: { path: '/b' } }
+			{ path: '/a', redirect: { name: 'b' } }
+		可以是一个方法，动态返回重定向目标
+			{ path: '/a', redirect: to => {
+			  // 方法接收 起始路由 作为参数
+			  // return 重定向的 字符串路径/路径对象
+			  console.log(to)
+              return '/b'
+			}}
+	
+	2，别名
+		“重定向”的意思是，当用户访问 /a时，URL 将会被替换成 /b，然后匹配路由为 /b，那么“别名”又是什么呢？
+
+		/a 的别名是 /b，意味着，当用户访问 /b 时，URL 会保持为 /b，但是路由匹配则为 /a，就像用户访问 /a 一样。
+			{ path: '/a', component: A, alias: '/b' }
+		
+八，路由组件传参
+	在组件中使用 $route 会使之与其对应路由形成高度耦合，从而使组件只能在某些特定的 URL 上使用，限制了其灵活性		
+		const User = {
+		  template: '<div>User {{ $route.params.id }}</div>'
+		}
+		const router = new VueRouter({
+		  routes: [
+			{ path: '/user/:id', component: User }
+		  ]
+		})
+	使用 props 将组件和路由解耦
+		const User = {
+		  props: ['id'],
+		  template: '<div>User {{ id }}</div>'
+		}
+		const router = new VueRouter({
+		  routes: [
+			{ path: '/user/:id', component: User, props: true },
+
+			// 对于包含命名视图的路由，你必须分别为每个命名视图添加 `props` 选项：
+			{
+			  path: '/user/:id',
+			  components: { default: User, sidebar: Sidebar },
+			  props: { default: true, sidebar: false }
+			  // true 代表在 default 这个视图里渲染的组件 可以使用 props 来接收赋给路径参数的值
+			}
+		  ]
+		})
+
+九，HTML5 History 模式
+
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	
+		
+		
+	
