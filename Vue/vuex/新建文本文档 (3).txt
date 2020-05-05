@@ -1,0 +1,247 @@
+	
+store/index.js
+		import Vue from 'vue'
+		import Vuex from 'vuex'
+
+		Vue.use(Vuex)
+
+		const store = new Vuex.Store({
+			state: {
+				count: 0
+			},
+			mutations: {
+				increase(state) {
+					state.count++
+				}
+			}
+		})
+		export default store
+
+一，state
+	1，在 Vue 组件中获得 Vuex 状态
+		从 store 实例中读取状态最简单的方法就是在计算属性中返回某个状态
+			<script>
+				import store from './../store/index'      在每个需要使用 state 的组件中需要频繁地导入
+				export default {
+				  computed: {
+					count(){
+					  return store.state.count
+					}
+				  }
+				}
+			</script>
+		每当 store.state.count 变化的时候, 都会重新求取计算属性，并且触发更新相关联的 DOM
+		
+		但是在模块化的构建系统中，在每个需要使用 state 的组件中需要频繁地导入
+		解决：
+			通过在根实例中注册 store 选项，该 store 实例会注入到根组件下的所有子组件中，且子组件能通过 this.$store 访问到
+			import store from './store'
+			new Vue({
+			  el: '#app',
+			  store,    // store: store
+			  ...
+			})
+			接下来任一子组件，不用再导入 import store ，可以直接通过 this.$store 访问
+			computed: {
+			  count() {
+			    return this.$store.state.count;
+			  }
+			}
+				
+	2，mapState 辅助函数
+		当一个组件需要获取多个状态的时候，将这些状态都声明为计算属性会有些重复和冗余。为了解决这个问题，我们可以使用 mapState 辅助函数帮助我们生成计算属性，让你少按几次键
+			import { mapState } from 'vuex'
+
+			export default {
+			  // ...
+			  computed: mapState({
+				// 箭头函数可使代码更简练
+				count: state => state.count,
+
+				// 传字符串参数 'count' 等同于 `state => state.count`
+				countAlias: 'count',
+
+				// 为了能够使用 `this` 获取局部状态，必须使用常规函数
+				countPlusLocalState (state) {
+				  return state.count + this.localCount
+				}
+			  })
+			}
+		当映射的计算属性的名称与 state 的子节点名称相同时，我们也可以给 mapState 传一个字符串数组。
+			computed: mapState([
+			  // 映射 this.count 为 store.state.count
+			  'count'
+			])
+
+	3，对象展开运算符
+		mapState 函数返回的是一个对象。如果想将它与局部计算属性混合使用，可以使用 对象展开运算符
+			export default {
+			  data(){
+				return{
+				  id: 'a'
+				}
+			  },
+			  computed: {
+				userId: () => this.id,
+				...mapState({
+				  count: state => state.count,
+				  countAlias: 'count',
+				  countPlusLocalState (state) {
+					return state.count + this.id
+				  }
+				})
+			  }
+			}
+		如果 computed 和 state 名称相同
+			...mapState([
+			  'count'
+			])
+		
+二，Getter
+	有时候我们需要从 store 中的 state 中派生出一些状态，例如对列表进行过滤并计数：
+		computed: {
+		  doneTodosCount () {
+			return this.$store.state.todos.filter(todo => todo.done).length
+		  }
+		}
+	如果有多个组件需要用到此属性，我们要么复制这个函数，要么抽取到一个共享函数然后在多处导入它
+		a.vue 
+			export default {
+			  computed: {
+				doneTodosCount () {
+				  return this.$store.state.todos.filter(todo => todo.done).length
+				}
+			  }
+			}
+		b.vue
+			export default {
+			  computed: {
+				doneTodosCount () {
+				  return this.$store.state.todos.filter(todo => todo.done).length
+				}
+			  }
+			}
+		或者
+		common.js
+			import store from './../store/index'
+			let length = store.state.todos.filter(todo => todo.done).length;
+			export default length
+		
+		a.vue
+			import length from './common'
+			export default {
+			  data(){
+				return{
+				  length
+				}
+			  }
+			}
+		b.vue
+			import length from './common'
+			export default {
+			  data(){
+				return{
+				  length
+				}
+			  }
+			}
+	无论哪种方式都不是很理想。
+	
+	Vuex 允许我们在 store 中定义“getter”（可以认为是 store 的计算属性）。就像计算属性一样，getter 的返回值会根据它的依赖被缓存起来，且只有当它的依赖值发生了改变才会被重新计算
+	
+	Getter 接受 state 作为其第一个参数：
+		const store = new Vuex.Store({
+		  state: {
+			count: 0,
+			todos: [
+			  { id: 1, text: '...', done: true },
+			  { id: 2, text: '...', done: false }
+			]
+		  },
+		  getters: {
+			doneCount: state => {
+				return state.count + 100
+			},
+			doneTodos: state => {			  
+			  return state.todos.filter(todo => todo.done).length
+			}
+		  }
+		})
+		
+	也可以接受 Getter 对象 作为第二个参数：
+		const store = new Vuex.Store({
+		  ...
+		  getters: {
+			doneCount: state => {
+				return state.count + 100
+			},
+			doneTodos: (state, getters) => {
+			  console.log(getters)
+			  return getters.doneCount + 1000
+			}
+		  }
+		})
+		上述输出的 getters 对象长这样：
+			{
+				doneCount: 100,
+				doneTodos: 1000
+			}
+	这两个参数都是可选的，你也可以都不填，随便返回一个值，但是一般不会省略 state
+		doneTest: () => 12
+		
+	1，通过属性访问
+		Getter 会暴露为 store.getters 对象，你可以以属性的形式访问这些值
+		
+		export default {
+		  computed: {
+			doneTodosCount () {
+			  return this.$store.gettters.doneTodos
+			}
+		  }
+		}
+		
+	2，通过方法访问
+		你也可以通过让 getter 返回一个函数，来实现给 getter 传参。在你对 store 里的数组进行查询时非常有用
+		store/index.js:
+			getters: {
+				...
+				getTodoById: (state) => (id) => {
+					return state.todos.filter(item => item.id === id)
+				}
+			}
+		a.vue:
+			computed: {
+			  getTodoById () {									// [ { "id": 2, "text": "...", "done": true } ]
+			    return this.$store.getters.getTodoById(2)
+			  }
+		    }
+		
+	3，mapGetters 辅助函数
+			import { mapGetters } from 'vuex'
+
+			export default {
+			  // ...
+			  computed: {
+			  // 使用对象展开运算符将 getter 混入 computed 对象中
+			  // 计算属性 和 getter 名称相同
+				...mapGetters([
+				  'doneTodosCount',
+				  'anotherGetter',
+				  // ...
+				])
+			  }
+			}
+		如果你想将一个 getter 属性另取一个名字，使用对象形式：
+			...mapGetters({
+			  // 把 `this.helloWorld` 映射为 `this.$store.getters.doneTodosCount`
+			  helloWorld : 'doneTodosCount'
+			})
+
+
+
+
+
+
+
+	
+			

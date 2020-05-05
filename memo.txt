@@ -338,8 +338,19 @@ return str.charAt(0).toUpperCase() + str.slice(1)
 
 
 
+Array.forEach  就是很普通的遍历，什么都不返回
 
+Array.filter 对数组每一项运行给定函数，把对返回true的项添加到新数组里，最后返回新数组
+Array.map 	 对数组每一项运行给定函数，把每次函数返回的结果添加到新数组里，最后返回新数组
 
+Array.some   对数组每一项运行给定函数，有任一项返回true，则结果就为true
+Array.every  对数组每一项运行给定函数，每一次该函数都返回true，则结果才为true
+
+[1,2,3].filter((item, index. arr) => {...})  ((item, index) => {...})  (item => {...})    item 必需  index, arr 可选 
+
+Array.find  对数组每一项运行给定函数，当函数返回true时，返回该项值，函数结束运行。没有返回true的项，则返回undefined
+			对于空数组则不会执行
+			[1,2,3].find((item, index, arr) { return item > 2 })   item 必需  index, arr 可选 
 
 
 
