@@ -1,0 +1,113 @@
+三，Mutation
+	更改 Vuex 的 store 中的状态的唯一方法是提交 mutation
+	每个 mutation 都有一个字符串的 事件类型 (type) 和 一个 回调函数 (handler)
+		const store = new Vuex.Store({
+		  state: {
+			count: 1
+		  },
+		  mutations: {
+			increment (state) {
+			  // 变更状态
+			  state.count++
+			}
+		  }
+		})
+	increment 就是 事件类型 (type)    
+	
+	是这么调用的：store.commit('increment')
+	
+	1，提交载荷（Payload）
+		可以向 store.commit 传入额外的参数，这个额外的参数有一个高大上的名字 载荷
+			// ...
+			mutations: {
+			  increment (state, n) {
+				state.count += n
+			  }
+			}
+			store.commit('increment', 10)
+			
+		在大多数情况下，载荷应该是一个对象，这样可以包含多个字段并且记录的 mutation 会更易读
+			// ...
+			mutations: {
+			  increment (state, payload) {
+				state.count += payload.amount
+			  }
+			}
+			store.commit('increment', {
+			  amount: 10
+			})
+			
+	2，对象风格的提交方式
+		提交 mutation 的另一种方式是直接使用包含 type 属性的对象：
+
+		store.commit({
+		  type: 'increment',
+		  amount: 10
+		})
+			
+	3，Mutation 需遵守 Vue 的响应规则
+		1，最好提前在你的 store 中初始化好所有所需属性。
+		2，当需要在对象上添加新属性时，你应该使用 Vue.set(obj, 'newProp', 123), 或者		
+		3，以新对象替换老对象。例如，利用对象展开运算符我们可以这样写：
+			state.obj = { ...state.obj, newProp: 123 }
+			
+	4，使用常量替代 Mutation 事件类型
+		// mutation-types.js
+		export const SOME_MUTATION = 'SOME_MUTATION'
+		
+		// store.js
+		import Vuex from 'vuex'
+		import { SOME_MUTATION } from './mutation-types'
+
+		const store = new Vuex.Store({
+		  state: { ... },
+		  mutations: {
+			// ES6 允许字面量定义对象时，用 表达式 作为对象的属性名，即把表达式放在方括号内。
+			[SOME_MUTATION] (state) {
+			  // mutate state
+			}
+		  }
+		})
+		
+	5，Mutation 必须是同步函数
+		
+	6，在组件中提交 Mutation
+		你可以在组件中使用 this.$store.commit('xxx') 提交 mutation，或者使用 mapMutations 辅助函数将组件中的 methods 映射为 store.commit 调用（需要在根节点注入 store）
+		
+			import { mapMutations } from 'vuex'
+
+			export default {
+			  // ...
+			  methods: {
+				...mapMutations([
+				  'increment', // 将 `this.increment()` 映射为 `this.$store.commit('increment')`
+
+				  // `mapMutations` 也支持载荷：
+				  'incrementBy' // 将 `this.incrementBy(amount)` 映射为 `this.$store.commit('incrementBy', amount)`
+				]),
+				...mapMutations({
+				  add: 'increment' // 将 `this.add()` 映射为 `this.$store.commit('increment')`
+				})
+			  }
+			}
+		
+		此时你调用 incrementBy(100) 相当于 this.$store.commit('incrementBy', 100)
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+			
+			
+			
+			
