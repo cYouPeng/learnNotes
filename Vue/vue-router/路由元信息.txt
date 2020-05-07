@@ -1,0 +1,56 @@
+我们称呼 routes 配置中的每个路由对象为 路由记录。路由记录可以是嵌套的，因此，当一个路由匹配成功后，他可能匹配多个路由记录
+
+例如，根据上面的路由配置，/foo/bar 这个 URL 将会匹配父路由记录以及子路由记录。
+
+一个路由匹配到的所有路由记录会暴露为 $route 对象 (还有在导航守卫中的路由对象) 的 $route.matched 数组。因此，我们需要遍历 $route.matched 来检查路由记录中的 meta 字段
+	
+	const routes = [
+            {
+                path: '/example/:id', component: layout, meta: { title: 'father' }, children: [
+                    {
+                        path: 'bar',
+                        name: 'bar',
+                        component: bar,
+                        meta: { title: 'son' }
+                    }
+                ]
+            }
+        ]
+	$route对象：
+		{
+			fullPath: "/example/lisi/bar?addr=newYork",
+			hash: "",
+			matched: [
+				{
+					beforeEnter: undefined
+					components: {default: {…}}
+					instances: {default: VueComponent}
+					matchAs: undefined
+					meta: {title: "father"}
+					name: undefined
+					parent: undefined
+					path: "/example/:id"
+					props: {}
+					redirect: undefined
+					regex: /^\/example\/((?:[^\/]+?))(?:\/(?=$))?$/i
+				},
+				{
+					beforeEnter: undefined
+					components: {default: {…}}
+					instances: {default: VueComponent}
+					matchAs: undefined
+					meta: {title: "son"}
+					name: "bar"
+					parent: {path: "/example/:id", regex: /^\/example\/((?:[^\/]+?))(?:\/(?=$))?$/i, components: {…}, instances: {…}, name: undefined, …}
+					path: "/example/:id/bar"
+					props: {}
+					redirect: undefined
+					regex: /^\/example\/((?:[^\/]+?))\/bar(?:\/(?=$))?$/i
+				}
+			],
+			meta: {title: "son"},
+			name: "bar",
+			params: {id: "lisi"},
+			path: "/example/lisi/bar",
+			query: {addr: "newYork"}
+		}

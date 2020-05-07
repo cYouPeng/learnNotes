@@ -14,44 +14,7 @@
 　　　　4，客户端中的路由，实际上就是dom 元素的显示和隐藏。当页面中显示home 内容的时候，about 中的内容全部隐藏，反之也是一样。客户端路由有两种实现方式：基于hash 和基于html5 history api.
 
 	“通过注入路由器，我们可以在任何组件内通过 this.$router 访问路由器，也可以通过 this.$route 访问当前路由” --官网
-	$route对象：
-		{
-			"meta": {                       		//路由元信息
-				"auth": "cyp"
-			},
-			"path": "/foo/star/bar",				//导航路径
-			"hash": "",
-			"query": {								//查询参数
-				"name": "lisi"
-			},
-			"params": {								
-				"pathMatch": "star",				//被通配符匹配的路径
-				"id": "bar"							//动态路径参数的值
-			},
-			"fullPath": "/foo/star/bar?name=lisi",  //完整的路径，没有 查询参数 则与 path 相同
-			"matched": [							//一个路由匹配到的所有路由记录
-				{
-					"path": "/foo/*/:id",			
-					"regex": {
-						"keys": [
-							{
-								...
-							},
-							{
-								...
-							}
-						]
-					},
-					"components": {},
-					"instances": {},
-					"name": "foo",          		//路由中 name 的值
-					"meta": {						//路由中 meta 的值
-						"auth": "cyp"
-					},
-					"props": {}
-				}
-			]
-		}
+	
 	
 二，动态路由匹配
 	一个“路径参数”使用冒号 : 标记。当匹配到一个路由时，参数值会被设置到 this.$route.params，可以在每个组件内使用。
@@ -85,33 +48,49 @@
 三，嵌套路由
 					
 	[vue-router] Non-nested routes must include a leading slash character. Fix the following routes
-	“非嵌套路由必须包含前导斜杠”，也就是说一级路由的 path 必须以 / 开头	
+	“非嵌套路由必须包含前导斜杠”
+	
+	一级路由的 path 也可以是 '' 或 '/'，这代表刚打开页面时，默认匹配该路由。我把它称为 默认一级路由
+	但如果一级路由的 path 是个别的什么值，例如 '/abc'，那么请记住，它必须要以 / 开头	
 		const routes = [
-			{ path: 'foo/bar', component: foo}  //错误
-			{ path: '/foo/bar', component: foo}  //正确
+			{ path: '', component: foo},
+			{ path: 'foo', component: foo},  //错误
+			{ path: '/foo', component: foo}  //正确
 		]
 		
+	当一级路由的值是 '' 或 '/'，你想访问二级路由，可以直接 / 加上 path 的值
+		const routes = [
+			{ path: '', component: foo, children: [
+				{ path: 'bar', component: bar },
+				{ path: 'pro', component: pro }
+			]}
+			
+		]
+	router.push({path: '/bar'})
+	
 		同时导航地址里也必须以 / 开头，否则连续点击同一个导航，地址栏中地址会产生叠加
 			以 / 开头代表的是根路径
 			<router-link :to="{ path: 'foo/bar' }">foo</router-link> //连续点击，地址会进行叠加
 			<router-link :to="{ path: '/foo/bar' }">foo</router-link>
 			
 	嵌套路径加 / 与不加 / 的区别：
-		要注意，以 / 开头的嵌套路径会被当作根路径。 这让你充分的使用嵌套组件而无须设置嵌套的路径。
+		要注意，以 / 开头的嵌套路径会被当作根路径。 这让你充分的使用嵌套组件而无须设置嵌套的路径。 --官网
 			let routes = [
 				{ path: '/foo/:id', component: foo ,children: [
 					{ path: 'profile', component: profile }
 				]}
 			]
-			你只能这样访问 /foo/lisi/profile ，这也是我们通常的做法
+			不以 / 开头的嵌套路径那它就是一个嵌套路径。你只能通过父级路由加上子路由的路径来访问  /foo/lisi/profile   
 			
 			let routes = [
 				{ path: '/foo/:id', component: foo ,children: [
 					{ path: '/profile', component: profile }
-				]}           
+				]}
 			]
-			此时 /profile 是一个根路径，你可以直接访问 /profile ，渲染的效果和上面是一样的
-			
+			以 / 开头它会被当作一个根路径，你可以直接访问子路由的路径  /profile ，会达到和上面一样的效果
+			一旦子路由的路径以 / 开头，就不能再通过父级路路径加子路由路径来访问了  此时 访问/foo/lisi/profile 
+			会找不到这个路由记录
+	以上规则适用于 2-N 级路由	
 			
 		
 		默认子路由：嵌套路由的 path 的值为 '' 或 '/' ，当你只是访问父路由时，默认子路由也会被渲染
@@ -268,6 +247,48 @@
 		})
 
 九，HTML5 History 模式
+
+
+
+
+
+杂记：const routes = [{
+		path: '',
+		component: reload,
+		hidden: true
+	  }]
+	  
+	<template v-for="item in routes">
+		<router-link v-if="item.hidden">go</router-link>
+	</template>
+	这个 hidden 是我们自定义添加的，在 $route 对象里是看不到的，那它有什么用呢？
+	遍历 routes 对象，通过判断 hidden 值来决定是否渲染路由出口
+	说到底这只是一个判断路由入口是否可见的开关而已
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 		
 		

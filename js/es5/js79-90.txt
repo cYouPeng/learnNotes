@@ -319,13 +319,18 @@
 			-可以将一个字符串拆分为一个数组
 			-不会影响原字符串
 			-参数
-				-需要一个字符串作为参数，将会根据该字符串去拆分数组
+				-需要一个字符串作为参数，将会根据该字符串去拆分原字符串
 				-如果传递一个空串作为参数，则会将每个字符都拆分为数组中的一个元素
+				-如果字符串中没有参数字符串，则把整个字符串作为一个元素放进数组中，然后返回该数组
 					console.log(str.split("")); //["h","e","l","l","o"]
 					str = "abc,edf,bcd";
 					console.log(str.split(",")); //["abc","edf","bcd"]
 					str = "abcdefg";
 					console.log(str.split("d")); //["abc","efg"] 根据d拆分，数组里就不会包含d
+					console.log(str.split("u")); //["abcdefg"] 没有 u，整个放进数组进行返回
+			-把 'abcd' 变成 ['abcd']，有两种方法
+				1, let arr = []; arr.push('abcd')
+				2, 'abcd'.split(',')
 					
 	/*
 	 *	toUpperCase() 将一个字符串转为大写  

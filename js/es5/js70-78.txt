@@ -347,3 +347,19 @@
 					arr.sort(function(a,b){
 						return b-a;   //降序排列
 					});
+					
+	/*
+	 * indexOf()
+		可返回数组中某个指定元素的位置，从前往后找，找到一个就停止寻找并返回该位置下标。没找到返回 -1
+		参数1：item 查找的元素，必需
+		参数2：start 开始查找的位置(包括该位置)，可选，没有的话从开头开始找
+			let arr = ['abc']
+			console.log(arr.indexOf('abc'))
+			console.log(arr.indexOf('ef')) 
+			
+			let arr = []
+			console.log(arr.indexOf('abc'))
+			console.log(arr.indexOf('ef'))   // 空的数组返回 -1
+			
+	/*
+	 * lastIndexOf()  用法和 indexOf() 一致，只不过它是从后往前找

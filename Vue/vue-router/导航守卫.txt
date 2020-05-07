@@ -111,8 +111,17 @@
 		next('/') 或者 next({ path: '/' }): 跳转到一个不同的地址。当前的导航被中断，然后进行一个新的导航。可传递
 			参数与 router.push() 中选项一致
 		next(error): 如果传入 next 的参数是一个 Error 实例，则导航会被终止且该错误会被传递给 router.onError() 注册过的回调。
-
-
+		
+		确保要调用 next 方法，否则钩子就不会被 resolved  --官网
+		next 只是用来改变钩子的状态，不会停止函数的执行。如果后面还有其它代码，也一样会被执行
+			router.beforeEach((to, from, next) => {
+				next();
+				for(let i=0;i<10000; i++){
+					console.log(i)
+				}
+			})
+		整个函数执行完了，导航才会跳转
+		
 
 	全局路由钩子：beforeEach(to,from, next)、beforeResolve(to,from, next)、afterEach(to,from)；
 
