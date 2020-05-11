@@ -58,7 +58,8 @@
 			{ path: '/foo', component: foo}  //正确
 		]
 		
-	当一级路由的值是 '' 或 '/'，你想访问二级路由，可以直接 / 加上 path 的值
+	当一级路由的值是 '' 或 '/'，此时你访问 /bar，注意这依然是 一级路由的path '/' 加上二级路由的path 'bar'。 使用的依然是嵌套组件,''就代表 '/'
+	
 		const routes = [
 			{ path: '', component: foo, children: [
 				{ path: 'bar', component: bar },
@@ -66,7 +67,32 @@
 			]}
 			
 		]
-	router.push({path: '/bar'})  访问的也是嵌套组件
+	router.push({path: '/bar'})  
+	
+	
+	routes: [
+                {
+                    path: '/son1', component: hello
+                },
+                {
+                    path: '', component: father, redirect: '/son1', children: [
+                        { path: 'son1', component: son1 },
+                        { path: 'son2', component: son2 },
+                    ]
+                },
+
+            ] 此时路由表里有两个同名的路径 '/son1'，一个代表hello组件，一个代表嵌套组件，根据先定义的路由优先级大的原则，将匹配hello那条路由
+	
+	
+	
+	routes: [
+                {
+                    path: '', component: father, redirect: 'son1', children: [
+                        { path: 'son1', component: son1 },
+                        { path: 'son2', component: son2 },
+                    ]
+                }
+            ] 在父级路由里可以冲顶到
 	
 		同时导航地址里也必须以 / 开头，否则连续点击同一个导航，地址栏中地址会产生叠加
 			以 / 开头代表的是根路径
