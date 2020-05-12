@@ -159,8 +159,32 @@
 		路由独享的是以 key:value 的形式  {..., beforeEnter: (to, from, next) => {...}}
 		组件路由钩子是以函数定义的方式   {..., beforeRouteEnter(to, from, next){...}}
 		  
-
-
+	
+	router.beforeEach((to, from, next) => {
+		console.log(to)
+		console.log(from)
+	})刚进入页面时的to和from，可以看到，二者都是一样的值
+	{
+		fullPath: "/"
+		hash: ""
+		matched: []
+		meta: {}
+		name: null
+		params: {}
+		path: "/"             // '/' 和 '' 代表的路径是一样的
+		query: {}
+	}
+	{
+		fullPath: "/"
+		hash: ""
+		matched: []
+		meta: {}
+		name: null
+		params: {}
+		path: "/"
+		query: {}
+	}
+	
 
 
 

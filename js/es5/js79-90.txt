@@ -272,6 +272,7 @@
 				如果没有找到指定的内容，则返回-1
 			-可以指定第二个参数，表示开始查找的位置
 				console.log(str.indexOf("h",1)); //-1
+				console.log(str.indexOf("lloe")); //虽然有llo 但没有lloe，找的是lloe，返回-1
 				
 	/*
 	 *	lastIndexOf()
