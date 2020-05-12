@@ -267,7 +267,16 @@
 
 
 
+	path 的值类似正则，匹配路径栏里#后边的值，匹配上了则应用这种路由记录
+	而 to push redirect 其实就是把他们的值放到地址栏里，然后vue-router取得#后边的值，去路由表进行匹配
+	就是往地址栏里加值
 
+	{ path: '', redirect: 'son', component: fat, children: [
+		{ path: 'son', component: son }
+	]}
+
+	注意，这里的redirect不是去路由表里查找，而仅是把son加到地址栏里，再由vue-router去地址栏里取值，再去路由表里匹配
+	这里redirect和path并没有什么关系
 
 
 
