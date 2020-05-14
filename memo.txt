@@ -351,6 +351,11 @@ Array.every  对数组每一项运行给定函数，每一次该函数都返回t
 Array.find  对数组每一项运行给定函数，当函数返回true时，返回该项值，函数结束运行。没有返回true的项，则返回undefined
 			对于空数组则不会执行
 			[1,2,3].find((item, index, arr) { return item > 2 })   item 必需  index, arr 可选 
+			
+array.findIndex(function(currentValue, index, arr), thisValue)   只有currentValue是必需的，其它三个参数可选
+返回数组中第一个符合条件的元素的位置，然后停止执行。没有找到则返回-1
+[12,14,90].findIndex(currentValue => currentValue > 18)
+
 
 
 | （竖线） 用于括号或大括号里，只能选一个 
