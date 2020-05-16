@@ -1,19 +1,118 @@
-npm install module_name -S    即    npm install module_name --save    写入dependencies
+一，npm基本命令
+	1.初始化项目(生成package.json)
+		npm init 然后根据提示填写项目信息即可
+	2.添加依赖
+		本地安装
+			1，将安装包放在 ./node_modules 下（运行npm时所在的目录）
+			2，可以通过 require() 来引入本地安装的包
+			3，项目在运行时要用到的，写入 dependencies；仅在开发时用到的，写入 devDependencies
+			npm i module_name -S    -S 是 --save 的缩写    写入 dependencies
+			npm i module_name -D    -D 是 --save-dev 的缩写    写入 devDependencies
+			
+			
+		全局安装
+			1，默认安装地址：C:/Users/xxx/AppData/Roaming/npm
+			2，可以直接在命令行里使用
+			npm i module_name -g    全局安装(命令行使用)   使用 -g 安装的模块为全局安装，否则为本地安装。
+		
+		npm i module_name   后面没有指令，默认本地安装、写入dependencies。相当于加了 -S			
+	
+	3.卸载
+		npm uninstall jquery  删除本地安装的包
+		npm uninstall jquery -g  删除全局安装的包   不支持批量删除命令，可以直接删文件
 
-npm install module_name -D    即    npm install module_name --save-dev 写入devDependencies
+	4.其它
+		npm -v 					查看npm版本
+		npm list -g --depth=0   查询全局安装的模块
+		npm i jquery@3.0.0 -g/S/D 				指定版本安装		
+		npm i webpack webpack-cli -g/S/D  		同时安装多个模块
+		npm install -g cnpm --registry=https://registry.npm.taobao.org  安装淘宝镜像
+		
+		直接npm i module_name -g/S/D  不会管package.json，直接安装最新版本
 
-npm install module_name -g 全局安装(命令行使用)
+二，想要在命令行中执行命令有两种方式
+	1，设置环境变量（一般我们都是用设置环境变量的方式）
+	2，修改注册表
+	
+	其实在nodejs安装的时候，安装的过程中它会默默地在用户变量的path中增加一个配置路径：
+		C:\Users\cYouPeng\AppData\Roaming\npm
+		
+	在命令行中执行命令相当于执行对应路径下面的3种类型的文件
+		.exe 文件
+		.bat 文件
+		.cmd 文件
+		
+	一般npm全局安装一些功能的时候，会生成.cmd文件。例如你的 xrr-cli 安装之后会生成 xr-add.cmd，可以直接在命令行里执行 xr-add 命令，那么这种包就应该全局安装
+	没有提供这种命令行工具的包，例如jquery，就应该本地安装
 
 
-npm install --save 局部安装，并会把模块自动写如入package.json中的dependencies里。
 
-npm install --dev局部安装，并会把模块自动写入package.json中的devDependencies里。
+三，^和~区别
+	当我们查看package.json中已安装的库的时候，会发现他们的版本号之前都会加一个符号
+		"dependencies": {
+			"bluebird": "^3.3.4",
+			"body-parser": "~1.15.2"
+		 }
+		 
+	波浪符号（~）：他会更新到当前minor version（也就是中间的那位数字）中最新的版本。放到我们的例子中就是：body-parser:~1.15.2，这个库会去匹配更新到1.15.x的最新版本，如果出了一个新的版本为1.16.0，则不会自动升级。波浪符号是曾经npm安装时候的默认符号，现在已经变为了插入符号。
 
-npm 5 开始 通过npm install不加--save 和npm install --save一样 都是局部安装并会把模块自动写入package.json中的dependencies里。
+	插入符号（^）：这个符号就显得非常的灵活了，他会把当前库的版本更新到当前major version（也就是第一位数字）中最新的版本。放到我们的例子中就是：bluebird:^3.3.4，这个库会去匹配3.x.x中最新的版本，但是他不会自动更新到4.0.0。
+
+	总结一下：
+		~1.15.2 :=  >=1.15.2 <1.16.0
+		^3.3.4 := >=3.3.4 <4.0.0
+
+	最后解释下之前提到的minor verision和major version：
+
+		1.15.2对应就是MAJOR,MINOR.PATCH：1是 marjor version；15是 minor version；2是 patch version。
+
+		MAJOR：这个版本号变化了表示有了一个不可以和上个版本兼容的大更改。
+		MINOR：这个版本号变化了表示有了增加了新的功能，并且可以向后兼容。
+		PATCH：这个版本号变化了表示修复了bug，并且可以向后兼容。
+
+		因为major version变化表示可能会影响之前版本的兼容性，所以无论是波浪符号还是插入符号都不会自动去修改major version，因为这可能导致程序crush，可能需要手动修改代码。
+
+四，package-lock.json
+	代码没变，第一次 npm install 项目正常启动，第二次 npm install 启动报错。查其原因，是因为 package.json 里的依赖模块版本号
+	没有固定，例如："bluebird": "^3.3.4",，第一次 install 会去更新 3.x.x 中最新的版本，比如 3.3.5。第二次安装刚好这个模块
+	更新了，变成了 3.4.0。前后版本不一致，可能导致项目启动报错
+	
+	第一个想到的办法就是去掉 ^ ，但这里有一个问题。假如我们依赖 bluebird 模块，而 bluebird 模块又依赖 A 模块、B 模块
+	此时我们去掉 ^ ，把 bluebird 锁死，但也仅仅是把 bluebird 模块版本锁死，而它依赖的 A B 模块还是使用的 ^，而恰好这两个模块
+	也更新了，还是会产生前后版本不一致的问题，这就引出了我们的package-lock.json文件。它的产生就是来对整个依赖树进行版本固定的
+	
+	当 npm install(前提有package.json) 或 npm install xx 的时候会自动生成package-lock.json。 	
+	该文件里面记录了package.json依赖的模块，以及依赖的依赖。并且给每个依赖标明了版本, 获取地址和哈希值, 使得每次安装都会出现相同的结果. 不管你在什么机器上面或什么时候安装。
+	
+	如果 package.json 做了更改，那么 npm i 时会根据 package 的版本号去下载包，并同步更新至 package-lock.json
+	如果没做更改，那么 npm i 时会根据 package-lock 的版本号去下载包
+	
+	所以如果你想更新某个包，可以手动修改 package.json 然后 npm i，或者直接 npm i xx@1.2.3
+	
+	cnpm不支持package-lock.json
+		使用cnpm install时候，并不会生成package-lock.json文件。
+		就算你项目中有package-lock.json文件，cnpm也不会识别，仍会根据package.json来安装
+		
+		你创建了一个项目，这个项目依赖了蛮多第三方库，你都是使用 npm 安装的，项目里会生成 package.json 和 package-lock.json
+		然后你在这些库的基础上实现了自己的功能，并发布到 npm 官网。
+		此时同学A 下载了你的库，使用 npm install 按照 package-lock.json 下载了和你开发时一模一样版本的库，项目正常运行
+		然后同学B 也下载了你的库，但使用的是 cnpm install，按照 package.json 下载了所有依赖，但可能在你发布和同学B cnpm install
+		这段期间，很多依赖都有更新，并且可能是不向后兼容的。所以项目启动或运时行报错
+		
+		之所以使用 cnpm 会产生莫名其妙的错误，就是因为它不支持 package-lock.json，导致了下载的依赖和库发布时所需依赖版本不一致，
+		产生了不兼容的问题，所以报错
+
+	npm i 和 npm i xx 的区别
+		npm i 按照package或package-lock的信息去下载
+		npm i xx 下载最新版xx，同时还按照上述两个文件的信息去下载其他模块。就是不光是只安装 xx
+		
+		如果你要想删除某个模块，需要先删除package.json里的模块信息，然后再 npm i。node_modules里这个模块包括其依赖都被删除
+		要想通过 node_modules 文件 删除某个模块，是不可能的，因为依赖太多了
 
 
 
 
 
- 
+
+
 

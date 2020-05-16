@@ -81,23 +81,20 @@
 				contentBase: "./build", // 指定本地服务器默认打开的目录  默认是项目根目录
 				compress: true          // 是否对代码进行压缩
 			},
-			mode: "development",    
-			entry: "./src/index.js",    
-			output: {       
-				filename: "index.js",   
-				path: path.resolve(__dirname, "build")  
+			mode: "development",
+			entry: "./src/index.js",
+			output: {
+				filename: "index.js",
+				path: path.resolve(__dirname, "build")
 			}
 		}
 		可以通过 http://localhost:3000 访问到项目的 build 目录了，默认寻找该目录下的 index.html 文件进行渲染，如果没有则展示该目录下的所有文件。
 
 	3，深入配置webpack的开发服务器
-		上述配置中，如果要看到项目的页面，一个前提是build目录下必须存在index.html文件。但是这个文件是打包编译后才生成的，所以在开发服务器环境下可能不会存在，而且也不会实时刷新
-
-		正常情况下，我们希望看到的场景是：使用 npm run 或 yarn 来启动开发服务器之后，就可以实时看到项目的页面，如果项目有代码的更新，页面也要实时更新。要做到这一点，我们需要完成以下步骤：
+		上述配置中，如果要看到项目的页面，一个前提是build目录下必须存在index.html文件。但这个html需要我们手动来提供，比较
+		不方便，可以借助 html-webpack-plugin 插件来帮我们生成这个html文件
 		
-		上面这两句话我认为有些错误，在开发服务环境下，在不借助插件的情况下，index.html的存在与否取决于我们是否手动创建，而且他会实时刷新。这一点不是我们使用html-webpack-plugin的目的，使用该插件的目的在于我们不想手动创建index.html
-		
-		HtmlWebpackPlugin：1，帮助我们自动生成html文件；2打包速度更快
+		HtmlWebpackPlugin：1，帮助我们自动生成html文件并且引入打包好的js    2，打包速度更快
 		
 		1安装 html-webpack-plugin 插件
 			yarn add html-webpack-plugin -D
@@ -108,40 +105,40 @@
 			let HtmlWebpackPlugin = require("html-webpack-plugin")      // 引入安装的插件
 
 			module.exports = {
-				devServer: {
-					port: 3000,             // 指定开发服务器的端口号
-					progress: true,         // 显示开启本地服务器的进度
-					contentBase: "./src", // 指定本地服务器默认打开的目录
-					compress: true          // 是否对代码进行压缩
-				},
-				mode: "development",    
-				entry: "./src/index.js",    
-				output: {       
-					filename: "index.js",   
-					path: path.resolve(__dirname, "build")   
-				},
+				...
 				plugins: [
 					new HtmlWebpackPlugin({
 						template: './src/index.html',       // 模板文件   默认是一个空的html
 						filename: 'index.html',             // 开发服务器中生成的临时文件   默认是 index.html 
-						//使用webpack，该插件生成的html会被放在出口目录中
-						//使用webpack-dev-server，该插件生成的html会被放在内存中
-						//注意使用webpack-dev-server，filename的值必须为  index.html，否则wds找不到该文件
+						/*
+						 *	使用webpack，该插件生成的html会被放在出口目录中
+						 *	使用webpack-dev-server，该插件生成的html会被放在内存中
+						 *	注意使用webpack-dev-server，filename的值必须为  index.html，否则wds找不到该文件
+						 *  因为使用了 html-webpack-plugin，wds就不上 contentBase 里去找html了
+						 */
 						minify: {
-							removeAttributeQuotes: true,    // 是否去除文件中的双引号
-							collapseWhitespace: true        // 是否去除文件中的空行
+							collapseWhitespace: true        // 是否去除文件中的空格，换行符，默认false，去除后只有一行代码
+							minifyCSS: true //压缩html内的样式，默认false
+							minifyJS: true  //压缩html内的js，默认false
+							caseSensitive: true  //以区分大小写的方式处理自定义标签内的属性
+												   构建后属性名未发生变化，如果使用默认值，则构建后属性会被转成全小写
+									<h1 langType="chinese">这是一个模板文件</h1>  // 模板
+									<h1 langtype="chinese">这是一个模板文件</h1>  //使用默认值，属性名被转成小写
+									<h1 langType="chinese">这是一个模板文件</h1>  //改为true，会区分大小分
+							更多请百度...
 						},
 						hash: true      // 引入文件的时候添加哈希值，防止缓存的问题
-					}),
+					})
 				]
 			}
 			template： 模板文件。webpack开发服务器启动的时候，会将项目的代码打包编译成一个或多个 .js 文件，但是这些文件不能直接在浏览器中打开，需要在一个 **.html **文件中引入，才能正常被浏览器渲染。模板文件就是这个 .html 。webpack打包编译后的 .js 脚本文件会自动地被引入到该模板文件中
 
 			filename： 开发服务器中打包编译后生成的 临时文件 的文件名，默认是 index.html 。生成的这个文件是一个临时文件，存放在内存中，在项目中是看不到的。但是这个文件非常重要，当我们在浏览器中访问 http://localhost:3000 ，看到的页面，就是这个文件渲染出来的。同时这个文件也是模板文件和webpack打包后的 .js 文件结合生成的。
 
-			minify： 表示是否对打包编译生成的代码进行处理，比如去除空行、去除双引号等。
+			minify： 对html文件做一些处理，比如清除注释、清理空格
 
 			hash：哈希值。如果在模板文件中，直接引入打包编译后的 .js 文件，那么有的时候会受到缓存的影响，但是加上哈希值，就不会存在这个问题。如果不加hash值，在临时文件中引入 .js 文件可能是这个情况：<script src="index.js"></script> ；如果加上了hash值，在临时文件中引入 .js 文件可能是这个情况：<script src="index.js?fb39b867e8a90e7cc9ec"></script> 。有效解决了缓存带来的影响。
+			
 
 		3创建模板文件
 			根据上面的配置要求，该文件是位于 src 文件夹下的 index.html 文件
@@ -167,24 +164,22 @@
 
 
 
-webpack和webpack-dev-server的区别
-一个把打包文件放进物理磁盘
-一个把打包文件放进内存
-他俩的相同点是都需要你提供一个index.html
-
-而html-webpack-plugin的作用是帮助你生成index.html并自动引入打包好的js文件，不用你再手动提供了
-npx webpack在磁盘中生成编译好的文件
-npx webpack-dev-server在内存中生成编译好的文件
-热更新是webpack-dev-server的功能，不是html-webpack-plugin
-
-
-webpack在index.html中引入编译好的js文件必须要注意引入路径的问题 <script src="./main.js"></script>  
-webpack-dev-server在index.html中引入编译好的js文件不用注意引入路径的问题，因为js文件存在内存中，只要你引入就行，而不必在乎路径问题，无论你的index.html放在多深的目录里，<script src="./../../../../main.js"></script>
-
-webpack和webpack-dev-server都可以用来打包编译项目，只不过存放的地方不同，但是都需要我们提供一个index.html来进行渲染，但是每次都要写一个html并且引入js，很麻烦，所以就有了html-webpack-plugin插件，此时你使用webpack打包编译hwp会在磁盘中帮你生成index.html；你使用webpack-dev-server打包编译hwp会在内存中帮你生成index.html，所以你明明没有看到js和html，但浏览器为啥能渲染的原因
+webpack和webpack-dev-server的区别：
+	都会对文件进行打包编译，只不过一个把打包好的文件放进物理磁盘，一个放进内存中
+	
+	二者在不借助插件的情况下，如果想看到我们的项目，必须手动提供一个html文件，然后引入打包后的js文件。
+	
+	使用 webpack 编译，在index.html中引入编译好的js文件必须要注意引入路径的问题 <script src="./main.js"></script> 
+	使用 webpack-dev-server 编译，在 html 中引入的时候，你可以随便写 ./ ../，但只能有一个 main.js。举个例子
+		<script src=src=".././.././../main.js"></script>   这是可以的，可以找得到内存中的 main.js
+		<script src=src=".././.././../hello/main.js"></script>  这个不行，会报404
 
 
-还有mini-css-extract-plugin  使用了webpack-dev-server也会把最终的css文件放到内存中，使用webpack就会放到物理磁盘中
+	html-webpack-plugin 的作用是帮助你生成 index.html 并自动引入打包好的 js 文件，不用你再手动提供了
+	此时你使用webpack打包编译，html-webpack-plugin会在磁盘中帮你生成index.html；你使用webpack-dev-server打包编译，html-webpack-plugin会在内存中帮你生成index.html，所以你明明没有看到js和html，但浏览器为啥能渲染的原因
+	
+	热更新是webpack-dev-server的功能，不是html-webpack-plugin
+	
 
 
 
