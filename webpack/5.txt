@@ -42,7 +42,8 @@
 			}
 			test 属性是用来匹配文件的，一般我们使用正则表达式来匹配文件
 			use 属性指定使用哪些程序，来对匹配到的文件进行处理，该属性是一个数组。这个数组中程序的顺序不能随便写，因为对文件进行处理的时候，webpack会按照从后向前的顺序，依次使用指定的程序来处理文件
-			比如在处理index.css文件的时候，要先使用 css-loader 处理css语法，然后在使用 style-loader 将处理后的css挂载到 index.html 模板文件中
+			比如在处理index.css文件的时候，要先使用 css-loader 处理css语法，然后在使用 style-loader 将处理后的css挂载到 index.html 模板文件中。你使用了 html-webpack-plugin 就把css挂载到该插件生成的模板文件中，没使用该插件，就把css
+			挂载contentBase下的index.html中
 			该属性中不仅可以写字符串，还可以写对象，用来更深层次地配置处理文件的loader程序
 			{
 				test: /\.css$/,
@@ -50,7 +51,7 @@
 					{
 						loader: 'style-loader',
 						options: {
-							insertAt: 'top'   // 将编译后的css挂载到模板文件的顶部
+							insertAt: 'top'   // 将编译后的css挂载到模板文件的顶部。我试了一下，不好使  2020/5/17
 						}
 					},
 					'css-loader'
@@ -161,7 +162,9 @@
 					}
 				]
 			}
-		在上面代码中，我们指定了使用 postcss-loader 来处理 .css 和 .less 文件，但是现在webpack还不能自动给CSS3属性添加前缀，我们还需要进行配置postcss-loader。在项目根目录下创建 postcss.config.js 文件，在里面书写以下配置代码即可：
+		此时还需要postcss.config.js文件，否则webpack启动会报错
+		在上面代码中，我们指定了使用 postcss-loader 来处理 .css 和 .less 
+		文件，但是现在webpack还不能自动给CSS3属性添加前缀，我们还需要进行配置postcss-loader。在项目根目录下创建 postcss.config.js 文件，在里面书写以下配置代码即可：
 			module.exports = {
 				plugins: [
 					require('autoprefixer')
@@ -193,10 +196,13 @@
 			
 			
 		配置完成之后，再次进行打包编译项目，就会得到被压缩的 main.css 文件
+		注意，代码压缩都指的是 production 模式下，development 模式下不管你配了什么都是不会被压缩的 --已验证
 
-		虽然我们指定webpack的模式为 生产模式（production）,该模式下，打包后的 .js 文件本应该被压缩，但是实际的情况却不是这样，得到的 .js 文件没有被压缩
+		此时，，虽然我们指定webpack的模式为 生产模式（production）,该模式下，打包后的 .js 文件本应该被压缩，但是实际的情况却不是这样，得到的 .js 文件没有被压缩
 
 		这是因为我们在配置 webpack优化项（optimization） 的时候，一些优化配置会覆盖webpack的默认配置。我们这里没有在optimization指定压缩 .js 文件，所以即使是在生产模式下进行打包编译，最后得到的 .js 文件依然是没有被压缩的。
+		
+		没有使用优化项的时候。production 下 js是被压缩的。使用了优化项，它的配置会覆盖webpack的默认配置，导致js文件没有被压缩
 
 		如果要对 .js 文件进行压缩，配置如下：
 		安装一个插件：terser-webpack-plugin
@@ -211,6 +217,6 @@
 			},
 		现在再次进行打包，得到的 .js 文件就是被压缩的。
 
-
+注意一下，这个自动在html中引入生成好的css文件的活儿是 html-webpack-plugin 干的，跟上面这些插件都没关系
 
 

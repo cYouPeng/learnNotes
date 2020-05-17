@@ -1,0 +1,22 @@
+5
+	17: border: 5px solid #45454;  不支持这么写
+	53: rules 不支持 options 属性
+	168: 这么写postcss的配置，添加前缀失效
+	
+6-7
+	107: rules 不支持 plugins 属性
+	@babel/plugin-proposal-class-properties    @babel/plugin-transform-runtime
+	前面已经安装了 @babel/plugin-proposal-class-properties 插件将ES7转成ES5，后面的插件是干嘛的
+	好像也不支持了 exclude 和include
+	安装了babel，不支持import
+	
+8-10
+	expose-loader 将变量暴露给window对象不好使 输出undefined
+	128 使用 html-withimg-loader 处理图片资源  不好使
+	html中引入图片始终显示不出来
+	
+14-15
+	源码映射
+	54：copy-webpack-plugin 插件用法报错
+	68：BannerPlugin(webpack内置插件) 不好使
+	
