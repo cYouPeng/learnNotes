@@ -1,0 +1,150 @@
+16 —— 定义全局变量和环境变量
+	1，定义全局变量和环境变量
+		在webpack的配置文件中配置全局变量和环境变量，需要使用到一个插件，即 DefinePlugin 。这是webpack自带的插件
+			let webpack = require("webpack");
+			module.exports = {
+				plugins: [
+					new webpack.DefinePlugin({
+						APP_NAME: JSON.stringify("Allen App"),				//项目名称
+						API_SERVER: JSON.stringify("www.fengzhen8023.com")  //API地址
+					})
+				]
+			}
+		其他代码文件中，无需导入这些变量，就可以直接使用。例如 index.js文件
+			console.log("APP_NAME: ", APP_NAME);
+			console.log("API_SERVER: ", API_SERVER);
+			
+	2，定义变量时候的规则说明
+		module.exports = {
+			plugins: [
+				new webpack.DefinePlugin({
+					APP_NAME: "Allen App",
+					API_SERVER: "www.fengzhen8023.com"
+				})
+			]
+		}
+		如果使用上述代码进行配置，在启动项目的时候会遇到报错。这里我们虽然使用双引号的形式把 "Allen App" 赋值给APP_NAME，但是webpack在配置的时候，会忽略双引号，直接把 Allen App 赋值给APP_NAME，但是 Allen App 没有定义，所以就会报错。
+
+		如果我们想要使用字符串来定义全局变量的时候，可以借助 JSON.stringify() 这个函数，因为这个函数返回的结果是一个字符串，符合我们的预期。
+
+		不过这里倒是给我们一个启发，如果你想要使用表达式的形式定义全局变量，或者是想要给全局变量赋值一个布尔类型的值，那么可以使用以下配置规则：
+			module.exports = {
+				plugins: [
+					new webpack.DefinePlugin({
+						EXPRESSION: "1+1",
+						BOOLEAN: "true"
+					})
+				]
+			}
+		
+	3，关于使用全局变量的报错说明
+		如果你在项目中使用 eslint 来校验代码，那么使用全局变量的时候，可能会编译报错
+		这也算是eslint和webpack.DefinePlugin插件的一个冲突，要解决这个问题，可以在使用全局变量的过程中，添加一行注释，来告诉eslint，这里的代码不用进行 未定义检测 
+			/* eslint-disable no-undef */
+			console.log("EXPRESSION: ", EXPRESSION);
+			console.log("BOOLEAN: ", BOOLEAN);
+
+17，webpack区分不同环境
+	项目开发过程中，大致可以分为两个状态：开发状态和生产状态。在这两种状态下，webpack在打包编译的时候，会采用不同的方式，比如代码是否压缩等。
+
+	与这两种状态相对应，webpack的配置文件也要分为两个，一个用于开发时候的配置，一个用于上线生产时候的配置。但是在实际的开发过程中，一般不是定义两个配置文件，而是三个，分别为：开发配置、生产配置和公有配置。这样一来，比较便于管理webpack，更清晰地区分不同模式下的编译。
+
+	1，定义webpack公有配置文件
+		webpack的公有配置文件的作用，就是将开发环境和生产环境共同的配置抽离出来，比如js文件和css文件的编译规则，编译的入口文件等
+			webpack.base.js：
+				let path = require("path");
+				let Webpack = require('webpack');
+				module.exports = {
+					entry: "./src/index.js",
+					output: {
+						filename: "Feng.js",
+						path: path.resolve(__dirname, "build"), 
+					}
+				}
+		公有配置文件完成之后，我们一般是不用这个文件进行webpack编译的，而是在这个基础之上，再去定义开发环境的配置和生产环境的配置
+
+	2，定义开发环境和生产环境的配置文件
+		这里我们需要使用一个第三方包： webpack-merge 见名知意，这个包的作用就是把两个webpack配置文件合并成一个，用作开发或者生产环境的配置
+			npm i webpack-merge  //安装该包
+			
+		比如我们要在 webpack.base.js 文件的基础上来定义开发环境的配置 webpack.dev.js
+		
+			let { smart } = require("webpack-merge");       // 引入smart方法，这是合并配置文件的方法
+			let base = require("./webpack.base.js");        // 引入公有配置文件
+			module.exports = smart(base, {								
+				mode: "development",
+				devServer: {
+					port: 3000, 
+					progress: true, 
+					contentBase: "./build", 
+					compress: true, 
+				},
+			});
+
+
+18，Webpack中的一些优化项
+	1，使用 noParse 属性进行优化
+		webpack在打包编译的时候，会解析第三方包里面有没有其他的一些依赖，会占用一定的资源，打包效率也会变得比较低。
+		对于一些第三方包，如果我们清楚它没有其它依赖。这个时候就不需要webpack进行深度解析，可以节省时间。但是webpack不知道哪些包需要解析，哪些不需要，所以需要我们通过 noParse 属性来告诉它
+
+		比如我们项目中使用了 jquery ，我们知道这个包里面没有依赖其他的一些包
+			module.exports = {
+				module: {
+					noParse: /jquery/       // 使用正则表达式进行匹配
+				}
+			}
+		这样一来，webpack在打包编译的时候，就不会去解析jquery内部的依赖，从而达到提高效率的目的。	
+
+	2，通过 exclude 和 include 属性进行优化
+		webpack默认会将项目中所有的 .js 文件都进行打包编译，也包括依赖包中的文件，这显然不是我们想要的
+		可以使用 exclude 和 include 属性，在配置处理规则的时候，指定范围。使得webpack只对范围内的代码文件进行处理
+			module.exports = {
+				module: {
+					rules: [{
+						test: /\.js$/,
+						use: {
+							loader: 'eslint-loader',
+						},
+						exclude: /node_modules/     // 排除 node_modules 中的文件，不对其做处理
+					}]
+				}
+			}
+			module.exports = {
+				module: {
+					rules: [{
+						test: /\.css$/,
+						use: [
+							MiniCssExtract.loader,
+							'css-loader',
+							'postcss-loader'
+						],
+						include: path.resolve(__dirname, 'src')     // 指定范围，只对src下的文件做处理
+					}]
+				}
+			}
+		一般情况下，这两个属性，我们使用其中的一个就可以
+		
+	3，使用 IgnorePlugin 插件进行优化
+		一些项目中的依赖包，它的内部有很多其他依赖。比如对于 moment 这个包来讲，它在内部引入了很多语言包来支持不同国家的语言，但是我们在开发过程中，可能只需要使用中文或者英文语言，这个时候只需要引入一个语言包就可以了。
+		
+		但是这个包在编译的时候，会引入全部的语言包，这对于webpack来讲，是一个负担。不仅会增加编译时候的压力，而且打包编译之后的文件，还会非常大。
+
+		所以我们就需要在webpack中进行配置，针对特定的第三方包，忽略其中的一些依赖包，减轻编译的压力和编译后文件的大小。
+
+		可以借助webpack的内置插件 IgnorePlugin。比如我们想要忽略moment包中的local文件夹中的一些依赖包
+		
+			module.exports = {
+				plugins: [
+					new webpack.IgnorePlugin(/\.\/locale/, /moment/) //(A, B) 忽略B包中A文件夹中的依赖
+				]
+			}
+		IgnorePlugin() 中有两个参数，第二个参数是我们在项目中使用的包，第一个参数是这个包中被忽略的其他依赖包。配置完成之后，webpack在编译的时候，只会引入moment中的其他代码和依赖，不会引入 ./local 文件夹中的依赖包了。
+
+
+
+
+
+
+
+
+
