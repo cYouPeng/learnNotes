@@ -371,11 +371,26 @@ array.findIndex(function(currentValue, index, arr), thisValue)   只有currentVa
 浏览器宿主环境中有window全局对象；node宿主环境中有global全局对象
 
 
+array.includes(searchElement, fromIndex) 方法用来判断一个数组是否包含一个指定的值，如果是返回 true，否则false
+	searchElement: 必需，查找的值
+	fromIndex：可选，从哪里开始找  如果fromIndex 大于等于数组长度 ，则返回 false 。该数组不会被搜索
+		var arr = ['a', 'b', 'c'];
+ 
+		arr.includes('c', 3);   //false
+		如果fromIndex小于 0，则整个数组都会被搜索。
+		arr.includes('c', -3);   //true
 
 
-
-
-
+localStorage和sessionStorage：
+	localStorage 生命周期为永久，除非用户显式清除，否则信息一直存在。无论你重启多少次浏览器
+	sessionStorage 生命周期为当前标签，当前标签关闭，信息也被清空
+	
+	localStorage.clear()  //清除全部信息
+	localStorage.getItem() //获取指定key信息
+	localStorage.setItem() //设置信息
+    localStorage.removeItem() //移除指定key信息
+	localStorage.length //获取信息个数
+	常用方法(同样适用于sessionStorage)
 
 
 
