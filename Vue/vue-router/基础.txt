@@ -9,7 +9,7 @@
 
 　　　　2， routes 是一组路由，把上面的每一条路由组合起来，形成一个数组。[{home 按钮 =>home内容 }， { about按钮 => about 内容}]
 
-　　　　3， router 是一个机制，相当于一个管理者，它来管理路由。因为routes 只是定义了一组路由，它放在哪里是静止的，当真正来了请求，怎么办？ 就是当用户点击home 按钮的时候，怎么办？这时router 就起作用了，它到routes 中去查找，去找到对应的 home 内容，所以页面中就显示了 home 内容。
+　　　　3， router 是一个机制，相当于一个管理者，它来管理路由。因为routes 只是定义了一组路由，它放在那里是静止的，当真正来了请求，怎么办？ 就是当用户点击home 按钮的时候，怎么办？这时router 就起作用了，它到routes 中去查找，去找到对应的 home 内容，所以页面中就显示了 home 内容。
 
 　　　　4，客户端中的路由，实际上就是dom 元素的显示和隐藏。当页面中显示home 内容的时候，about 中的内容全部隐藏，反之也是一样。客户端路由有两种实现方式：基于hash 和基于html5 history api.
 
@@ -22,11 +22,19 @@
 		当使用路由参数时，例如从 /user/foo 导航到 /user/bar，原来的组件实例会被复用。因为两个路由都渲染同个组件，比起销毁再创建，复用则显得更加高效。不过，这也意味着组件的生命周期钩子不会再被调用。
 
 		复用组件时，想对路由参数的变化作出响应的话，你可以简单地 watch (监测变化) $route 对象：
-		watch: {
-			'$route' (to, from) {
-			  // 对路由变化作出响应...
+			watch: {
+				'$route' (to, from) {
+				  // 对路由变化作出响应...
+				}
 			}
-		  }
+		或者使用 2.2 中引入的 beforeRouteUpdate 导航守卫
+			const User = {
+			  template: '...',
+			  beforeRouteUpdate (to, from, next) {
+				// react to route changes...
+				// don't forget to call next()
+			  }	
+			}
 	2，捕获所有路由或 404 Not found 路由
 		常规参数只会匹配被 / 分隔的 URL 片段中的字符。如果想匹配任意路径，我们可以使用通配符 (*)
 		当使用一个通配符时，$route.params 内会自动添加一个名为 pathMatch 参数
@@ -36,8 +44,8 @@
 			
 		<router-link :to="{ path: '/foo/abc/def', query: { id: '789' } }">go to foo</router-link>
 		let routes = [
-            { path: '/foo/*/:id', component: foo},  // 表示以 /foo 开头，中间是N个任意字符，然后以 /:id 结尾   {"pathMatch":"abc","id":"def"}
-			{ path: '/foo/:id/*', component: foo}   // 表示以 /foo/:id 开头，以N个任意字符结尾     {"pathMatch":"def","id":"abc"}
+            { path: '/foo/*/:id', component: foo},  // 表示以 /foo/ 开头，中间是N个任意字符，然后以 /:id 结尾   {"pathMatch":"abc","id":"def"}
+			{ path: '/foo/:id/*', component: foo}   // 表示以 /foo/:id/ 开头，以N个任意字符结尾     {"pathMatch":"def","id":"abc"}
         ]
 		通配符 * 表示 任意路径，记住 => 任意
 		
@@ -51,7 +59,11 @@
 	“非嵌套路由必须包含前导斜杠”
 	
 	一级路由的 path 也可以是 '' 或 '/'，这代表刚打开页面时，默认匹配该路由。我把它称为 默认一级路由
-	但如果一级路由的 path 是个别的什么值，例如 '/abc'，那么请记住，它必须要以 / 开头	
+	但如果一级路由的 path 是个别的什么值，例如 '/abc'，那么请记住，它必须要以 / 开头
+	
+	/******************important************************/
+	总结：一级路由的path如果不是 ''或'/'，那它必须以斜杠开头
+	
 		const routes = [
 			{ path: '', component: foo},
 			{ path: 'foo', component: foo},  //错误
@@ -61,41 +73,44 @@
 	当一级路由的值是 '' 或 '/'，此时你访问 /bar，注意这依然是 一级路由的path '/' 加上二级路由的path 'bar'。 使用的依然是嵌套组件,''就代表 '/'
 	
 		const routes = [
-			{ path: '', component: foo, children: [
+			{ path: '', component: foo, children: [    
 				{ path: 'bar', component: bar },
 				{ path: 'pro', component: pro }
 			]}
-			
-		]
-	router.push({path: '/bar'})  
 	
 	
-	routes: [
-                {
-                    path: '/son1', component: hello
-                },
-                {
-                    path: '', component: father, redirect: '/son1', children: [
-                        { path: 'son1', component: son1 },
-                        { path: 'son2', component: son2 },
-                    ]
-                },
+		routes: [
+			{
+				path: '/son1', component: hello
+			},
+			{
+				path: '', component: father, redirect: '/son1', children: [
+					{ path: 'son1', component: son1 },
+					{ path: 'son2', component: son2 },
+				]
+			},
 
-            ] 此时路由表里有两个同名的路径 '/son1'，一个代表hello组件，一个代表嵌套组件，根据先定义的路由优先级大的原则，将匹配hello那条路由
+		] 
+		此时路由表里有两个同名的路径 '/son1'，一个代表hello组件，一个代表嵌套组件，	
+		根据先定义的路由优先级大的原则，将匹配hello那条路由
 	
 	
 	
-	routes: [
-                {
-                    path: '', component: father, redirect: 'son1', children: [
-                        { path: 'son1', component: son1 },
-                        { path: 'son2', component: son2 },
-                    ]
-                }
-            ] 在父级路由里可以冲顶到
+		routes: [
+			{
+				path: '', component: father, redirect: 'son1', children: [
+					{ path: 'son1', component: son1 },
+					{ path: 'son2', component: son2 },
+				]
+			}
+		] 注意 redirect 的值，不要被迷惑
 	
-		同时导航地址里也必须以 / 开头，否则连续点击同一个导航，地址栏中地址会产生叠加
-			以 / 开头代表的是根路径
+		导航地址必须以 / 开头，否则连续点击同一个导航，地址栏中地址会进行叠加
+		
+		/******************important************************/
+		导航地址需要是一个绝对路径，如果是相对路径，连续调用，地址栏中地址会进行叠加
+		以 / 开头代表绝对路径；不以 / 开头代表相对路径
+				
 			<router-link :to="{ path: 'foo/bar' }">foo</router-link> //连续点击，地址会进行叠加
 			<router-link :to="{ path: '/foo/bar' }">foo</router-link>
 			
@@ -114,7 +129,7 @@
 				]}
 			]
 			以 / 开头它会被当作一个根路径，你可以直接访问子路由的路径  /profile ，会达到和上面一样的效果
-			一旦子路由的路径以 / 开头，就不能再通过父级路路径加子路由路径来访问了  此时 访问/foo/lisi/profile 
+			一旦子路由的路径以 / 开头，就不能再通过父级路径加子路由路径来访问了  此时 访问/foo/lisi/profile 
 			会找不到这个路由记录
 	以上规则适用于 2-N 级路由	
 			
@@ -293,7 +308,7 @@
 
 
 
-	path 的值类似正则，匹配路径栏里#后边的值，匹配上了则应用这种路由记录
+	path 的值类似正则，匹配路径栏里#后边的值，匹配上了则应用这条路由记录
 	而 to push redirect 其实就是把他们的值放到地址栏里，然后vue-router取得#后边的值，去路由表进行匹配
 	就是往地址栏里加值
 
@@ -301,10 +316,17 @@
 		{ path: 'son', component: son }
 	]}
 
-	注意，这里的redirect不是去路由表里查找，而仅是把son加到地址栏里，再由vue-router去地址栏里取值，再去路由表里匹配
+	注意，这里的redirect不是去路由表里查找，而仅是把 字符串son 加到地址栏里，再由vue-router去地址栏里取值，再去路由表里匹配
 	这里redirect和path并没有什么关系
-
-
+	匹配到 '' 这条路由记录，发现有redirect，就把 son 添加到地址栏里
+	
+	/******************important************************/
+	file:///E:/xr-test/src/1.html#/   刚打开页面时地址栏的样子，所以一级路由path为 ''或'/'，会被称为默认路由
+	点击 this.$router.push('///hello') 或 to="///hello" 或 redirect: '///hello'
+	地址栏file:///E:/xr-test/src/1.html#///hello   从 / 变成 ///hello
+	
+	
+	
 
 
 

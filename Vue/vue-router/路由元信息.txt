@@ -54,3 +54,27 @@
 			path: "/example/lisi/bar",
 			query: {addr: "newYork"}
 		}
+		
+	$router 对象：
+		afterHooks: []
+		app: Vue {_uid: 0, _isVue: true, $options: {…}, _renderProxy: Proxy, _self: Vue, …}
+		apps: [Vue]
+		beforeHooks: []
+		fallback: false
+		history: HashHistory {router: VueRouter, base: "", current: {…}, pending: null, ready: true, …}
+		matcher: {match: ƒ, addRoutes: ƒ}
+		mode: "hash"
+		options: {routes: Array(2)}
+		resolveHooks: []
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		

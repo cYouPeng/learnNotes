@@ -391,9 +391,55 @@ localStorage和sessionStorage：
     localStorage.removeItem() //移除指定key信息
 	localStorage.length //获取信息个数
 	常用方法(同样适用于sessionStorage)
+	
+Object.keys(obj)  返回一个表示给定对象的所有可枚举属性的字符串数组
 
+	let person = {name:"张三",age:25,address:"深圳",getName:function(){}}
+	Object.keys(person) // ["name", "age", "address","getName"]
+	常用：
+	Object.keys(person).map((key)=>{
+	　　person[key] // 获取到属性对应的值，做一些处理
 
+	}) 	
 
+reduce 可以对数组进行遍历，但它会将每次遍历的结果传到下一轮回调中，最后一次回调的结果会被返回
+arr.reduce(function(prev,cur,index,arr){
+	...
+}, init);
+prev 表示上一次回调的返回值，或者初始值 init
+cur 表示当前正在处理的数组元素
+index 表示当前正在处理的数组元素的索引，若提供 init 值，则索引从0开始，否则从1开始
+arr 表示原数组
+
+	原始数组
+	var arr = [3,9,4,3,6,0,9];
+	
+	1. 求数组项之和
+		var sum = arr.reduce(function (prev, cur) {
+			return prev + cur;
+		},0);
+		由于传入了初始值0，所以开始时prev的值为0，cur的值为数组第一项3，相加之后返回值为3作为下一轮回调的prev值，然后再继续与下一个数组项相加，以此类推，直至完成所有数组项的和并返回
+		
+	2. 求数组项最大值
+		var max = arr.reduce((prev, cur) => {
+			return Math.max(prev, cur)
+		})
+		由于未传入初始值，所以开始时prev的值为数组第一项3，cur的值为数组第二项9，取两值最大值后继续进入下一轮回调。
+	
+	3. 数组去重
+		var newArr = arr.reduce(function (prev, cur) {
+			prev.indexOf(cur) === -1 && prev.push(cur);
+			return prev;
+		},[]);
+		初始化一个空数组
+		在初始化数组里查找当前项，找不到，把当前项添加到初始化数组中
+		然后初始化数组作为下一轮回调的prev值，继续查找
+		最后返回初始化数组
+		
+$num指第num个匹配值
+匹配值指正则中的pattern也就是括号部分	
+	modulePath.replace(/^\.\/(.*)\.\w+$/, '$1')
+	匹配到 ./app.js  使用第一个括号的匹配值进行替换  ./app.js  => app
 
 
 
