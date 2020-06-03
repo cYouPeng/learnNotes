@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="./lib/vue.js"></script>
+    <script src="./lib/router.js"></script>
+    <script src="./lib/index.js"></script>
+    <link rel="stylesheet" href="./lib/index.css">
+    <style>
+        /*
+         *  <ul class="el-upload-list el-upload-list--picture-card"></ul>  放图片的地儿
+         *  <div tabindex="0" class="el-upload el-upload--picture-card"></div>  放加号的地儿
+         *  on-change　被触发，uploadFiles 的长度 >= 1，.hide 被添加。存加号那个框儿被设置为绝对定位且 z-index 为-999
+         *  此时 ul和div 重叠。且图片在上方
+         *  删除图片， uploadFiles 的长度 < 1，.hide 被移除。加号那个框儿回到文档流里。
+         *  【注：此时 ul 里的图片还没有被移除，只是把 li 的 opacity 设置成了0，所以你看不到】
+         *   图片还在文档流里，所以 加号那个框儿会出现在右边。
+         *   然后，img元素被移除，ul没有子元素撑着，宽度变为0。div 就会往前移动。
+
+         *  解决删除之后div移动的问题：之所以移动，就是因为 ul
+         *  正常状态下，ul 设为 none。有了 .hide ul变为block，div变absolute
+         *  没了 .hide div回到文档流，ul又变回none，所以此时即使ul内图片还没有被移除，它也不会占据空间影响后面的div
+         *  
+         */
+        .hide .el-upload--picture-card {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: -999;
+        }
+
+        .hide .el-upload-list--picture-card {
+            display: block;
+        }
+
+
+        .el-upload-list--picture-card {
+            display: none
+        }
+
+
+        /* 减少前后高度的变化 */
+        .el-upload-list__item:first-child {
+            margin: 0;
+        }
+
+        .hide2 .el-upload--picture-card {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: -999;
+        }
+
+        .hide2 .el-upload-list--picture-card {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <el-row>
+            <el-col :span="12">
+                <el-upload ref="upload" action="" :auto-upload="false" list-type="picture-card" :limit="2"
+                    :class="{hide:hideUpload}" :on-change="changeUpload">
+                    <i slot="default" class="el-icon-plus"></i>
+                    <div slot="file" slot-scope="{file}">
+                        <img class="el-upload-list__item-thumbnail" :src="file.url">
+                        <span class="el-upload-list__item-actions">
+                            <span class="el-upload-list__item-preview" @click="handlePictureCardPreview(file)">
+                                <i class="el-icon-zoom-in"></i>
+                            </span>
+                            <span v-if="!disabled" class="el-upload-list__item-delete" @click="handleDownload(file)">
+                                <i class="el-icon-download"></i>
+                            </span>
+                            <span class="el-upload-list__item-delete" @click="handleRemove(file)">
+                                <i class="el-icon-delete"></i>
+                            </span>
+                        </span>
+                    </div>
+                </el-upload>
+                <el-dialog :visible.sync="dialogVisible">
+                    <img width="100%" :src="dialogImageUrl" alt="">
+                </el-dialog>
+            </el-col>
+            <el-col :span="12">
+                <el-upload ref="upload2" action="" :auto-upload="false" list-type="picture-card" :limit="1"
+                    :class="{hide2:hideUpload2}" :on-change="changeUpload2" :file-list="fileList">
+                    <i slot="default" class="el-icon-plus"></i>
+                    <div slot="file" slot-scope="{file}">
+                        <img class="el-upload-list__item-thumbnail" :src="file.url">
+                        <span class="el-upload-list__item-actions">
+
+                            <span class="el-upload-list__item-delete" @click="handleRemove2(file)">
+                                <i class="el-icon-delete"></i>
+                            </span>
+                        </span>
+                    </div>
+                </el-upload>
+            </el-col>
+        </el-row>
+        <el-button @click="go">go</el-button>
+    </div>
+
+    <script>
+        new Vue({
+            data() {
+                return {
+                    dialogImageUrl: '',
+                    dialogVisible: false,
+                    disabled: false,
+                    hideUpload: false,
+                    hideUpload2: false,
+
+                    limitCount: 1,
+                    fileList: []
+                };
+            },
+            methods: {
+                handleRemove(file) {
+                    let fileList = this.$refs.upload.uploadFiles;
+                    let index = fileList.findIndex(fileItem => {
+                        return fileItem.uid === file.uid
+                    })
+                    fileList.splice(index, 1)
+                    this.hideUpload = fileList.length >= this.limitCount
+                    // this.hideUpload = false
+                    /*
+                     *  删除图片 其实就是删除 uploadFiles 数组里对应的对象
+                     */
+                },
+                handleRemove2(file) {
+                    let fileList = this.$refs.upload2.uploadFiles;
+                    let index = fileList.findIndex(fileItem => {
+                        return fileItem.uid === file.uid
+                    })
+                    fileList.splice(index, 1)
+                    this.hideUpload2 = fileList.length >= this.limitCount
+                },
+                handlePictureCardPreview(file) {
+                    this.dialogImageUrl = file.url;
+                    this.dialogVisible = true;
+                },
+                handleDownload(file) {
+                    this.downloadByBlob(file.url, '自定义下载图片')
+                },
+                changeUpload(file, fileList) {
+                    // const isJPG =
+                    //     file.raw.type === "image/jpeg" ||
+                    //     file.raw.type === "image/png" ||
+                    //     file.raw.type === "image/gif" ||
+                    //     file.raw.type === "image/bmp";
+                    // if (!isJPG) {
+                    //     this.$message.error("上传头像图片只能是 jpg、png、gif 格式!");
+                    //     return false
+                    // }
+                    /*
+                     *  因为禁止了自动上传，那么可以在 on-change 里做图片校验
+                     */
+                    this.hideUpload = fileList.length >= this.limitCount
+                },
+                changeUpload2(file, fileList) {
+
+                    this.hideUpload2 = fileList.length >= this.limitCount
+                },
+                downloadByBlob(url, name) {
+                    let image = new Image()
+                    image.setAttribute('crossOrigin', 'anonymous')
+                    image.src = url
+                    image.onload = () => {
+                        let canvas = document.createElement('canvas')
+                        canvas.width = image.width
+                        canvas.height = image.height
+                        let ctx = canvas.getContext('2d')
+                        ctx.drawImage(image, 0, 0, image.width, image.height)
+                        canvas.toBlob((blob) => {
+                            let url = URL.createObjectURL(blob)
+                            this.download(url, name)
+                            // 用完释放URL对象
+                            URL.revokeObjectURL(url)
+                        })
+                    }
+                },
+                download(href, name) {
+                    let eleLink = document.createElement('a')
+                    eleLink.download = name
+                    eleLink.href = href
+                    eleLink.click()
+                    eleLink.remove()
+                },
+                beforeAvatarUpload(file) {
+                    // 上传图片前处理函数
+                    const isJPG =
+                        file.type === "image/jpeg" ||
+                        file.type === "image/png" ||
+                        file.type === "image/gif" ||
+                        file.type === "image/bmp";
+                    const isLt2M = file.size / 1024 / 1024 < 2;
+                    let that = this;
+                    let isAllow = false;
+                    if (!isJPG) {
+                        this.$message.error("上传头像图片只能是 jpg、png、gif 格式!");
+                    }
+                    if (!isLt2M) {
+                        this.$message.error("上传头像图片大小不能超过 2MB!");
+                    }
+                    const isSize = new Promise(function (resolve, reject) {
+                        let width = 750;
+                        let height = 420;
+                        let _URL = window.URL || window.webkitURL;
+                        let image = new Image();
+                        image.onload = function () {
+                            let valid = image.width == width && image.height == height;
+                            valid ? resolve() : reject();
+                        };
+                        image.src = _URL.createObjectURL(file);
+                    }).then(
+                        () => {
+                            return file;
+                        },
+                        () => {
+                            this.$message.error("上传头像图片尺寸不符合,只能是750*420!");
+                            return Promise.reject();
+                        }
+                    );
+                    return isJPG && isLt2M && isSize;
+                },
+                go() {
+                    console.log(this.$refs.upload.uploadFiles)
+                }
+            }
+        }).$mount('#app')
+    </script>
+
+
+</body>
+
+</html>
