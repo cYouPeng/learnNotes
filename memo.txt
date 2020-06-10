@@ -440,6 +440,15 @@ $num指第num个匹配值
 匹配值指正则中的pattern也就是括号部分	
 	modulePath.replace(/^\.\/(.*)\.\w+$/, '$1')
 	匹配到 ./app.js  使用第一个括号的匹配值进行替换  ./app.js  => app
+	
+String.fromCharCode()  将 Unicode 编码转为一个字符
+	- 可接受一个指定的 Unicode 值，然后返回一个字符串
+		var n = String.fromCharCode(65);  // A
+		
+stringObject.charCodeAt(index) 返回指定位置的字符的 Unicode 编码
+	- 字符串中第一个字符的下标是 0。如果 index 是负数，或大于等于字符串的长度，则 charCodeAt() 返回 NaN
+		var str="Hello world!";
+		console.log(str.charCodeAt(1)); // 101
 
 
 
