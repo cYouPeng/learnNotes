@@ -451,6 +451,6 @@ stringObject.charCodeAt(index) 返回指定位置的字符的 Unicode 编码
 		console.log(str.charCodeAt(1)); // 101
 
 
-
+Unix时间戳(Unix timestamp)是一种时间表示方式，定义为从格林威治时间1970年01月01日00时00分00秒(北京时间1970年01月01日08时00分00秒)起至现在的总秒数。Unix时间戳不仅被使用在Unix系统、类Unix系统中(比如Linux系统)，也在许多其他操作系统中被广泛采用
 
 
