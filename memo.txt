@@ -392,6 +392,9 @@ localStorage和sessionStorage：
 	localStorage.length //获取信息个数
 	常用方法(同样适用于sessionStorage)
 	
+localStorage.token = 'helloworld'    //也可以这样保存、读取
+alert(localStorage.token)
+	
 Object.keys(obj)  返回一个表示给定对象的所有可枚举属性的字符串数组
 
 	let person = {name:"张三",age:25,address:"深圳",getName:function(){}}
@@ -452,5 +455,71 @@ stringObject.charCodeAt(index) 返回指定位置的字符的 Unicode 编码
 
 
 Unix时间戳(Unix timestamp)是一种时间表示方式，定义为从格林威治时间1970年01月01日00时00分00秒(北京时间1970年01月01日08时00分00秒)起至现在的总秒数。Unix时间戳不仅被使用在Unix系统、类Unix系统中(比如Linux系统)，也在许多其他操作系统中被广泛采用
+
+通过路由的meta标签对需要做校验的路由页面进行标记
+	{
+	  path: '/userInfo',
+	  name: 'userInfo',
+	  meta: {
+		requireAuth: true,  // 该路由项需要权限校验
+	  }
+	  component: userInfo
+	}, {
+	  path: '/userList',
+	  name: 'userList',    // 该路由项不需要权限校验    
+	  component: userInfo
+	}
+之后，我们可以定义一个路由守卫，每次路由跳转，都来做一下权限校验
+	router.beforeEach((to, from, next) => {
+	  if (to.meta.requireAuth) {  // 判断该路由是否需要登录权限
+		if (localStorage.token) {  // 获取当前的token是否存在
+		  console.log("token存在");
+		  next();
+		} else {
+		  console.log("token不存在");
+		  next({
+			path: '/login', // 将跳转的路由path作为参数，登录成功后跳转到该路由
+			query: {redirect: to.fullPath}
+		  })
+		}
+	  }
+	  else { // 如果不需要权限校验，直接进入路由界面
+		next();
+	  }
+	});
+
+location 对象包含有关当前 URL 的信息，location 对象是 window 对象的一部分
+	-hash 返回一个URL的锚部分
+		console.log(location.hash) // #/documentation/index
+	-host 返回一个URL的主机名和端口
+		console.log(location.host) // localhost:9527
+	-hostname 返回URL的主机名
+		console.log(location.hostname) // localhost
+	-href 返回完整的URL
+		console.log(location.href) // http://localhost:9527/#/documentation/index
+	-port 返回一个URL服务器使用的端口号
+		console.log(location.port) // 9527
+	-protocol 返回一个URL协议
+		console.log(location.protocol) // http:
+	-search 返回一个URL的主机名和端口
+	
+	-assign() 载入一个新的文档
+	-replace() 用新的文档替换当前文档
+	-reload() 刷新当前页面。该方法只有一个参数，当值为 true 时，将强制浏览器从服务器加载页面资源，当值为 false 或者未传参时，浏览器则可能从缓存中读取页面。
+		location.reload()
+		
+CORS 的基本思想就是使用自定义的 HTTP 头部让浏览器与服务器进行沟通，从而决定请求响应是应该成功还是应该失败
+当Http请求发起会带着以下请求头信息
+	Origin:http://www.csdnblog.com
+返回头也会夹带着类似如下信息
+	Access-Control-Allow-Credentials:true 
+	Access-Control-Allow-Origin:http://www.csdnblog.com
+如果返回头中没有这个头部，或者有头部但是源信息不匹配。那么浏览器就会帮我们驳回这次请求，同源策略在这里发挥了作用
+
+
+
+
+
+
 
 
