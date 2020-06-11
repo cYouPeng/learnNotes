@@ -132,6 +132,7 @@
                      */
                 },
                 handleRemove2(file) {
+					//包含上传的文件信息和服务端返回的所有信息都在 uploadFiles 这个对象里
                     let fileList = this.$refs.upload2.uploadFiles;
                     let index = fileList.findIndex(fileItem => {
                         return fileItem.uid === file.uid
