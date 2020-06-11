@@ -35,6 +35,10 @@
 				// don't forget to call next()
 			  }	
 			}
+			
+		 
+		 路径参数后可以跟正则，只有符合该正则的 id 才会匹配上该路由记录
+			{ path: '/edit/:id(\\d+)', component: foo }  这条正则表示 id 只能为数字，否则路由不会被匹配
 	2，捕获所有路由或 404 Not found 路由
 		常规参数只会匹配被 / 分隔的 URL 片段中的字符。如果想匹配任意路径，我们可以使用通配符 (*)
 		当使用一个通配符时，$route.params 内会自动添加一个名为 pathMatch 参数

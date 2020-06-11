@@ -516,6 +516,8 @@ CORS 的基本思想就是使用自定义的 HTTP 头部让浏览器与服务器
 	Access-Control-Allow-Origin:http://www.csdnblog.com
 如果返回头中没有这个头部，或者有头部但是源信息不匹配。那么浏览器就会帮我们驳回这次请求，同源策略在这里发挥了作用
 
++new Date()  注意 + 号，可以返回时间戳
+
 
 
 
