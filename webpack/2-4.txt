@@ -111,13 +111,14 @@
 						template: './src/index.html',       // 模板文件   默认是一个空的html
 						filename: 'index.html',             // 开发服务器中生成的临时文件   默认是 index.html 
 						/*
-						 *	使用webpack，该插件生成的html会被放在出口目录中
-						 *	使用webpack-dev-server，该插件生成的html会被放在内存中
+						 *	使用webpack命令，该插件生成的 html 默认被放在出口目录中
+						 *	使用webpack-dev-server命令，该插件生成的 html 会被放在内存中
 						 *	注意使用webpack-dev-server，filename的值必须为  index.html，否则wds找不到该文件
-						 *  因为使用了 html-webpack-plugin，wds就不上 contentBase 里去找html了
+						 *  因为使用了 html-webpack-plugin，wds就不上 contentBase 里去找 html 了。它会去内存中找生成的 index.html
 						 */
 						minify: {
-							collapseWhitespace: true        // 是否去除文件中的空格，换行符，默认false，去除后只有一行代码
+							removeAttributeQuotes: true, //去掉引号
+							collpaseWhitespace: true,   //折行
 							minifyCSS: true //压缩html内的样式，默认false
 							minifyJS: true  //压缩html内的js，默认false
 							caseSensitive: true  //以区分大小写的方式处理自定义标签内的属性

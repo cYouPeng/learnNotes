@@ -1,20 +1,5 @@
 干股只能分红不能买卖，卸职以后就要收回
-
-  select b.owner,b.object_name,a.session_id,a.locked_mode 
-  from v$locked_object a,dba_objects b
-  where b.object_id = a.object_id;
-  
-  select b.username,b.sid,b.serial#,logon_time
-  from v$locked_object a,v$session b
-  where a.session_id = b.sid order by b.logon_time;
-  
-  alter system kill session '3021(sid),12253(serial#)';
-  
-  
-  console.log(new Date())  //Wed Oct 09 2019 16:45:03 GMT+0800 (中国标准时间)
-  console.log(new Date().toLocaleString())    //2019/10/9 下午4:45:03       把date对象转为字符串
-  
-  
+   
   <div title="hello"></div>  任何元素都可以加title属性，鼠标悬浮其上会显示额外信息
   
   var obj = {
@@ -22,12 +7,12 @@
   }
 
   Object.freeze(obj)   //阻止修改现有的属性
-  obj.foo = 'hello' //会报错
+  obj.foo = 'hello'    //会报错
   
   <div v-bind:hello="a" >中国</div>  //如果a的值为null,undefined或false，那么该hello特性不会出现在div中
   <div :[attri]="a"></div>   //从 2.6.0 开始，可以用方括号括起来的 JavaScript 表达式作为一个指令的参数：动态参数
   
-  js的全局变量本来就是同一页面上所有script脚本供用的，你要注意js文件的加载顺序
+  js的全局变量本来就是同一页面上所有script脚本公用的，你要注意js文件的加载顺序
   ps： 只能同一页面，不能跨页面
   
   
@@ -157,7 +142,7 @@
 		 初始状态，并且它的终态与那个Promise的终态相同；同时，那个Promise变为终态时传出
 		 的参数值作为新Promise变为终态时调用的回调函数的参数值
 	
-		一，	
+		一，
 			let promise = new Promise((resolve, reject) => {
 				setTimeout(() => {
 					reject()
@@ -519,7 +504,57 @@ CORS 的基本思想就是使用自定义的 HTTP 头部让浏览器与服务器
 +new Date()  注意 + 号，可以返回时间戳
 
 
+觉得好看的背景色 #2c343c
 
+npm run build -- --config webpack.config.my.js  使用 npm run 后面想指定配置文件，需要加上 --
+
+如果你想某个请求基于不同的 baseURL，可以在请求内部设置 baseURL，它会覆盖创建实例时的 baseURL
+export function getInfo(token) {
+  return fetch({
+    baseURL: https://api2-xxxx.com
+    url: '/user/info',
+    method: 'get',
+    params: { token }
+  });
+}
+
+webpack4 的 style-loader   insertAt 改为 insert
+postcss.config.js 必须得设置支持的浏览器才会自动添加前缀
+	module.exports = {
+	  plugins: {
+		  'autoprefixer': {overrideBrowserslist: ['> 1%', 'last 2 versions']}
+	  }
+	}
+
+//取消百度地图左下角图片标识
+.BMap_cpyCtrl {
+  display: none;
+}
+.anchorBL {
+  display: none;
+}
+	
+type: scatter
+emphasis: {
+	label: {
+		show: false   //并没卵用
+	}
+}
+
+label: {
+	...样式  //普通状态下的样式
+}
+itemStyle: {
+	...样式   
+}
+emphasis: {   //它俩的高亮样式统一在这里写
+	label: {
+		...样式
+	},
+	itemStyle: { 
+		...样式   
+	}
+}
 
 
 
