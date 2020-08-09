@@ -13,7 +13,7 @@
 		全局安装
 			1，默认安装地址：C:/Users/xxx/AppData/Roaming/npm
 			2，可以直接在命令行里使用
-			npm i module_name -g    全局安装(命令行使用)   使用 -g 安装的模块为全局安装，否则为本地安装。
+			npm i module_name -g    全局安装(命令行使用)   使用 -g 安装的模块为全局安装，否则为局部安装。
 		
 		npm i module_name   后面没有指令，默认本地安装、写入dependencies。相当于加了 -S			
 	

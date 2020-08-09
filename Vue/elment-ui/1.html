@@ -64,7 +64,7 @@
     <div id="app">
         <el-row>
             <el-col :span="12">
-                <el-upload ref="upload" action="https://jsonplaceholder.typicode.com/posts/" list-type="picture-card"
+                <el-upload ref="upload" action="http://localhost:5500" list-type="picture-card"
                     :limit="1" :class="{hide:hideUpload}" :on-change="changeUpload">
                     <i slot="default" class="el-icon-plus"></i>
                     <div slot="file" slot-scope="{file}">

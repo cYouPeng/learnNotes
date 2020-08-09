@@ -525,8 +525,20 @@ postcss.config.js 必须得设置支持的浏览器才会自动添加前缀
 		  'autoprefixer': {overrideBrowserslist: ['> 1%', 'last 2 versions']}
 	  }
 	}
+	
+	
+vue脚手架如何使用 echarts 和 百度地图
+1, 安装 echarts
+	npm i echarts
+2, 在 public 下的 index.html 中声明秘钥
+	<script type="text/javascript" src="http://api.map.baidu.com/api?v=3.0&ak=秘钥"></script>
+3, 引入 echarts 和 百度地图扩展
+	import echarts from 'echarts'
+	import 'echarts/extension/bmap/bmap'
 
-//取消百度地图左下角图片标识
+
+
+//取消百度地图左下角图片标识  App.vue
 .BMap_cpyCtrl {
   display: none;
 }

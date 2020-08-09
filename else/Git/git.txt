@@ -23,3 +23,5 @@ origin：这是你在本地给你连接的远程库起一个名字，后续如�
 
 假如你起了一个git remote add hello xxxxx   hello就是xxxxx这个远程库在你本地的名字
 那么以后就得这样  git pull hello master
+
+git commit -m ""  -m后要使用双引号
