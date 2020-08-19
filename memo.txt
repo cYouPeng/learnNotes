@@ -570,7 +570,19 @@ emphasis: {   //它俩的高亮样式统一在这里写
 
 
 字符串和花括号之间一定不要存在空格，否则会导致识别失败
-
 <checkbox checked=" {{isCheced}}"></checkbox>  // worong
+
+wx:for="{{数组或者对象}}" wx:for-item="循环项的名称" wx:for-index="循环项的索引"
+wx:key="唯一的值" 用来提高列表渲染的性能
+  wx:key 绑定一个普通字符串的时候 那么这个字符串名称 肯定是 循环数组中的对象的唯一属性
+
+
+
+
+
+
+
+
+
 
 
