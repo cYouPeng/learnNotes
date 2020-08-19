@@ -569,6 +569,8 @@ emphasis: {   //它俩的高亮样式统一在这里写
 }
 
 
+字符串和花括号之间一定不要存在空格，否则会导致识别失败
 
+<checkbox checked=" {{isCheced}}"></checkbox>  // worong
 
 
