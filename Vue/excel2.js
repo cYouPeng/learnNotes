@@ -10,8 +10,10 @@ import FileSaver from 'file-saver'
      * @constructor
      */
 export function josn2Excel(json, name = 'data', type = 'application/octet-stream') {
+  alert(1)
     let wb = { SheetNames: [], Sheets: {}, Props: {} }
     if (!Array.isArray(json)) json = [json]
+    
     json.forEach(item => {
         wb.SheetNames.push(item.sheet_name)
         wb.Sheets[item.sheet_name] = xlsx.utils.json_to_sheet(item.sheet_values, item.sheet_options)
