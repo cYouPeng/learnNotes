@@ -712,6 +712,43 @@ image组件默认宽度320px, 高度240px   支持懒加载
 	  1 src 指定要加载的图片的路径
 	  2 mode 决定 图片内容如何和图片标签宽高做适配
 		1 scaleToFill 默认值 不保持纵横比缩放图片，使图片的宽高完全拉伸至填满image元素
+		2 aspectFit 保持宽高比 确保图片的长边显示出来 页面轮播图常用
+		3 aspectFill 保持纵横比缩放图片，只保证图片的短边能完全显示出来 少用
+		4 widthFix 以前web图片的宽度指定了之后，高度会自己按比例调整  常用
+		5 top bottom... 类似以前的background-position
+	  3 小程序当中的图片 直接就支持 懒加载 lazy-load
+	    1 lazy-load 会自己判断当图片出现在视口上下三屏的高度之内的时候，自己开始加载图片
+		<image mode="bottom" lazy-load src="..." />
+		
+1 轮播图外层容器 swiper
+2 每一个轮播项 swiper-item
+3 swiper标签 存在默认样式
+ 1 width 100%
+ 2 height 150px    image存在默认宽度和高度 320*240
+ 3 swiper 高度 无法实现由内容撑开
+ 4 先找出来 原图的宽度和高度 等比例 给swiper定宽度和高度
+   原图的宽度和高度 1125 * 252 px
+   swiper 宽度 / swiper 高度 = 原图的宽度 / 原图的高度
+   swiper 高度 = swiper 宽度 * 原图的高度 / 原图的宽度
+   height = 100vw * 352 / 1125
+ 5 autoplay 自动轮播
+ 6 interval 修改轮播时间
+ 7 circular 衔接轮播
+ 8 indicator-dots 显示指示器 分页器 索引器
+ 9 indicator-color 指示器的未选择的颜色
+10 indicator-active-color 选中的时候的指示器的颜色
+
+   
+   <swiper autoplay interval="1000" indicator-dots indicator-color="#0094ff" indicator-active-color="#ff0094">
+	<swiper-item><image mode="widthFix" src="..."></swiper-item>
+	<swiper-item><image mode="widthFix" src="..."></swiper-item>
+	<swiper-item><image mode="widthFix" src="..."></swiper-item>
+   </swiper>
+   swiper{
+	width: 100%;
+	height: calc(100vw * 352 / 1125);
+	/* height: 31.28vw */
+   }
 		
 	
 	
