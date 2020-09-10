@@ -1,0 +1,85 @@
+加权平均法：即将各数值乘以相应的单位数，最后加在一起
+
+举例说明，下面是一个同学的某一科的考试成绩：
+平时测验 80， 期中 90， 期末 95
+学校规定的科目成绩的计算方式是：
+平时测验占 20%；
+期中成绩占 30%；
+期末成绩占 50%；
+这里，每个成绩所占的比重叫做权数或权重。那么，
+加权平均值 = 80*20% + 90*30% + 95*50% = 90.5
+算数平均值 = (80 + 90 + 95)/3 = 88.3
+上面的例子是已知权重的情况。下面的例子是未知权重的情况：
+股票A，1000股，价格10；
+股票B，2000股，价格15；
+算数平均 = (10 + 15) / 2 = 12.5；
+加权平均 = (10 x 1000 + 15 x 2000) / (1000 + 2000) = 13.33
+其实，在每一个数的权数相同的情况下，加权平均值就等于算数平均值。
+
+
+vscode 
+首选项    "editor.tabSize": 4,  一个tab代表4个空格   需要把编辑器里的  "editor.detectIndentation": true,   设置为false
+
+"editor.renderWhitespace": "none"   空白字符显示特殊符号的方式  就是前边的空格会显示点点
+
+"editor.matchBrackets": true   当选择其中一项时，将突出显示匹配的括号。 <p> 点左边 < 会突出显示右边 >
+
+  "editor.selectionHighlight": true    // 控制编辑器是否应突出显示选项的近似匹配     高亮显示选中相同内容
+  
+  Highlight Matching Tag 插件  突出显示封闭标签  以下为设置
+  "highlight-matching-tag.styles": {
+        "opening": {
+            "full": {
+                "custom": {
+                  "dark": {
+                    "borderWidth": "1px",
+                    "borderColor": "white",
+                    "borderStyle": "solid",
+                    "borderRadius": "4px",
+                    "right": "10px"
+                  },
+                  "light": {
+                    "borderWidth": "1px",
+                    "borderColor": "brown",
+                    "borderStyle": "solid",
+                    "borderRadius": "4px",
+                    "right": "10px"
+                  }
+                }
+              }
+        },
+        "closing": {
+          "full": {
+            "custom": {
+              "dark": {
+                "borderWidth": "1px",
+                "borderColor": "white",
+                "borderStyle": "solid",
+                "borderRadius": "4px",
+                "right": "10px"
+              },
+              "light": {
+                "borderWidth": "1px",
+                "borderColor": "brown",
+                "borderStyle": "solid",
+                "borderRadius": "4px",
+                "right": "10px"
+              }
+            }
+          }
+        }
+    },
+	
+	 
+  
+  "editor.renderIndentGuides": true,   // 控制编辑器是否应呈现缩进参考线
+  
+  "workbench.statusBar.feedback.visible": true,   // 控制是否显示工作台底部状态栏中的 Twitter 反馈 (笑脸图标)。
+  
+  "breadcrumbs.enabled": false"  //取消vscode上边的目录结构
+  
+  Workbench › Editor: Enable Preview    //设置为false，可以单击打开多个页面
+  
+  Editor: Font Size   //修改字体大小
+
+ 
