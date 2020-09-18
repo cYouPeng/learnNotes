@@ -309,6 +309,50 @@ MVVM      M: model 模型   后端传来的数据
 
 Object.keys(obj) 方法会返回一个由给定对象自身可枚举属性组成的数组
 
+Object.freeze()是ES5新增的特性，可以冻结一个对象，冻结指的是不能向这个对象添加新的属性，不能修改其已有属性的值，不能删除已有属性，以及不能修改该对象已有属性的可枚举性、可配置性、可写性。防止对象被修改。
+
+var obj = {
+  foo: '不会变'
+}
+Object.freeze(obj)
+change () {
+  this.obj.foo = '改变'  // 会报错
+}
+
+change () {  // Object.freeze()冻结的是值，你仍然可以将变量的引用替换掉
+  this.obj = {
+	foo: '会改变'
+  }
+}
+
+vue 1.0.18+对其提供了支持，对于data或vuex里使用freeze冻结了的对象，vue不会做getter和setter的转换。
+如果你有一个巨大的数组或Object，并且确信数据不会修改，使用Object.freeze()可以让性能大幅提升。
+new Vue({
+    data: {
+        // vue不会对list里的object做getter、setter绑定
+        list: Object.freeze([
+            { value: 1 },
+            { value: 2 }
+        ])
+    },
+    created () {
+        // 界面不会有响应
+        this.list[0].value = 100;
+
+        // 下面两种做法，界面都会响应
+        this.list = [
+            { value: 100 },
+            { value: 200 }
+        ];
+        this.list = Object.freeze([
+            { value: 100 },
+            { value: 200 }
+        ]);
+    }
+})
+对于纯展示的大数据，都可以使用Object.freeze提升性能
+
+
 return str.charAt(0).toUpperCase() + str.slice(1)
 
 沿着作用域链找，没找到，会报错
@@ -607,6 +651,98 @@ changeNumber(index) {
 <el-input oninput="value=value.replace(/[^A-Za-z0-9\u4e00-\u9fa5']/g,'')" /> 只能输入英文、数字、汉字
 
 当你发现v-model不好使的时候，不妨考虑一下 this.$set()方法，很可能是由于你的字段不是响应式的
+
+
+
+debounce 函数防抖。当用户不断点击页面，短时间内频繁地触发点击事件，只有最后一次点击的函数会被执行。
+只有在用户触发事件后的ns时间内，没有再触发事件，真正的监听函数才会执行，如果在这段时间内再次触发了事件，就需要重新计算这个ns
+	_.debounce(func, [wait=0], [options={}])
+
+	func (Function): 要防抖动的函数。
+
+	[wait=0] (number): 需要延迟的毫秒数。
+
+	[options={}] (Object): 选项对象。
+
+	[options.leading=false] (boolean): 指定在延迟开始前调用，默认false。
+
+	[options.maxWait] (number): 设置 func 允许被延迟的最大值。
+
+	[options.trailing=true] (boolean): 指定在延迟结束后调用，默认true。
+	
+	import _ from 'lodash'
+	testDebounce: _.debounce(function() {
+	  console.log("debounce");
+	}, 2000, {
+	  leading: true,
+	  trailing: false
+	})
+	
+
+如果父组件想在子组件mounted之后作出相关操作，可以按照下面这种方式来写。
+
+<!-- parent -->
+<parent-component>
+  <child-component @mounted="handleChildMounted"></child-component>
+</parent-component>
+
+// child
+export default {
+  mounted() {
+    this.$emit('mounted')
+  }
+}
+
+其实还有更简单的做法。
+<!-- parent -->
+<parent-component>
+  <child-component @hook:mounted="handleChildMounted"></child-component>
+</parent-component>
+
+直接使用@hook就可以在父组件中监听子组件中钩子函数，不需要在子组件中额外地$emit一次。
+同理，使用@hook还可以监听vue中其它的钩子函数，如@hook:created，@hook:destroyed等。
+
+
+<el-tabs v-model="activeName">
+	<el-tab-pane label="用户管理" name="first"></el-tab-pane>
+	<el-tab-pane label="配置管理" name="second"></el-tab-pane>
+	<el-tab-pane label="角色管理" name="third"></el-tab-pane>
+	<el-tab-pane label="定时任务补偿" name="fourth"></el-tab-pane>
+</el-tabs>
+<component :is="isComponent" ></component>
+<script>
+import first from './first'
+export default {
+	components: {
+		first,
+		...
+	},
+    data() {
+       return {
+　　　　　　activeName: "first",
+			componentsList: {
+                first: first,//需要引入具体的组件
+                second: "Second",
+　　　　　　　　third: "Third",
+　　　　　　　　four: "Four"
+            }
+       }
+    },
+    computed: {
+        isComponent() {
+              return this.componentsList[this.activeName];
+        }
+    }
+}
+</script>
+
+call() apply() bind()
+	相同点：都是用来改变函数内this的指向
+	不同点：
+		从调用来说：call和apply都是直接调用，bind会返回一个新的函数
+		从传参来说：call和bind都是传参数序列，apply传的是一个数组
+
+
 
 
                 
