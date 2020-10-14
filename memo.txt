@@ -645,10 +645,9 @@ changeNumber(index) {
 },
 12位数字，小数点后最多两位
 
-<el-input v-model="formDataCopy.ProvidentFundAccount" oninput="value=value.replace(/[^\d]/g,'')" maxlength="12" /> 
-只能输入数字
-
+<el-input oninput="value=value.replace(/[^\d]/g,'')" maxlength="12" /> 只能输入数字
 <el-input oninput="value=value.replace(/[^A-Za-z0-9\u4e00-\u9fa5']/g,'')" /> 只能输入英文、数字、汉字
+<el-input oninput="value=value.replace(/[^A-Za-z0-9-\/']/g,'')" /> 只能输入英文、数字、/、-
 
 当你发现v-model不好使的时候，不妨考虑一下 this.$set()方法，很可能是由于你的字段不是响应式的
 
@@ -741,7 +740,16 @@ call() apply() bind()
 	不同点：
 		从调用来说：call和apply都是直接调用，bind会返回一个新的函数
 		从传参来说：call和bind都是传参数序列，apply传的是一个数组
+		
 
+offsetTop offsetLeft
+	只读属性。距离该元素最近的position不为static的祖先元素，如果没有则指向body。与这个祖先元素左侧，顶部的距离就是offsetLeft offseTop 
+offsetWidth offsetHeight
+	只读属性。指的是元素的content + padding + border 的长度（这是标准盒子模型下，IE盒子模型width就是offsetWidth）
+	
+
+2πr 是圆的周长
+π 是圆周长和直径的比例   所以 c = 2r * π
 
 
 
