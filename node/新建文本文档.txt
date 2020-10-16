@@ -1,0 +1,73 @@
+1，
+	library 库   jquery
+	runtime 运行环境 node
+
+	LTS 最新稳定版
+	current 最新版
+
+2，
+	
+	
+	node.js 可以在任何操作系统上安装，底层都是chrome v8 引擎 使用c++开发
+	
+	cmd commond的简写
+	系统的环境变量中的path值，使得我们可以在cmd中的任何盘符使用node命令
+	node -v 查看node的版本号 显示版本号代表Node安装成功
+	如何运行文件：node+空格+鼠标拖拽文件进cmd+回车（拖拽时要注意文件内的相对文件路径）
+	
+	$ 是linux系统中普通用户的表示符号
+	
+	此时你拥有了第二个js运行环境，第一个是浏览器，第二个是node
+	
+	win10 win8 不允许在cmd中 cd d: 从c盘到d盘   cd   => change directory
+	
+	tab键可以自动补全，再按一次会出现新的补全结果
+	
+3，
+	sync 同步
+	async 异步
+	
+4，
+	nodejs 没有服务器架构
+	不用建设在任何服务器软件之上
+	
+	nodejs 没有根目录的概念
+	
+5，
+	res.end() end里必须是一个字符串
+	
+	let http = require('http');
+	let a = 0;
+	
+	http.createServer(function(req,res){
+		a++;
+		res.end(a.toString());
+	}).listen(3000);
+	我们发现全班同学共享一个a，每个人访问的时候都是看到别人已经刷过的a，a的值越来越高
+	nodejs是单线程，如果程序有错误，唯一的node进程将停止，将会导致所有人无法访问
+	所以对于node程序要求有极高的鲁棒性
+	鲁棒性是指程序能够判断输入是否合乎规范要求,并对不符合要求的输入予以合理的处理
+	
+	es6就是es2016，很巧合，第6个版本就是2016年出现的，但以后都用年份，因为一年更新一次
+	nodejs 中拥有js的所有语言核心语法，甚至拥有所有es2016所有新语法
+	nodejs没有所有BOM的东西，比如window对象，window对象的一切函数也没有，计时器是有的
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	

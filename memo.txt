@@ -648,6 +648,7 @@ changeNumber(index) {
 <el-input oninput="value=value.replace(/[^\d]/g,'')" maxlength="12" /> 只能输入数字
 <el-input oninput="value=value.replace(/[^A-Za-z0-9\u4e00-\u9fa5']/g,'')" /> 只能输入英文、数字、汉字
 <el-input oninput="value=value.replace(/[^A-Za-z0-9-\/']/g,'')" /> 只能输入英文、数字、/、-
+<el-input oninput="value=value.replace(/[^\)\(\uff08\uff09']/g,'')" ></el-input> 只能输入半全角括号
 
 当你发现v-model不好使的时候，不妨考虑一下 this.$set()方法，很可能是由于你的字段不是响应式的
 
