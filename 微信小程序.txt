@@ -69,7 +69,7 @@ hidden 不要和 display 一起使用  因为会把 hidden的display覆盖掉
 		1 设计稿 page 存在一个元素 宽度 100px
 		2 拿以上的需求 去实现不同宽度的页面适配
 		
-		page px = 750rpx
+		page px = 750rpx 
 		1px = 750rpx / page
 		100px = 750rpx * 100 / page
 		假设 page = 375px
