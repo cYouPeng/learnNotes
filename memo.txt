@@ -753,6 +753,11 @@ offsetWidth offsetHeight
 π 是圆周长和直径的比例   所以 c = 2r * π
 
 
+在实际应用中，有的变量只有几种可能取值。如人的性别只有两种可能取值，星期只有七种可能取值。在 C 语言中对这样取值比较特殊的变量可以定义为枚举类型。所谓枚举是指将变量的值一一列举出来，变量只限于列举出来的值的范围内取值。 
+
+使用Int16Array或Uint16Array来存储ArrayBuffer，那么ArrayBuffer的长度必须得是2的倍数。同理对于Int32Array或Uint32Array来说，ArrayBuffer的长度得是4的倍数
+
+
 
                 
                 
