@@ -71,9 +71,53 @@
 	阻塞模式下，一个线程只能处理一项任务，要想提高吞吐量必须通过多线程，而非阻塞模式下，一个线程永远在执行计算操作，这个线程的cpu核心利用率永远是100%，所以，这是一种特别有哲理的解决方案，与其人多，但是好多人闲着，还不如一个玩命，玩死里干活儿
 	
 	
+
+	Node.js 是没有真实物理文件映射关系的，这叫做顶层路由设计。能够制作顶层路由
+	设计的语言比较流行的仅有node和python
+	
+	res.end('') 表示结束输出流，让网页小菊花停止转动
+
 	node.js 为单线程异步I/O，它要求有极高的鲁棒性，因为一旦有一条连接出错了，那么整个node服务就会停止，其它连接也会over
 	
+	在apache,nginx等服务器中，物理文件和url是一一对应的，比如
+	D:\Learning Materials\前端学习笔记\node.js   通过这个url就能找到对应的文件
 	
+	但是在node.js中不行，Node中没有根目录的概念，url和物理文件并不是对应关系。在node中你需要给所有静态文件也加上路由
+	eg: if(req.url === '/01.jpg'){
+			fs.readFile('./01.jpg', (req, res) => {
+				res.end(data);
+			})
+		}
+		
+		
+	queryString属于req.url，但是hash不属于
+	如果我想想要得到文件名的部分，不想要queryString，可以用正则提炼，但是太麻烦
+	此时node提供了内置模块：url, path, querystring他们都可以服务于url的识别
+	
+	var url = require('url');
+	var path = require('path')
+	var querystring require('querystring')
+	http.createServer((req, res) => {
+		/**
+		 *	根据url字符串输出一个对象，这个对象包括url的各个部分
+			window下无法识别protocol,host等属性，Linux可以
+			如果加上 url.parse(req.url,true) queryString部分将会变为一个对象
+		 */
+		var urlJson = url.parse(req.url)
+		//得到文件路径
+		var pathName = urlJson.pathName;
+		//得到扩展名
+		var extname = path.extname(pathName);
+		//得到查询字符串
+		var qs = urlJson.query;
+		//转为查询对象，和url.parse加上true非常类似
+		var qsjson = querystring.parse(qs)
+		console.log(pathName,extname,qsjson)
+		
+	})
+	
+	
+
 	
 	
 	
