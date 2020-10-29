@@ -758,6 +758,10 @@ offsetWidth offsetHeight
 使用Int16Array或Uint16Array来存储ArrayBuffer，那么ArrayBuffer的长度必须得是2的倍数。同理对于Int32Array或Uint32Array来说，ArrayBuffer的长度得是4的倍数
 
 
+<son ref="son"></son>
+父组件中：this.$refs.son.search('params')  父组件调用子组件，除了使用props。还可以通过ref调用子组件方法，给这个方法传参，子组件是可以接收到的
+
+
 
                 
                 
