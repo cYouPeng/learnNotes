@@ -652,6 +652,9 @@ changeNumber(index) {
 
 当你发现v-model不好使的时候，不妨考虑一下 this.$set()方法，很可能是由于你的字段不是响应式的
 
+以上会有一个bug：文本框中，如果输入法的键盘是中文状态， 在使用shift+任意按键组合件激活该输入框后，再次输入纯数字时会提示，该输入框为空的情况
+解决办法为：<el-input v-model="form.assetsNumber" :readonly="isEdit" @input="form.assetsNumber=form.assetsNumber.replace(/[^A-Za-z0-9-\/']/g,'')" maxlength="30"></el-input>
+使用原生input可以用onput，elementui还是用这么用吧。应该是elementui的bug
 
 
 debounce 函数防抖。当用户不断点击页面，短时间内频繁地触发点击事件，只有最后一次点击的函数会被执行。
