@@ -652,6 +652,9 @@ changeNumber(index) {
 
 当你发现v-model不好使的时候，不妨考虑一下 this.$set()方法，很可能是由于你的字段不是响应式的
 
+以上会有一个bug：文本框中，如果输入法的键盘是中文状态， 在使用shift+任意按键组合件激活该输入框后，再次输入纯数字时会提示，该输入框为空的情况
+解决办法为：<el-input v-model="form.assetsNumber" :readonly="isEdit" @input="form.assetsNumber=form.assetsNumber.replace(/[^A-Za-z0-9-\/']/g,'')" maxlength="30"></el-input>
+使用原生input可以用onput，elementui还是用这么用吧。应该是elementui的bug
 
 
 debounce 函数防抖。当用户不断点击页面，短时间内频繁地触发点击事件，只有最后一次点击的函数会被执行。
@@ -756,6 +759,10 @@ offsetWidth offsetHeight
 在实际应用中，有的变量只有几种可能取值。如人的性别只有两种可能取值，星期只有七种可能取值。在 C 语言中对这样取值比较特殊的变量可以定义为枚举类型。所谓枚举是指将变量的值一一列举出来，变量只限于列举出来的值的范围内取值。 
 
 使用Int16Array或Uint16Array来存储ArrayBuffer，那么ArrayBuffer的长度必须得是2的倍数。同理对于Int32Array或Uint32Array来说，ArrayBuffer的长度得是4的倍数
+
+
+<son ref="son"></son>
+父组件中：this.$refs.son.search('params')  父组件调用子组件，除了使用props。还可以通过ref调用子组件方法，给这个方法传参，子组件是可以接收到的
 
 
 
