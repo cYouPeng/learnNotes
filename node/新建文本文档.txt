@@ -117,6 +117,65 @@
 	})
 	
 	
+	var http = require('http');
+	var fs = require('fs');
+	var url = require('url');
+	var path = require('path');
+	var querystring = require('querystring');
+	
+	//准备一个映射关系对儿
+	var mime = {
+		".jpg": "image/jpeg",
+		".jpeg": "image/jpeg",
+		".gif": "image/gif",
+		".png": "image/png",
+		".html": "text/html;charset=UTF-8",
+		".css": "text/css",
+		".js": "application/x-javascript"		
+	}
+	var server = http.createServer((req,res) => {
+		//得到用户读取什么，比如用户输入
+		//http://127.0.0.1/myweb/0.jpg
+		var pathname = url.parse(req.url).pathname
+		//得到扩展名
+		var extname = path.extname(pathname);
+		//如果url中不存在扩展名，此时表示这是一个文件夹，此时自动补全/index.html
+		if(!extname){
+			//如果不是以/结尾，此时会造成浏览器识别图片路径层次有问题
+			//比如http://127.0.0.1/b 和 http://127.0.0.1/b/ 不一样
+			//同样的a.png，前者认为是同级目录下的图片，后者认为是b文件夹中的
+			if(pathname.substr(-1) !== '/'){
+				res.writeHead(302, {'Location': pathname + '/'})
+			}
+			pathname += "/index.html"
+		}
+		
+		//读取这个文件
+		fs.readFile('./myweb/' + pathname, (err,data) => {
+			if(err){
+				res.end('没有这个文件')
+				return;
+			}
+			//检查是否属于我已知的mime类型
+			if(mime.hasOwnProperty(extname)){
+				res.setHeader("content-type",mime[extname])
+			}
+			res.setHeader()
+			res.end(data)
+		
+		})
+		
+	})
+	
+	还有一个更大的问题，就是304的问题，304状态码 not modified。当文件没有改变的时候，服务器要发出304状态码，拒绝传输文件。我们的小程序没有这样的识别，我们也不解决了，因为确实太复杂，还要利用session和cookie保存镜像
+	
+	
+	
+	
+	
+	
+	
+	
 
 	
 	
