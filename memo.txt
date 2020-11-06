@@ -764,6 +764,10 @@ offsetWidth offsetHeight
 <son ref="son"></son>
 父组件中：this.$refs.son.search('params')  父组件调用子组件，除了使用props。还可以通过ref调用子组件方法，给这个方法传参，子组件是可以接收到的
 
+latest：最后版本，npm install的就是这个
+beta：测试版本，一般内测使用，需要指定版本号install，例如3.1.0-beta.0
+next: 先行版本，npm install foo@next安装，例如3.0.2-alpha.0
+
 
 
                 
