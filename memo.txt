@@ -654,7 +654,7 @@ changeNumber(index) {
 
 以上会有一个bug：文本框中，如果输入法的键盘是中文状态， 在使用shift+任意按键组合件激活该输入框后，再次输入纯数字时会提示，该输入框为空的情况
 解决办法为：<el-input v-model="form.assetsNumber" :readonly="isEdit" @input="form.assetsNumber=form.assetsNumber.replace(/[^A-Za-z0-9-\/']/g,'')" maxlength="30"></el-input>
-使用原生input可以用onput，elementui还是用这么用吧。应该是elementui的bug
+如果是原生input可以用oninput，elementui还是用这么用吧。不知道怎么回事
 
 
 debounce 函数防抖。当用户不断点击页面，短时间内频繁地触发点击事件，只有最后一次点击的函数会被执行。
@@ -769,16 +769,527 @@ beta：测试版本，一般内测使用，需要指定版本号install，例如
 next: 先行版本，npm install foo@next安装，例如3.0.2-alpha.0
 
 
+Vue事件总线（eventBus）$on()会多次触发
+main.js
+	const Bus = new Vue();
+	new Vue({
+		el: '#app',
+		data: { Bus }
+	})
+a.vue
+	this.$root.Bus.$emit('事件名', 参数1, 参数2);
+b.vue
+	this.$root.Bus.$on('事件名', 回调函数)
+	
+	Bus.$on实际是向Bus容器中添加一个事件监听器，当页面跳转时，原来的vue组件被注销，但是向Bus容器中添加的事件监听器并不会被移除。因此，当下次再进入这个vue组件时，又会执行Bus.$on，又会向Bus容器中添加
+	一个重复的事件监听器，以此类推，导致Bus容器中有很多个一模一样的事件监听器，从而导致事件只被触发一次，但是回调函数被执行多次的现象。
+	
+	解决办法就是在beforeDestroy或destroy周期中将事件进行销毁
+	beforeDestroy () {
+      bus.$off('事件名')
+    },
+	
+	当经过我实测，发现不止需要进行销毁，你的$on代码若放在created生命周期中，否则依然会被触发多次，解决办法为 created 改为 mounted 生命周期
+	
+	
+	
+Lint 是检验代码格式工具的一个统称，具体的工具有 Jslint 、 Eslint 等等。我们可以形象地将 Lint 看成是电商行业，而电商行业具体表现有淘宝（Eslint）、京东（Jslint）等
+npm init 指令会在项目根目录下生成 package.json 文件
+"scripts": {
+    "test": "react-scripts test --env=jsdom",
+    "lint": "eslint src",
+    "lint:create": "eslint --init"
+}
+"lint:create": "eslint --init" 这个脚本是为了生成 .eslintrc.js 文件
+"lint": "eslint src"  让 Lint 检验 src 目录下所有的 .js 文件
 
+给 "lint": "eslint src --fix", 加上 --fix 参数，是让 Eslint 提供的自动修复基础错误。 --fix 只能修复基础的不影响代码逻辑的错误
+
+"extends": "eslint:recommended",  官方提供的默认规则
+eslint-config-airbnb 就是别人自定义的编码规范。"extends": "airbnb"，eslint-config 这个前缀可以省略不写
+
+ESLint 附带有大量的规则，修改规则应遵循如下要求：
+
+"off" 或 0 - 关闭规则
+"warn" 或 1 - 开启规则，使用警告级别的错误：warn (不会导致程序退出)
+"error" 或 2 - 开启规则，使用错误级别的错误：error (当被触发的时候，程序会退出)
+
+const apple = "apple";  // eslint-disable-line  跳过 eslint 校验
+
+object-shorthand 设置该规则，表示对象属性要简写。
+var foo = {x: x};    // 会报错
+var bar = {a: function () {}};  // 会报错
+var foo = {x};    // 不会报错
+var bar = {a () {}};    // 不会报错
+
+prefer-arrow-callback 要求回调函数使用箭头函数
+// 回调函数，函数的参数是个函数，这个参数函数就是回调函数
+funciton bar () {}      // 不是回调函数，不会报错
+// setTimeout 的第一个参数就是回调函数，不用箭头函数会报错
+setTimeout(() => {
+    // .......
+}, 1000)
+
+no-param-reassign 禁止对函数的参数重新赋值
+function bar ({ data = {} }) {
+    data.num = 12;      // 会报错
+}
+/* 
+虽然报错，又不想要将该校验关闭，如果代码中只有 data 这个属性有这种情形，
+可以在 .eslintrc.js 中的 rules 属性中添加配置（可忽略 data 属性做此校验）：
+'no-param-reassign': ['error', { 'props': true, 'ignorePropertyModificationsFor': ['data'] }],
+'no-param-reassign': 0,  // 关闭该属性校验
+*/
+
+no-trailing-spaces 禁止行尾空格
+
+no-shadow 禁止变量声明与外层作用域的变量同名
+function sum (num) {
+  let num = 2;    // 报错，因为 num 变量作为参数已经申明过了
+}
+
+常用的几个规则
+"quotes": [1, "single"],            # 单引号
+"quote-props":[2, "as-needed"],     # 双引号自动变单引号
+"semi": [2, "never"],               # 一行结尾不要写分号
+"comma-dangle": [1,"always-multiline"]  # 对象或数组多行写法时，最后一个值加逗号
+
+
+css自定义属性
+	--*来声明变量名，var(--*)来使用
+	声明和使用必须放在{}代码块里
+		body{
+			--bg-color: lightblue;
+			background-color: var(--bg-color);
+		}
+	在:root代码块里面声明的变量就是全局变量，并且局部变量会覆盖全局变量
+		:root{
+			--bg-color: red;
+		}
+		body{
+			--bg-color: lightblue;
+			background-color: var(--bg-color);
+		}
+		最后生效的是--bg-color: lightblue
+	变量的缺省值
+	完整的变量使用语法 var( [, ]? )，当变量没有定义的时候，会使用后面的值
+		body{
+			--1: red;
+			color:var(--2, blue);
+		}
+		上面代码会在body的作用域里面查找--2变量，没有的话就会查找全局，都没有的话就会使用后面的值，所以最后生效的颜色就是blue
+		变量名可以使用数字
+	变量转换会带上空格
+		:root{
+			--1: lightblue;
+			--文字颜色: white;
+			--font-size: 30;
+		}
+		div{
+			color: var(--文字颜色);
+			font-size: var(--fong-size)px;
+		}
+		此时div里面的文字的大小是多少呢？是浏览器默认的大小，为什么不是咱们想象的30px呢，这是因为变量转换的时候末尾会带上空格，var(--fong-size)px会转换成30 px
+		可以在声明变量的时候带上单位
+			--fong-size: 30px;
+		或者使用calc()计算属性
+			font-size: calc(var(--fong-size) * 1px);
+	js获取与赋值
+		:root{
+		 --bg-color: lightblue;
+		}
+		 // 获取
+		getComputedStyle(document.documentElement).getPropertyValue('--bg-color')  // lightblue
+		 // 赋值
+		document.documentElement.style.setProperty('--bg-color', 'yellowgreen')
+		
+CSS object-position 属性
+	一般与 object-fit一起使用，用来设置元素的位置，一般用于 img 和 video 标签
+	默认值:	50% 50%
+	继承:	是
+	动画:	是
+	版本:	CSS3
+	JavaScript 语法: object.style.objectPosition="0 10%"
+	语法
+		object-position: position|initial|inherit;
+		
+		position 指定 image 或 video 在容器中的位置。第一个值为 x 坐标位置的值，第二个值为 y 坐标位置的值。表示的方式有：
+			object-position: 50% 50%;
+			object-position: right top;
+			object-position: left bottom;
+			object-position: 250px 125px;
+		initial	设置为默认值
+		inherit	从该元素的父元素继承属性
+		
+	object-fit 属性
+		指定元素的内容应该如何去适应指定容器的高度与宽度。
+		一般用于 img 和 video 标签，一般可以对这些元素进行保留原始比例的剪切、缩放或者直接进行拉伸等
+		默认值:	fill
+		继承:	无
+		动画:	无
+		版本:	CSS3
+		JavaScript 语法: object.style.objectFit="cover"
+		语法
+			object-fit: fill|contain|cover|scale-down|none|initial|inherit;
+			
+			fill	默认，不保证保持原有的比例，内容拉伸填充整个内容容器
+			contain	保持原有尺寸比例。内容被缩放，可能不会填充整个内容容器
+			cover	保持原有尺寸比例。但部分内容可能被剪切，但内容一定会填充整个内容容器
+			none	保留原有元素内容的长度和宽度，也就是说内容不会被重置，可能不会填充整个内容容器
+			scale-down	保持原有尺寸比例。内容的尺寸与 none 或 contain 中的一个相同，取决于它们两个之间谁得到的对象尺寸会更小一些
+			initial	设置为默认值
+			inherit	从该元素的父元素继承属性
+			
+			具体请参考css下的objectFit.html
+
+
+
+
+
+
+	var name = 'jack', age = 27
+    let obj = {
+      objName: 'selina',
+      objAge: this.age,    //this  指向 window
+      func(){
+        console.log(this.objName +'   '+ this.age)  //this 指向 obj
+      }
+    }
+
+    var apple = 'green'
+    function getApple(){
+      console.log(this.apple)   //this  指向 window
+    }
+    console.log(obj.objAge)  //27
+    obj.func()   //selina undefined
+    getApple()   // green
+	
+	注：let声明的变量不会成为window对象的属性，所以上面不要用let声明
+	
+	call()、apply()、bind() 都是用来重定义 this 这个对象的
+		let obj = {
+		  name: 'selina',
+		  age: 11,
+		  func(sex, addr){
+			console.log(this.name +'   '+ this.age +'   '+ sex +'    '+ addr)
+		  }
+		}
+
+		let obj2 = {
+		  name: 'Jack',
+		  age: 22
+		}
+		obj.func.call(obj2, 'man', 'new York')
+		obj.func.apply(obj2, ['woman', 'china'])
+		obj.func.bind(obj2, 'unknow', 'hongkong')()
+	关于三者的区别主要从两个方面来说：
+		1，执行时机
+			call和apply都是立即执行
+			bind会返回一个函数，必须手动调用
+		2，传参
+			他们的第一个参数都是要指向的this对象
+			从第二个参数开始：
+				call和bind 传的n个参数都是用逗号进行分隔的
+				apply的第二个参数必须是一个数组，传给函数的n个参数必须放在数组里
                 
                 
                 
-              
+property 和 attribute
+
+	如下HTML code：
+		<div id="" class=""></div>
+			标签指的是 div，标签上有附加信息我们称之为 HTML 属性(attribute)，如 id，class。合起来，我们统称为HTML元素，
+			而一个HTML文档就是多个HTML元素构成的。
+			
+	而HTML DOM是 HTML 的标准对象模型，DOM(Document Object Model)，直译就是文档对象模型
+	HTML DOM 定义了所有 HTML 元素的对象和属性，以及访问它们的方法。
+	而DOM对象上的属性我们称之为property。
+	
+	编写HTML源代码时，可以在HTML元素上定义属性(attribute) 。 然后，一旦浏览器解析了您的代码，就会创建一个对应的DOM节点。 该节点是一个对象，因此具有属性 (property)。
+	
+	<input id="inputID" type="text" value="name">
+	input元素有两个属性(attribute)，type和value
+	浏览器解析这段代码后，将创建一个HTMLInputElement对象，该对象将包含许多属性。例如：childNodes，classList，className...，这些属性叫做property
+	通过 domObj.attibutes.attribute 可以访问html元素上定义的attribute
+
+	因为是根据HTML元素创建的DOM节点对象，所以会有许多与attribute相关的property，但这并不是一对一的关系
+
+	id property 是映射的 id attribute。获取id的property就是获取attribute值，设置也是一样。
+		var inputDom = document.querySelector('#inputId')
+		console.log(inputDom.getAttribute('id'))
+		console.log(inputDom.id)
+		// "inputId"
+		// "inputId"
+
+		inputDom.setAttribute('id','inputId2')     //设置attribute
+		console.log(inputDom.getAttribute('id'))
+		console.log(inputDom.id)
+		// "inputId2"
+		// "inputId2"
+
+		inputDom.id = 'inputId'				//设置property
+		console.log(inputDom.getAttribute('id'))
+		console.log(inputDom.id)
+		// "inputId"
+		// "inputId"
+		
+	DOM节点对象上的type property是映射 type attribute
+	type不是纯粹的映射属性，因为它的值只能为 已知值 （例如:text，submit，button，checkbox等等  设置type为未知值 时 property始终为text。
+		var inputDom = document.querySelector('#inputId')
+		console.log(inputDom.getAttribute('type'))
+		console.log(inputDom.type)
+		// text
+		// text
+
+		inputDom.setAttribute('type','007')        //设置attribute 为 未知值
+		console.log(inputDom.getAttribute('type'))
+		console.log(inputDom.type)
+		// 007
+		// text
+
+		inputDom.type = '008'					//设置property  为 未知值
+		console.log(inputDom.getAttribute('type'))
+		console.log(inputDom.type)
+		// 008
+		// text
+
+	value property 不是完全映射value attribute
+		var inputDom = document.querySelector('#inputId')
+		console.log(inputDom.getAttribute('value'))
+		console.log(inputDom.value)
+		// name
+		// name
+
+		inputDom.setAttribute('value','007')     //改变attribute值时，property也会跟着变
+		console.log(inputDom.getAttribute('value'))
+		console.log(inputDom.value)
+		// 007
+		// 007
+
+		inputDom.value = '008'					//改变property值时，attribute不会跟着变
+		console.log(inputDom.getAttribute('value'))
+		console.log(inputDom.value)
+		// 007
+		// 008
+	总结
+		HTML属性 (attribute)和 DOM属性(property)，是相互关联的。多数情况attribute仅用作初始化DOM节点对象使用，而property更多用于页面交互，很多框架都是在与元素和指令的 property和事件打交道。
+		
+		
+		
+		
+需求说明：手动上传特定格式的文件，展示所选文件名称，且能实现覆盖上传。
+		1， 解决手动上传问题
+			只需要在Upload组件添加 属性  :auto-upload="false" ，然后调用  this.$refs.upload.submit(); 方法即可。
+		2，解决特定格式文件问题	
+			Upload组件添加 属性 accept=".xxx"
+		3，最麻烦的是上传限制问题	
+			首先想到 Upload组件添加属性 :limit="1"，但是这样，无论怎么选择文件，页面上展示的始终是第一次选择的文件
+			然后想通过on-change方法，改变file-list里选择的文件列表，只保留最后一项
+				handleChange(file, fileList) {
+					if (fileList.length > 0) {
+						this.fileList = [fileList[fileList.length - 1]]
+					}
+				},
+			但是有一个样式问题，用户选择第二个文件后，从第一个文件到第二个文件，有动态切换的效果
+			可以通过css去掉这部分动画
+				<style lang="scss" scoped>
+					.upload-demo {
+					  display: flex;
+					}
+					/deep/ .el-list-enter-active,
+					/deep/ .el-list-leave-active {
+					  transition: none;
+					}
+				 
+					/deep/ .el-list-enter,
+					/deep/ .el-list-leave-active {
+					  opacity: 0;
+					}
+					/deep/ .el-upload-list {
+					  height: 40px;
+					}
+				</style>
+			
+			
+			
+			
+<el-form :model="orderData">
+    <el-form-item prop="passengerInfo[0].ticketNos[0].ticketNo"></el-form-item>
+</el-form>		
+
+orderData: {
+  passengerInfo: [{
+    ticketNos: [{
+      ticketNo: 'fddfg'
+    }]
+  }]
+}	
+
+Error: please transfer a valid prop path to form item!
+
+el-form-item上的属性prop字段，必须是其父级组件el-form中绑定model字段中的一个直接子属性。在这个示例中必须保证不管何时orderData.passengerInfo[0].ticketNos[0].ticketNo可以访问到，访问链路中不能出错。
+
+<el-form :model="orderData">
+    <el-form-item prop="'passengerInfo.'+firstIndex+'.ticketNos.'+firstIndex+'.ticketNo'""></el-form-item>
+</el-form>
 
 
 
 
 
 
+开发要搞清楚什么是并发，并行，串行，同步，异步
+	1.并发编程又叫多线程编程
+		并发当有多个线程在操作时,如果系统只有一个CPU,则它根本不可能真正同时进行一个以上的线程，它只能把CPU运行时间划分成若干个时间段,再将时间 段分配给各个线程执行，在一个时间段的线程代码运行时，其它线程处于挂起状。.这种方式我们称之为并发
+	2.并行
+		当系统有一个以上CPU时,则线程的操作有可能非并发。当一个CPU执行一个线程时，另一个CPU可以执行另一个线程，两个线程互不抢占CPU资源，
+		可以同时进行，这种方式我们称之为并行(Parallel)。	
+	
+		并发和并行 
+			并发和并行是即相似又有区别的两个概念，并行是指两个或者多个事件在同一时刻发生；而并发是指两个或多个事件在同一时间间隔内发生。在多道程序环境下，并发性是指在一段时间内宏观上有多个程序在同时运行，但在单处理机系统中，每一时刻却仅能有一道程序执行，故微观上这些程序只能是分时地交替执行。倘若在计算机系统中有多个处理机，则这些可以并发执行的程序便可被分配到多个处理机上，实现并行执行，即利用每个处理机来处理一个可并发执行的程序，这样，多个程序便可以同时执行。
+			
+	3.串行、并行		
+		  并行和串行指的是任务的执行方式。串行是指多个任务时，各个任务按顺序执行，完成一个之后才能进行下一个。并行指的是多个任务可以同时执行，异步是多个任务并行的前提条件	
+			
+	4.同步、异步		
+		指的是能否开启新的线程。同步不能开启新的线程，异步可以。
+        异步：异步和同步是相对的，同步就是顺序执行，执行完一个再执行下一个，需要等待、协调运行。异步就是彼此独立,在等待某事件的过程中继续做自己的事，不需要等待这一事件完成后再工作。线程就是实现异步的一个方式。异步是让调用方法的主线程不需要同步等待另一线程的完成，从而可以让主线程干其它的事情。
+        异步和多线程并不是一个同等关系,异步是最终目的,多线程只是我们实现异步的一种手段。异步是当一个调用请求发送给被调用者,而调用者不用等待其结果的返回而可以做其它的事情。实现异步可以采用多线程技术或则交给另外的进程来处理	
+			
+	5.多线程：多线程是程序设计的逻辑层概念，它是进程中并发运行的一段代码。多线程可以实现线程间的切换执行。		
+			
+			
+			
+			
+			
+类型化数组是javascript操作(内存)二进制数据的一个接口。
+
+类型化数组是建立在ArrayBuffer对象的基础上的。它的作用是，分配一段可以存放数据的连续内存区域。
+
+var buf = new ArrayBuffer(32); //生成一段32字节的内存区域，即变量buf在内存中占了32字节大小
+
+ArrayBuffer对象的byteLength属性，返回所分配的内存区域的字节长度。
+
+buf.byteLength //32
+
+如果要分配的内存区域很大，有可能分配失败（因为没有那么多的连续空余内存），所以有必要检查是否分配成功。
+if (buffer.byteLength === n) {
+  // 成功
+} else {
+  // 失败
+}
+
+ArrayBuffer作为内存区域，可以存放多种类型的数据。不同数据有不同的存储方式，这就叫做“视图”。目前，JavaScript提供以下类型的视图
+Int8Array：8位有符号整数，长度1个字节。
+Uint8Array：8位无符号整数，长度1个字节。
+Int16Array：16位有符号整数，长度2个字节。
+Uint16Array：16位无符号整数，长度2个字节。
+Int32Array：32位有符号整数，长度4个字节。
+Uint32Array：32位无符号整数，长度4个字节。
+Float32Array：32位浮点数，长度4个字节。
+Float64Array：64位浮点数，长度8个字节。
+
+每一种视图都有一个BYTES_PER_ELEMENT常数，表示这种数据类型占据的字节数
+int8Array.BYTES_PER_ELEMENT // 1
+Int16Array.BYTES_PER_ELEMENT // 2
+
+生成视图有两种方法:
+1,在ArrayBuffer对象上生成
+// 创建一个8字节的ArrayBuffer
+var b = new ArrayBuffer(8);
+
+// 创建一个指向b的Int32视图，开始于字节0，直到缓冲区的末尾
+var v1 = new Int32Array(b);
+
+// 创建一个指向b的Uint8视图，开始于字节2，直到缓冲区的末尾
+var v2 = new Uint8Array(b, 2);
+
+// 创建一个指向b的Int16视图，开始于字节2，长度为2
+var v3 = new Int16Array(b, 2, 2);
+
+2,直接生成
+var v4 = new Int32Array(3); //创建一个数组长度为3的类型化数组
+v4.length // 3;
+v4.byteLength //12 变量v4占12字节的内存大小 ；一个32位数字占4个字节，该数组共有3个元素所以是4*3等于12			
+			
+			
+			
+			
+			
+Blob（Binary Large Object）对象代表了一段二进制数据，提供了一系列操作接口。（以二进制形式保存的较大的对象）比如通过new Blob()创建的对象就是Blob对象.又比如,在XMLHttpRequest里,如果指定responseType为blob,那么得到的返回值也是一个blob对象			
+	1,生成Blob对象有两种方法：一种是使用Blob构造函数，另一种是对已有的Blob对象使用slice()方法切出一段		
+		Blob构造函数	
+			var blob = new Blob(data, type) 
+			Blob构造函数接受两个参数
+				参数data是一组数据，所以必须是数组，即使只有一个字符串也必须用数组装起来
+				参数type是Blob对象的配置属性，目前只有一个type也就是mime需要设置
+					‘text/csv,charset=UTF-8’ 设置为csv格式，并设置编码为UTF-8
+					‘text/html’ 设置成html格式
+					
+			var blob = new Blob(['我是Blob'],{type: 'text/html'}); 
+		属性	
+			blob.size   //Blob大小（以字节为单位） 
+			blob.type   //Blob的MIME类型，如果是未知，则是“ ”（空字符串）
+	2，slice()
+		slice()返回一个新的Blob对象，包含了源Blob对象中指定范围内的数据
+			blob.slice( start, end, contentType)
+			start 可选，开始索引,可以为负数,语法类似于数组的slice方法.默认值为0.
+			end 可选，结束索引,可以为负数,语法类似于数组的slice方法.默认值为最后一个索引.
+			contentType可选 ，新的Blob对象的MIME类型,这个值将会成为新的Blob对象的type属性的值,默认为一个空字符串
+			
+	3,使用Blob最简单的方法就是创建一个URL来指向Blob		
+		var data= 'Hello world!'; 
+		var blob = new Blob([data], { 
+		  type: 'text/html,charset=UTF-8' 
+
+		}); 
+		window.URL = window.URL || window.webkitURL;  
+		document.createElement("a").href = URL.createObjectURL(blob); 	
+			
+		使用URL.createObjectURL()函数可以创建一个Blob URL，参数blob是用来创建URL的File对象或者Blob对象，返回值格式是：blob://URL	
+			
+		注意：在每次调用 createObjectURL() 方法时，都会创建一个新的 URL 对象，即使你已经用相同的对象作为参数创建过。当不再需要这些 URL 对象时，每个对象必须通过调用 URL.revokeObjectURL() 方法传入创建的URL为参数，用来释放它。浏览器会在文档退出的时候自动释放它们，但是为了获得最佳性能和内存使用状况，你应该在安全的时机主动释放掉它们。	
+	
+	当数据中包含汉字时，导出的文件可能会出现乱码，不过我们可以这样解决
+		var data = "\ufeff" + "汉字"; 
+		
+		
+		
+offsetTop, offsetLeft：只读属性，距离offsetParent的偏移距离。offsetParent指的是距该元素最近的position不为static的祖先元素		
+offsetWidth, offsetHeight：只读属性，  width + padding + border
+scrollWidth, scrollHeight: 只读属性, 在内容没有溢出的情况下等于 content + padding
+									在内容溢出的情况下等于元素中内容的宽度加上内边距  也就是  width - 17px滚动条的宽度  + padding 
+scrollTop, scrollLeft 滚动条 滚动的距离		
+		
+window.innerWidth, window.innerHeight：window对象的只读属性,声明了窗口的文档显示区的高度和宽度，以像素(px)为计量单位。 
+(注意：这里的宽度和高度不包括浏览器的标签栏、搜索栏等还有操作系统的任务栏等高度
+屏幕分辨率为：1920x1080		
+alert(window.innerWidth); 		//窗口的宽度 1920px
+alert(window.innerHeight); 　　//窗口的高度 950px		
+innerWidth因为浏览器两旁没有遮挡物,所以完美的得到了屏幕的宽度1920,而innerHeight因为浏览器上面有工具栏,显示屏又有任务栏,所以被挤掉了130px		
+		
+clientWidth, clientHeight: 	content + padding   (注：我这里所指的content指的是width-滚动条的内容宽度，如果没有滚动条，那么content等于width)     
+在chrome里滚动条的宽度为16.8，也就是 clientWidth = 四舍五入(width - 16.8) + padding 
+		
+Element.getBoundingClientRect()：只读，返回浮点值，常用于确定元素相对于视口的位置。该方法会返回一个DOMRect对象，包含left, top, width, height, bottom, right六个属性
+top，left 和css中的理解一样，元素上边界距窗口顶部的距离
+right，bottom有点不一样，它是元素下边界距窗口顶部的距离、元素右边界距窗口左侧的距离
+
+width和height  和offsetWidth, offsetHeight一样，都是 width + padding + border
 
 
+
+/* ::after表示法是在CSS 3中引入的，:after 是表示法是在css2中引入的  
+ css3为了区分伪类和伪元素，伪元素采用双冒号写法 例如 ::before ::after。伪类采用单冒号写法 例如 :hover :link :focus :not()
+element:after  { style properties }  /* CSS2 语法 */
+element::after { style properties }  /* CSS3 语法 */
+
+
+::before 是某标签前的兄弟元素
+::after 是某标签后的兄弟元素
+	p::before {
+	  content: '我是在p标签前的兄弟元素'
+	}
+	p::after {
+	  content: '我是在p标签前的兄弟元素'
+	}

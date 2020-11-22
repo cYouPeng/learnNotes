@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="./js/xlsx.mini.js"></script>
+  
+</head>
+<body>
+  <input type="file" />
+  <button onclick="fun()">getFile</button>
+  <script>
+    function fun(){
+      let file = document.getElementsByTagName('input')[0].files[0];
+      readExcel(file).then(res => {
+        console.log(res)
+      })
+    }
+    /**
+     * file 文件对象 
+     * 使用示例
+     * let file = document.getElementById('file').files[0]
+     * readExcel(file).then(res => {
+     *   console.log(res)
+     * })
+     */
+    function readExcel(file){
+      let reader = new FileReader();
+      reader.readAsBinaryString(file)
+      return new Promise((resolve, reject) => {
+        reader.onload = function(e){
+          let data = e.target.result
+          let workbook = XLSX.read(data, {type: 'binary'});
+          let sheetNames = workbook.SheetNames;
+          let obj = {}
+          for(let i=0; i<sheetNames.length; i++){
+            let sheet = workbook.Sheets[sheetNames[i]]
+            let json = XLSX.utils.sheet_to_json(sheet);
+            obj[sheetNames[i]] = json
+          }
+          resolve(obj)
+        }
+      })
+    }
+    /**
+     * data 要导出的数据  示例数据
+     * [{sheetName: 'sheet1',sheetValue: [{ '姓名': '张三', '年龄': 23 },{ '姓名': '李四', '年龄': 13 }]},
+     *  {sheetName: 'sheet2',sheetValue: [{ '姓名': '王五', '年龄': 43 },{ '姓名': '赵四', '年龄': 73 }]}]
+     * 
+     */
+    function json2excel(data, sheetName = 'sheet1', downloadName = '文件'){
+      let workbook = {
+        SheetNames: [],
+		    Sheets: {}
+      };
+      data.forEach(item => {
+        workbook.SheetNames.push(item.sheetName)
+        workbook.Sheets[item.sheetName] = XLSX.utils.json_to_sheet(item.sheetValue)
+      })
+      let wopts = {
+        bookType: 'xlsx', // 要生成的文件类型
+        bookSST: false, // 是否生成Shared String Table，官方解释是，如果开启生成速度会下降，但在低版本IOS设备上有更好的兼容性
+        type: 'binary'
+      }
+      let wbout = XLSX.write(workbook, wopts);
+      let blob = new Blob([s2ab(wbout)], {type:"application/octet-stream"});
+      let url = URL.createObjectURL(blob);
+      let a = document.createElement('a');
+      a.href = url;
+      a.download = `${downloadName}.XLSX`;
+      a.click();
+      setTimeout(() => {
+        URL.revokeObjectURL(url);
+        a.remove();
+      }, 100)
+
+      // 字符串转ArrayBuffer
+      function s2ab(s) {
+        var buf = new ArrayBuffer(s.length);
+        var view = new Uint8Array(buf);
+        for (var i=0; i!=s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
+        return buf;
+      }
+    }
+
+  </script>
+</body>
+</html>
