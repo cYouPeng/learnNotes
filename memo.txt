@@ -1265,7 +1265,7 @@ window.innerWidth, window.innerHeight：window对象的只读属性,声明了窗
 (注意：这里的宽度和高度不包括浏览器的标签栏、搜索栏等还有操作系统的任务栏等高度
 屏幕分辨率为：1920x1080		
 alert(window.innerWidth); 		//窗口的宽度 1920px
-alert(window.innerHeight); 　　//窗口的高度 950px		
+alert(window.innerHeight); 　　//窗口的高度 950px
 innerWidth因为浏览器两旁没有遮挡物,所以完美的得到了屏幕的宽度1920,而innerHeight因为浏览器上面有工具栏,显示屏又有任务栏,所以被挤掉了130px		
 		
 clientWidth, clientHeight: 	content + padding   (注：我这里所指的content指的是width-滚动条的内容宽度，如果没有滚动条，那么content等于width)     
@@ -1293,3 +1293,80 @@ element::after { style properties }  /* CSS3 语法 */
 	p::after {
 	  content: '我是在p标签前的兄弟元素'
 	}
+	
+	
+	
+vue-cli 项目下生成二维码	
+	使用 qrcodejs2
+		npm install --save qrcodejs2
+	然后在需要生成的相关页面
+		<template>
+		  <div>
+		   <div id="qrcode"></div>
+		  </div>
+		</template>
+	
+		import QRCode from 'qrcodejs2' 
+ 
+		methods:{
+			// 动态生成二维码
+		    qrcode () {  
+				let qrcode = new QRCode('qrcode', {
+					width: 200, // 设置宽度，单位像素
+					height: 200, // 设置高度，单位像素
+					text: 'https://www.baidu.com'   // 设置二维码内容或跳转地址
+				})
+			}  
+		},
+		created () {
+			this.$nextTick(() => {
+				this.qrcode()
+			})
+		}
+
+	
+VUE使用 print-js 打印指定区域页面	
+	npm安装
+		npm install print-js --save
+	然后在相关页面
+		<template>
+		  <div>
+			<el-button type="primary" @click="print"></el-button>
+			<div id="print-div">
+			  <p class="red">世上本没有路，走的人多了，便有了路 ---- 鲁迅</p>
+			  <p class="green">世上本没有路，走的人多了，便有了路 ---- 鲁迅</p>
+			  <p style="display:none">世上本没有路，走的人多了，便有了路 ---- 鲁迅</p>  //不需要打印内容可以通过css，js两种方法控制
+			  <p class="hello">世上本没有路，走的人多了，便有了路 ---- 鲁迅</p>
+			</div>
+		  </div>
+		</template>
+	
+		import print from "print-js";
+		
+		methods: {
+			print() {
+			  const style = `   //可以通过css控制打印内容样式，不过需写在 @media print{...}中
+				@media print {
+				  .red{
+					color:#f00
+				  } 
+				  .green{
+					color:green
+				}
+			  `;
+			  let hello = document.querySelector('#print-div .hello')   //不需要打印内容可以通过css，js两种方法控制
+			  hello.style.display = 'none'
+			  
+			  printJS({
+				printable: "print-div", // 标签元素id
+				type: "html",
+				header: "这是标题",
+				style: style,
+			  });
+			},
+		  },
+	
+
+
+
+
