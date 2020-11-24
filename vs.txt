@@ -1,1 +1,0 @@
-"explorer.autoReveal": false   vs code 取消文件自动定位到侧边栏

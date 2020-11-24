@@ -81,5 +81,7 @@ vscode
   Workbench › Editor: Enable Preview    //设置为false，可以单击打开多个页面
   
   Editor: Font Size   //修改字体大小
+  
+  "explorer.autoReveal": false   vs code 取消文件自动定位到侧边栏
 
  
