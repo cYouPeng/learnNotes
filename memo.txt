@@ -2096,7 +2096,141 @@ chrome 快捷键
 		
 		
 		
+微信小程序下拉刷新		
+	在.json文件设置允许下拉刷新	
+		如果想要设置全局页面允许刷新在app.json文件下编辑，单个页面允许刷新则在相应页面的.json文件编辑
+		{
+			"enablePullDownRefresh": true
+		}
+	在.js文件中设置刷新事件	
+		同样，如果要设置全局页面刷新在app.js文件下编辑，单个页面刷新则在相应页面的.js文件编辑
+		onPullDownRefresh: function () {
+			wx.showNavigationBarLoading() //启用标题栏显示加载状态
+			this.onShow() //调用相关方法
+			setTimeout(() => {
+			  wx.hideNavigationBarLoading() //隐藏标题栏显示加载状态
+			  wx.stopPullDownRefresh() //结束刷新
+			}, 2000); //设置执行时间
+		},
 		
 		
+微信小程序——wxParse使用方法		
+	wxParse是一个微信小程序富文本解析组件。现在小程序里面自带了一个<rich-text>组件也能解析富文本，但是表现不尽人意。
+	1.下载 wxParse，解压，将 wxParse 放入小程序中。	
+		-components
+			-wxParse
+		-pages
+	2.在 你需要引用这个插件的 wxml 文件中引用  wxParse.wxml	
+		//路径根据你实际情况修改
+		<import src="./../../../components/wxParse/wxParse" />
+	3.在 你需要引用这个插件的 wxss 文件中引用  wxParse.wxss	
+		/路径根据你实际情况修改
+		@import './../../../components/wxParse/wxParse';
+	4.在 你需要引用这个插件的 js 文件中引用  wxParse.js	
+		//路径根据你的实际情况更改
+		let WxParse = require('./../../../components/wxParse/wxParse')
+	5.将你需要解析的内容进行解析	
+	   /*
+		* WxParse.wxParse(bindName , type, data, target,imagePadding)
+		* 1.bindName绑定的数据名(必填)
+		* 2.type可以为html或者md(必填)
+		* 3.data为传入的具体数据(必填)
+		* 4.target为Page对象,一般为this(必填)
+		* 5.imagePadding为当图片自适应是左右的单一padding(默认为0,可选)
+		*/
+		let that=this;
+		WxParse.wxParse('引用的时候的名字,如courseDetail', 'html', '你需要解析的数据,如courseDetailContent', that, 5)
+		
+		var that = this;
+		WxParse.wxParse('courseDetail','html',res.data.content,that,5)
+		
+	6.在 wxml 文件中引用你解析出来的数据	
+		//这里的courseDetail就是你上面的bindName
+		<view>
+			<template is="wxParse" data="{{wxParseData:courseDetail.nodes}}" />
+		</view>
+		
+		<template is="wxParse" data="{{wxParseData:courseDetail.nodes}}" />
+		
+		
+
+
+template选项的优先级比render选项的优先级高。这两个选项都是告诉vue如何去渲染页面的，同时只能有一个生效。
+去掉demo的template代码，才会运行render函数：
+HelloWorld.vue:
+	<script>
+		export default {
+		  render(createElement) {
+			console.log("this", this)
+			return createElement("h1", 123);
+		  }
+		}
+	</script>
+
+	<style></style>
+
+	
+
+<body>
+	<h1>指定区域全屏测试</h1>
+	<button id="btn">全屏按钮</button>
+	<div id="fulldiv">
+	  <h1>这里是全屏显示的内容</h1>
+	</div>
+</body>
+<script>
+var fullscreen = false;
+let btn = document.getElementById('btn');
+let fullarea = document.getElementById('fulldiv')
+btn.addEventListener('click',function(){  
+  if (fullscreen) {    // 退出全屏
+	if (document.exitFullscreen) {
+	  document.exitFullscreen();
+	} else if (document.webkitCancelFullScreen) {
+	  document.webkitCancelFullScreen();
+	} else if (document.mozCancelFullScreen) {
+	  document.mozCancelFullScreen();
+	} else if (document.msExitFullscreen) {
+	  document.msExitFullscreen();
+	}
+  } else {    // 进入全屏
+	if (fullarea.requestFullscreen) {
+	  fullarea.requestFullscreen();
+	} else if (fullarea.webkitRequestFullScreen) {
+	  fullarea.webkitRequestFullScreen();
+	} else if (fullarea.mozRequestFullScreen) {
+	  fullarea.mozRequestFullScreen();
+	} else if (fullarea.msRequestFullscreen) {
+	  // IE11
+	  fullarea.msRequestFullscreen();
+	}
+  }
+  fullscreen = !fullscreen;
+})
+</script>
+
+
+浏览器全屏“视觉环境”的默认背景色为黑色，如果你想改变背景色，可以使用如下css
+#map-container:fullscreen {
+  background-image: url('./../assets/image/bg.png');
+}
+#map-container:-webkit-full-screen {
+  background-image: url('./../assets/image/bg.png');
+}
+#map-container:-moz-full-screen {
+  background-image: url('./../assets/image/bg.png');
+}
+
+
+
+
+
+
+
+
+
+
+
+
 		
 		
