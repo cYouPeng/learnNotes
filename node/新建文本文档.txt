@@ -170,26 +170,86 @@
 	还有一个更大的问题，就是304的问题，304状态码 not modified。当文件没有改变的时候，服务器要发出304状态码，拒绝传输文件。我们的小程序没有这样的识别，我们也不解决了，因为确实太复杂，还要利用session和cookie保存镜像
 	
 	
+11,复习
+	请介绍Node.js  它是什么？
+		Node.js 是一个 JavaScript 的运行环境，实际上就是利用 chrome v8 引擎，将它移植到了服务器上，用它开发服务器程序，可以提供HTTP服务
+	
+	node.js 的主要特点是什么？
+		single thread 单线程     non_blocking I/O 非阻塞I/O    event driven 事件驱动
+	
+	这三个特点是相辅相成的，是必须的选择
+	Node 为了在低硬件服务器条件下高并发，所以就减少内存消耗，剑走偏锋，选择了单线程
+	必须要非阻塞I/O，因为你只有一个线程，你必须当A用户去I/O的时候，处理B业务的事情，B业务去I/O
+	的时候，处理C的事情....A,B,C都有回调函数
+	
+	为了让A,B,C不乱套，每个人都进行合理调度，谁先来处理谁。你不能让B一直等待，处理C,D,E....所以node使用了
+	一个机制叫做事件环，采用事件驱动来调度事件
+	
+	哪条语句是正确的，为什么？
+	A语句：
+		var data = fs.readFile('./test.txt');
+	B语句：
+		fs.readFile('./test.txt', function(err, data){
+		
+		});
+	因为fs模块的 readFile 方法是异步方法，事实上 node 中的fs模块、mongodb模块基本上都是异步方法，一定要记住
+	（当做规矩记住），异步函数不能通过return返回，不能通过等号来接受数据，必须通过回调函数传实参的模式来传输数据
+	
+	说说http模块，他有什么功能？有哪些方法？req和res各有什么属性和方法
+	http模块用来提供http服务的，最常用的：
+		http.createServer(function(req,res){
+		});
+	创建了一个服务器
+	
+	req对象封装了 http 上行请求的所有信息，常用属性 req.url, req.connection.remoteAddress, req.type等等
+	res对象是服务器应该给出的下行响应，常用方法是res.write(), res.end(), res.setHeader()等等
+	
+	说说 NODEJS 的顶层路由设计
+	apache 和 nodejs 的模式完全不一样
+	apache天生有静态资源服务，但是nodejs不行，node必须使用路由清单给出明确的路由才行
+		var pathname = url.parse(req.url).pathname;
+		if(pathname === '/music'){
+			res.end('音乐频道')
+		}else if(pathname === '/news'){
+			res.end('新闻频道');
+		}else if(/^\/student\/[\d]{6}$/.test(pathname)){
+			var xuehao = /^\/student\/([\d]{6})$/.exec(pathname)[1];
+			res.end('学生频道,学号是'+xuehao)
+		}else{
+			res.end('错误的频道号');
+		}
+	
+	常用 cmd 命令
+		cls 清除屏幕内容
+		cd c:\node_study  切换文件夹 cd 是 change directory
+		mkdir newFolder 新建文件夹
+		dir 列出当前目录的所有文件
+		node 1.js 执行node命令
+		shift + 右键  进入当前目录cmd
+		当cmd挂起的时候，使用ctrl+c来打断
+	
+	powershell 可以让你在windows下使用linux命令
 	
 	
+12，内置模块
+	模块我们叫做 module，指的是一系列有关系的js的程序的集合
+	后面我们学习mvc的m指的是model，模型，模型是实现最基本的算法的程序单位
 	
+	nodejs内置了很多模块，可以直接用require来进行引用，国际惯例是：你接受
+	的名字最好和模块的一样
+	var http = require('http');
+	var qs = require('querystring');
 	
+	内置模块的引用使用require函数，require表示引用的意思
+	引用是无条件的，不需要提前再引入什么
+	引用是无路径的，在任何的目录下，都是通过require('http')来引用内置
+	http模块，而require('./http');
 	
-	
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	内置模块是node天生就有的，node.js手册就是按照模块来区分的
+	我们后面还会学习一些模块，注意记忆里面的常用方法和属性，比如
+	url.parse()
+	querystring.parse()
+	path.extname()
 	
 	
 	
