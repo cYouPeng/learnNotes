@@ -2223,11 +2223,17 @@ btn.addEventListener('click',function(){
 
 
 
+setTimeout 和 setInterval  第三个及以后的参数是用来给第一个参数传参的
+	setTimeout((a,b,c) => {
+		console.log(a,b,c)
+	},1000, 1, 'hello', true)
 
 
-
-
-
+//回到顶部
+backTop() {
+	document.body.scrollTop = 0
+	document.documentElement.scrollTop = 0
+}
 
 
 
