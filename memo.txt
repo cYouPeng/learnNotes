@@ -2234,9 +2234,412 @@ backTop() {
 	document.body.scrollTop = 0
 	document.documentElement.scrollTop = 0
 }
+<<<<<<< HEAD
+=======
 
 
 
+>>>>>>> 72f3a45596375094e0edc18884d5170ca77f98b8
+
+
+什么是bfcache？
+
+bfcache，即back-forward cache，可称为“往返缓存”，可以在用户使用浏览器的“后退”和“前进”按钮时加快页面的转换速度。这个缓存不仅保存页面数据，还保存了DOM和JS的状态，实际上是将整个页面都保存在内存里。如果页面位于bfcache中，那么再次打开该页面就不会触发onload事件
+
+pageshow事件
+这个事件在用户浏览网页时触发，pageshow 事件类似于 onload 事件，onload 事件在页面第一次加载时触发， pageshow 事件在每次加载页面时触发，即 onload 事件在页面从浏览器缓存中读取时不触发。
+
+pagehide事件
+该事件会在用户离开网页时触发。离开网页有多种方式。如点击一个链接，刷新页面，提交表单，关闭浏览器等。pagehide 事件有时可以替代 unload事件，但 unload 事件触发后无法缓存页面。
+
+persisted属性
+pageshow事件和pagehide事件的event对象还包含一个名为persisted的布尔值属性。
+
+　　对于pageshow事件，如果页面是从bfcache中加载的，则这个属性的值为true；否则，这个属性的值为false。
+　　对于pagehide事件，如果页面在卸载之后被保存在bfcache中，则这个属性的值为true；否则，这个属性的值为false。
+ 
+
+不同的浏览器在对当前窗口‘打开’历史记录中的前一个页面的表现上并不统一，这和浏览器的实现以及页面本身的设置有关系。
+
+解决方案：
+
+javascript监听pageshow事件阻止页面进入bfcache
+
+window.addEventListener('pageshow', function (e) {
+     if (e.persisted) {
+         window.location.reload()
+     }
+})
+在uc和微信中测试通过，但是在某些安卓手机自带的浏览器中无效。
+
+javascript监听pagehide事件阻止页面进入bfcache
+
+window.addEventListener('pagehide', function (e) {
+    var dom = document.body;
+    dom.children.remove();
+    setTimeout(function () {
+        dom.appendChild("<script type='text/javascript'>window.location.reload();<\/script>");
+    });
+});
+设置meta标签，清除页面缓存
+
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
 
 		
-		
+
+设置 input 里面 placeholder 字体的颜色
+	input::-webkit-input-placeholder,
+	textarea::-webkit-input-placeholder {
+	  color: #c7c7c7;
+	}
+	input:-moz-placeholder,
+	textarea:-moz-placeholder {
+	  color: #c7c7c7;
+	}
+	input:-ms-input-placeholder,
+	textarea:-ms-input-placeholder {
+	  color: #c7c7c7;
+	}
+
+
+设置字体禁止缩放
+	body {
+	  -webkit-text-size-adjust: 100% !important;
+	  text-size-adjust: 100% !important;
+	  -moz-text-size-adjust: 100% !important;
+	}
+
+
+vue-quill-editor回显不显示空格和缩进的解决方案
+只需要加上 class="ql-editor" 就行了
+<p class="ql-editor" v-html="content"></p>
+
+
+
+
+for in 与 for of 的区别
+	对数组的遍历大家最常用的就是for循环，ES5的话也可以使用forEach，ES5具有遍历数组功能的还有map、filter、some、every、reduce、reduceRight等，
+	只不过他们的返回结果不一样。但是使用foreach遍历数组的话，使用break不能中断循环，使用return也不能返回到外层函数。
+
+	Array.prototype.sayHello = function() {
+	  console.log('Array')
+	}
+	Array.prototype.str = 'Array'
+	let myArray = [1,2,33,40]
+	myArray.name = '数组'
+	for(let index in myArray){
+	  console.log(index)            // 0 1 2 3 name sayHello str
+	}
+
+
+	Object.prototype.sayHello = function() {
+	  console.log('Object')
+	}
+	Object.prototype.str = 'Object'
+	let myObject = {name: 'jack', age: 24}
+	for(let index in myObject) {
+	  console.log(index)           // name age sayHello str
+	}
+	//如果不想让其输出原型中的属性和方法，可以使用hasOwnProperty方法进行过滤
+	for(let index in myObject) {
+	  if(myObject.hasOwnProperty(index)){
+		console.log(index)         // name age
+	  }
+	}
+	//你也可以用Object.keys()方法获取所有的自身可枚举属性组成的数组。
+	Object.keys(myObject).forEach(key => console.log(myObject[key]))  // jack 24
+
+	总结：使用for in 遍历数组返回的是数组的下标，属性名，以及其原型上的属性名和方法名
+		  使用for in 遍历对象返回的是对象的属性名，以及其原型上的属性名和方法名
+		注意：使用for in遍历数组返回的下标为 string 类型
+
+
+	Object.prototype.sayHello = function() {
+	  console.log('Object')
+	}
+	Object.prototype.str = 'Object'
+	let myObject = {name: 'jack', age: 24}
+	for(let index of myObject) {
+	  console.log(index)             // TypeError: myObject is not iterable
+	}
+	
+	Array.prototype.sayHello = function() {
+	  console.log('Array')
+	}
+	Array.prototype.str = 'Array'
+	let myArray = [1,2,33,40]
+	myArray.name = '数组'
+	for(let index of myArray){
+	  console.log(index)			//1 2 33 40
+	}
+
+	总结：for in 遍历数组 不光遍历自身可迭代元素、属性、还会遍历其原型上的属性和方法，并且返回的都是下标，属性名，方法名
+		  for of 只会遍历自身可迭代元素，返回的也是元素值。但for of 不能遍历对象
+
+
+
+Object.values()方法返回一个给定对象自身的所有可枚举属性值的数组，值的顺序与使用for...in循环的顺序相同 ( 区别在于 for-in 循环枚举原型链中的属性 )。
+
+
+
+
+
+JavaScript中可迭代对象(iterable)
+	JS 中的很多对象都是可迭代的。它们可能不是很好的察觉，但是如果仔细检查，就会发现迭代的特征：
+		Arrays and TypedArrays
+		Strings —— 遍历每个字符或Unicode代码点
+		Maps —— 遍历其键-值对
+		Sets —— 遍历元素
+		arguments  —— 函数中类似数组的特殊变量
+		DOM elements (Work in Progress)
+	JS中使用迭代的其他一些结构是:
+		for-of -- for-of 循环需要一个可迭代的对象，否则，它将抛出一个类型错误。
+			for (const value of iterable) { ... }
+
+
+	数组解构 -- 由于可迭代性，会发生析构。让我们来看看：
+	const array = ['a', 'b', 'c', 'd', 'e'];
+	const [first, ,third, ,last] = array;
+	等价于:
+	const array = ['a', 'b', 'c', 'd', 'e'];
+	const iterator = array[Symbol.iterator]();
+	const first = iterator.next().value
+	iterator.next().value // Since it was skipped, so it's not assigned
+	const third = iterator.next().value
+	iterator.next().value // Since it was skipped, so it's not assigned
+	const last = iterator.next().value
+
+	扩展操作符(…)
+	const array = ['a', 'b', 'c', 'd', 'e'];
+
+	const newArray = [1, ...array, 2, 3];
+	等价于：
+
+	const array = ['a', 'b', 'c', 'd', 'e'];
+	const iterator = array[Symbol.iterator]();
+	const newArray = [1];
+	for (let nextValue = iterator.next(); nextValue.done !== true; nextValue = iterator.next()) {
+	  newArray.push(nextValue.value);
+	}
+	newArray.push(2)
+	newArray.push(3)
+
+	Promise.all 和 Promise.race 接受可迭代对象
+	Maps 和 Sets
+
+
+const myFavouriteAuthors = {
+  allAuthors: {
+    fiction: [
+      'Agatha Christie', 
+      'J. K. Rowling',
+      'Dr. Seuss'
+    ],
+    scienceFiction: [
+      'Neal Stephenson',
+      'Arthur Clarke',
+      'Isaac Asimov', 
+      'Robert Heinlein'
+    ],
+    fantasy: [
+      'J. R. R. Tolkien',
+      'J. K. Rowling',
+      'Terry Pratchett'
+    ],
+  },
+  [Symbol.iterator]() {
+    // 获取所有 genre
+    const genres = Object.values(this.allAuthors)
+    // 当前类型和索引
+    let currentAuthorIndex = 0;
+    let currentGenreIndex = 0;
+    
+    return {
+      next: function() {
+        // 获取当前类型下的作者信息
+        const authors = genres[currentGenreIndex];
+        //当前类型下作者是否已经遍历完
+        if(currentAuthorIndex >= authors.length) {
+          currentGenreIndex++;
+          currentAuthorIndex = 0;
+        }
+        //类型是否已经遍历完
+        if(currentGenreIndex >= genres.length) {
+          return {
+            value: undefined,
+            done: true
+          }
+        }
+        //返回正常数据
+        return {
+          value: genres[currentGenreIndex][currentAuthorIndex++],
+          done: false
+        }
+      }
+    }
+
+
+
+
+  }
+  // [Symbol.iterator]() {
+  //   // 获取数组中的所有作者
+  //   const genres = Object.values(this.allAuthors);
+    
+  //   // 存储当前类型和索引
+  //   let currentAuthorIndex = 0;
+  //   let currentGenreIndex = 0;
+    
+  //   return {
+  //     // Implementation of next()
+  //     next() {
+  //       // 根据当前的索引获取对应的作者信息
+  //       const authors = genres[currentGenreIndex];
+        
+  //       // 当遍历完数组 authors是,oNotHaveMoreAuthors 为 true
+  //       const doNothaveMoreAuthors = !(currentAuthorIndex < authors.length);
+  //       if (doNothaveMoreAuthors) {
+  //        // 加一继续访问下一个
+  //         currentGenreIndex++;
+  //         // 重置
+  //         currentAuthorIndex = 0;
+  //       }
+        
+  //       // 如果所有 genres 都遍历完了结，那么我们需要告诉迭代器不能提供更多的值。
+  //       const doNotHaveMoreGenres = !(currentGenreIndex < genres.length);
+  //       if (doNotHaveMoreGenres) {
+  //         return {
+  //           value: undefined,
+  //           done: true
+  //         };
+  //       }
+        
+  //       // 如果一切正常，从当genre 返回 作者和当前作者索引，以便下次，下一个作者可以返回。
+  //       return {
+  //         value: genres[currentGenreIndex][currentAuthorIndex++],
+  //         done: false
+  //       }
+  //     }
+  //   };
+  // }
+};
+
+for (const author of myFavouriteAuthors) {
+  console.log(author);
+}
+
+
+
+
+Iterator它是一种接口，为各种不同的数据结构提供统一的访问机制，即for...of循环。任何数据结构只要部署 Iterator 接口，就可以完成遍历操作
+ES6 规定，默认的 Iterator 接口部署在数据结构的Symbol.iterator属性，或者说，一个数据结构只要具有Symbol.iterator属性，就可以认为是“可遍历的”
+ES6 的有些数据结构原生具备 Iterator 接口（比如数组），即不用任何处理，就可以被for...of循环遍历。原因在于，这些数据结构原生部署了Symbol.iterator属性，另外一些数据结构没有（比如对象）
+原生具备 Iterator 接口的数据结构如下。
+	Array
+	Map
+	Set
+	String
+	TypedArray
+	函数的 arguments 对象
+	NodeList 对象
+有一些场合会默认调用 Iterator 接口（即Symbol.iterator方法）
+	（1）解构赋值
+	对数组和 Set 结构进行解构赋值时，会默认调用Symbol.iterator方法。
+	（2）扩展运算符
+	扩展运算符（...）也会调用默认的 Iterator 接口。
+只要某个数据结构部署了 Iterator 接口，就可以对它使用扩展运算符，将其转为数组
+break; 和 throw new Error()都会触发遍历器对象的return()函数
+一个数据结构只要部署了Symbol.iterator属性，就被视为具有 iterator 接口，就可以用for...of循环遍历它的成员。也就是说，for...of循环内部调用的是数据结构的Symbol.iterator方法。
+
+for...of循环可以使用的范围包括数组、Set 和 Map 结构、某些类似数组的对象（比如arguments对象、DOM NodeList 对象）、后文的 Generator 对象，以及字符串
+for...of循环调用遍历器接口，数组的遍历器接口只返回具有数字索引的属性。这一点跟for...in循环也不一样。
+let arr = [3, 5, 7];
+arr.foo = 'hello';
+
+for (let i in arr) {
+  console.log(i); // "0", "1", "2", "foo"
+}
+
+for (let i of arr) {
+  console.log(i); //  "3", "5", "7"
+}
+
+数组提供内置的forEach方法
+这种写法的问题在于，无法中途跳出forEach循环，break命令或return命令都不能奏效。
+
+
+
+
+let声明的变量只在它所在的代码块有效
+var命令会发生“变量提升”现象，即变量可以在声明之前使用，值为undefined
+let命令改变了语法行为，它所声明的变量一定要在声明后使用，否则报错。
+只要块级作用域内存在let命令，它所声明的变量就“绑定”（binding）这个区域，不再受外部的影响。
+ES6 明确规定，如果区块中存在let和const命令，这个区块对这些命令声明的变量，从一开始就形成了封闭作用域。凡是在声明之前就使用这些变量，就会报错。
+
+总之，在代码块内，使用let命令声明变量之前，该变量都是不可用的。这在语法上，称为“暂时性死区”（temporal dead zone，简称 TDZ）。
+if (true) {
+  // TDZ开始
+  tmp = 'abc'; // ReferenceError
+  console.log(tmp); // ReferenceError
+
+  let tmp; // TDZ结束
+  console.log(tmp); // undefined
+
+  tmp = 123;
+  console.log(tmp); // 123
+}
+总之，暂时性死区的本质就是，只要一进入当前作用域，所要使用的变量就已经存在了，但是不可获取，只有等到声明变量的那一行代码出现，才可以获取和使用该变量。
+let不允许在相同作用域内，重复声明同一个变量。
+
+
+ES5 只有全局作用域和函数作用域，没有块级作用域
+let实际上为 JavaScript 新增了块级作用域。
+ES6 允许块级作用域的任意嵌套。
+内层作用域可以定义外层作用域的同名变量。
+
+const声明一个只读的常量。一旦声明，常量的值就不能改变
+const声明的变量不得改变值，这意味着，const一旦声明变量，就必须立即初始化，不能留到以后赋值
+const的作用域与let命令相同：只在声明所在的块级作用域内有效
+const命令声明的常量也是不提升，同样存在暂时性死区，只能在声明的位置后面使用。
+const声明的常量，也与let一样不可重复声明
+const实际上保证的，并不是变量的值不得改动，而是变量指向的那个内存地址所保存的数据不得改动。对于简单类型的数据（数值、字符串、布尔值），值就保存在变量指向的那个内存地址，因此等同于常量。但对于复合类型的数据（主要是对象和数组），变量指向的内存地址，保存的只是一个指向实际数据的指针，const只能保证这个指针是固定的（即总是指向另一个固定的地址），至于它指向的数据结构是不是可变的，就完全不能控制了。因此，将一个对象声明为常量必须非常小心。
+将对象彻底冻结的函数
+var constantize = (obj) => {
+  Object.freeze(obj);
+  Object.keys(obj).forEach( (key, i) => {
+    if ( typeof obj[key] === 'object' ) {
+      constantize( obj[key] );
+    }
+  });
+};
+freeze只能冻结基本类型的属性，遇到属性为object的，还需要在冻结
+
+ES5 只有两种声明变量的方法：var命令和function命令。ES6 除了添加let和const命令，后面章节还会提到，另外两种声明变量的方法：import命令和class命令。所以，ES6 一共有 6 种声明变量的方法。
+
+顶层对象，在浏览器环境指的是window对象，在 Node 指的是global对象。ES5 之中，顶层对象的属性与全局变量是等价的。
+window.a = 1;
+a // 1
+
+a = 2;
+window.a // 2
+上面代码中，顶层对象的属性赋值与全局变量的赋值，是同一件事。
+顶层对象的属性与全局变量挂钩，被认为是 JavaScript 语言最大的设计败笔之一。
+ES6 为了改变这一点，一方面规定，为了保持兼容性，var命令和function命令声明的全局变量，依旧是顶层对象的属性；另一方面规定，let命令、const命令、class命令声明的全局变量，不属于顶层对象的属性。也就是说，从 ES6 开始，全局变量将逐步与顶层对象的属性脱钩
+var a = 1;
+// 如果在 Node 的 REPL 环境，可以写成 global.a
+// 或者采用通用方法，写成 this.a
+window.a // 1
+
+let b = 1;
+window.b // undefined
+
+
+
+
+
+
+
+
+
