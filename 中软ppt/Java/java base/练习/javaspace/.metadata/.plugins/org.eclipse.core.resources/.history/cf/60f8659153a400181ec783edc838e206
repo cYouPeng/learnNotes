@@ -1,7 +1,0 @@
-package oop2;
-
-public class TestGc {
-	public static void main(String[] args){
-		
-	}
-}

@@ -1,7 +1,0 @@
-package toolsclass;
-
-public class TestEqualeAndHashCode {
-	public static void main(String[] args){
-		
-	}
-}

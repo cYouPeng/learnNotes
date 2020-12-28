@@ -1,8 +1,0 @@
-classpath:
-.;%java_home%\lib\dt.jar;%java_home%\lib\tools.jar;%java_home%\jre\lib\rt.jar;
-
-java_home:
-jdk实际的安装路径如：C:\Program Files\Java\jdk1.8.0_111
-
-PATH：一定是添加，不要改变原来的
-;%java_home%\bin;

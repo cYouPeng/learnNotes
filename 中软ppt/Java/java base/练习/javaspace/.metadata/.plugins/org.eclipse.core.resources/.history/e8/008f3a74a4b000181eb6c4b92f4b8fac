@@ -1,7 +1,0 @@
-package io;
-
-public class TestRename {
-	public static void main(String[] args){
-		
-	}
-}

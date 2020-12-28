@@ -1,5 +1,0 @@
-package exception.car;
-
-public abstract class CarFactory {
-
-}

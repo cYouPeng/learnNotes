@@ -1,5 +1,0 @@
-apache是web服务器，tomcat是应用（java）服务器，它只是一个servlet(jsp也翻译成servlet)容器，可以认为是apache的扩展。
-apache和tomcat都可以做为独立的web服务器来运行。但是apache不能解释java程序（jsp,serverlet）
-Apache是普通服务器，本身只支持html即普通网页。不过可以通过插件支持PHP,还可以与Tomcat连通(单向Apache连接Tomcat,就是说通过Apache可以访问Tomcat资源。反之不然)
-两者都是一种容器，只不过发布的东西不同。apache是html容器，功能像IIS一样，tomcat是jsp/servlet容器，用于发布JSP及JAVA的，类似的有IBM的webshere、EBA的Weblogic，sun的JRun等
-apache和tomcat是独立的，在通一台服务器上可以集成。

@@ -1,8 +1,0 @@
-可以对文字：
-ctx.textAlign:left/center/right  
-ctx.textBaseline:top/middle/bottom
-ctx.translate(200,200);  //位移的是画布
-ctx.scale(2,-2); //缩放 此时会造成反转
-ctx.rotate(-90/180*Math.PI);                                       
- 
-同一个上下文对象，所设置的样式会互相干扰

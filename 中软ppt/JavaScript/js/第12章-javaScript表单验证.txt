@@ -1,6 +1,0 @@
-<label for="input-name">账号</label>  为行内元素
-/^\s$/非空正则
-类似文本框 用onblur
-下拉框用onchange
-单/多选用onclick(每一个)
-密码等级验证用onkeyup

@@ -1,4 +1,0 @@
-Calendar类里的Date getTime() //将日历对象转换为Date对象返回
-	      int get()  //返回日历对象中某一个常量的值
-注意：因为Calendar类里的MONTH是从0开始的，所以要设置某个月份都是月份-1，例如，December set方法里就得写11。。但是输出getTime()的返回值Date对象时，是输出它所代表的月份也就是December，但输出get(MONTH)时输出的是当时调用set方法时输入的值。。
-
