@@ -251,6 +251,1027 @@
 	querystring.parse()
 	path.extname()
 	
+13，自定义模块
+	每一个js文件就是一个模块，node.js使用CMD规范
+	require谁，就会运行谁4
+	require('./test.js')
+	./不能省，为什么不能省，如果你省略了，表示读取 node_module 文件夹中的内容
+	
+	require的js文件中如果有异步函数，将不会等待
+	
+	如果A引用B，B引用A会发生什么？
+	答案：node.js很智能，如果B重新引用了A，此时如同没有引用一样，会帮你自动抑制
+	
+14，作用域和暴露
+	再node.js中，每个js文件是单独的作用域。和DOM浏览器开发不一样，浏览器中，var a 此时自动成了window对象的属性，此时js文件和js文件可以共享作用域。
+	每个js文件是铜墙铁壁，天生隔离作用域
+	
+	exports.xx = xx 暴露
+	使用  xx.xx
+	
+15，使用 module.exports 暴露
+	如果js中仅暴露一个东西，可以使用 module.exports
+	使用时直接  xx  
+	
+16，node_modules 文件夹
+	如果我们写一个引用，没有写 ./
+	require('test.js')
+	此时表示引用 node_modules 文件夹中的东西
+	换句话说，你引用 node_modules 中的文件，是不用写./的。并且其引用是无视层级的，只要保证其在祖先级路径中
+	系统环境路径：c:\Users\John\AppData\Roaming\npm\node_modules
+	这个文件中的模块，在整个计算机中被识别，全局路径
+	当你省略文件名的时候，自动识别 index.js 文件。例如
+		node_modules
+			test
+				index.js
+		src
+			01.js
+				const test = require('test');   //实际引用 node_modules中的test的index.js
+				
+	四道题：实际引用的是谁
+		require('./a.js')   引用当前文件夹中的a.js文件
+		require('a.js')		引用node_modules文件夹中 a.js文件
+		require('a')		引用node_modules文件夹中a文件夹中的index.js文件
+		require('./a')		引用当前文件夹中的a文件夹中的index
+		
+		
+17，npm的世界
+	我们刚才封装了一个数学函数math-tool很好用，此时node开发者也发现了这个事情，如果让全球开发者贡献自己的实用模块多好。
+	说一下什么是模块，一个math-tool就是一个模块，但是如果5-6个js文件都是服务于数学方面的，他们整体又成为一个大模块
+		math-tool
+			index.js 引用
+			yuan.js
+			dian.js
+			sanjiao.js
+			...
+			
+			yuan.js
+				module.exports = function sum(){}
+			dian.js
+				exports.max = function(){}
+				exports.num = 123
+			index.js
+				const yuan = require('./yuan.js')
+				const dian = require('./dian.js')
+				exports.sum = yuan
+				exports.max = dian.max
+				exports.num = dian.num
+		此时math-tool整体就是一个大模块
+		所以node主导了一个社区，叫做npm(node package management node包管理器)
+		官网：https://www.npmjs.com/
+		淘宝镜像：http://npm.taobao.org/
+		此时我们就可以去上面寻找我们要的东西，比如现在有需求，把公历变为农历，第一时间就要想到，我不要重新造轮子，要去npm社区找找看
+		使用npm命令即可下载，npm是随着node安装的，我们现在可以直接在cmd中
+			npm i solarLunar    会发现多了一个node_modules文件夹，里面有一个solarLunar文件夹，里面有index.js文件
+		使用：
+			var solarLunar = require('solarLunar') //寻找node_modules文件夹下solarLunar文件夹中的index.js文件
+			var result = solarLunar.sloar2lunar(1993,2,12)
+			console.log(result)  //会发现它将你传入的阳历转成了农历
+			
+		npm -v 查看npm的版本
+		
+18，package.json 管理依赖
+	很明显，我们现在的项目依赖了两个别人的，从npm上下载的模块，分别是 chinese-finance-number和solarLunar。显然的，node_modules文件夹是不能删除的。如果删除了这个文件夹，将会报错
+	比如我们现在用u盘拷贝项目给别人，此时完全没有必要去拷贝node_modules文件夹，因为这里面的东西在npm线上啊!，npm很稳定，你可以随时下载安装
+	npm有一个创造性的举动，可以让开发者声明自己的项目的全部依赖。我可以告诉别人这个项目依赖什么。
+	在项目目录下，创建一个文件
+	 package.json
+		{
+			"dependencies": {
+				"xx": "latest",
+				"xxx": "latest"
+			}
+		}
+	此时我们在项目根目录(就是package.json这一层目录)，在cmd输入
+	npm install
+	此时npm软件将会自动安装package.json里面的所有声明的依赖项
+	所以package.json文件非常关键，就是项目的身份证。事实上，里面还有很多配置项
+	我们可以用  npm init
+	此时npm将会有一个表单，引导你去创建一个较为完整的package.json文件
+	此时我们仅仅需要回答一些题目，默认的内容的在圆括号中，如果用默认的就按回车
+	{
+		"name": "xx"  //不能有中文
+		...
+		"keywords": []   //注意这个是关键词，方便其他人在npm上搜索你，当然你得发布。。。而不是为了seo
+	}
+	
+	版本有很多符号可以表示你要依赖的版本是什么，看npm文档
+		常用的：
+		"dependencies": {
+			"xx": "1.0.0" //必须明确限制为1.0.0版本
+			"xx": "~1.0.0" //大约近似等于1.0.0版本，如果有这个版本，一定使用这个版本，没有就找最近的
+			"xx": "^1.0.0" //寻找和1.0.0版本兼容的版本，如果有1.0.0就用，如果没有就找近似的。和~实测是一样的
+			"xx": "1.2.x" //1.2版本中最新的
+			"xx": "*" //实测和latest效果一样，会寻找最新版本
+			"xx": "latest"
+		}
+	
+	如果我们安装一个依赖的时候，想让他自动进入到package.json中，此时使用 --save 参数即可
+	npm install xx --save
+	此时依赖将被安装，并且会自动将xx写入package.json中的dependencies中
+	
+	如果想要限制版本
+	 npm install xx#^1.0.0 --save
+	 
+	 
+	npm init //帮我们创建一个package.json文件，项目开发的第一件事就是这个
+	npm install //根据package.json文件，安装全部依赖项
+	npm install xx //指名道姓安装某一个依赖
+	npm install xx --save //指名道姓安装，并把它写入package.json中
+	
+19，全局安装和淘宝镜像
+	npm install 包名子 -g
+	此时这个包将被安装在全局： C:\\Users\John\AppData\Roaming\npm
+	一些CLI(命令行程序)、工程化的东西将被安装在全局
+	
+	淘宝为了方便中国程序员对抗GFW，此时发明了cnpm。你可以用此代替官方版本（只读），同步频率为10分钟一次，一次以保证尽量与官方服务同步
+	如何设置？
+		npm install -g cnpm --registry=https://registry.npm.taobao.org
+	今后所有npm活动，都用cnpm代替
+	
+	有很多包非常大，自己也依赖别人，不用怕，他们的依赖也写在了他们自己的package.json里面，
+	npm，cnpm能够深入读取每个人的package.json，将他们的依赖都下载下来
+	
+20，get请求
+	get请求参数通过url，post请求参数通过http上行报文，get请求不安全，方便分享网址；post请求安全，不方便分享网址，内容信息无限长
+	get请求：
+		http://127.0.0.1/addStudent?id=100&name=小明&age=22
+	node.js程序如果获得get请求，实际上就是如何解析url
+	 url.parse(req.url, true).query
+	 
+	 安装一个小型服务器，因为只有服务器环境才能发出AJAX请求
+	 cnpm install serve-static --save
+	 cnpm install finalhandler --save
+	 
+	 
+	 
+	 处理 get 请求
+		http.createServer(function (req, res) => {
+			let pathname = url.parse(req.url).pathname;
+			if(pathname === '/add') {
+				const queryJson = url.parse(req.url, true).query
+				console.log(queryJson)
+			}
+		})
+	处理post请求
+		http.createServer(function (req, res) => {
+			let content = '';  //定义了一个content变量，用于暂存请求体的信息
+			//post请求经常会很长，此时会分段，网上有文章大约800k左右是一个http报文段
+			req.on('data', function(chunk) {
+				//chunk是一个buffer，可以进行toString()
+				console.log(chunk.toString())
+				//将段落合并
+				content += chunk;
+			})
+		})
+		// 当所有数据发送完毕之后，此时将会触发end事件
+		req.on('end', function(){
+			content = querystring.parse(content);
+			console.log(content);
+			res.end('success');
+		})
+	
+	
+21，formidable模块的使用
+	npm 上可以下载一个formidable模块，用来处理post请求。设置可以处理图片，zip等文件的上传
+	
+	//使用静态资源
+	var finalhandler = require('finalhandler')
+	var http = require('http');
+	var serverStatic = require('serve-static')
+	var url = require('url')
+	var fs = require('fs')
+	var querystring = require('querystring');
+	var path = require('path')
+	
+	//配置静态资源服务器，将public文件夹静态化出来
+	var serve = serverStatic('public', {'index': ['index.html', 'index.htm']})
+	
+	var server = http.createServer(function(req, res) {
+		var pathname = url.parse(req.url).pathname;
+		if(pathname === '/add'){
+			//创建一个表单的实例
+			
+			var form = new formidable.IncomingForm();
+			//设置上传的文件存放在那里
+			form.uploadDir = './uploads'
+			//处理表单
+			form.parse(req, function(err, fields, files) {
+				fields 表示普通控件
+				files 表示文件控件
+				//验证是否有 wenjian  这个域
+				if(！files.wenjian || !files.wenjian.name){
+					res.end('请上传文件')
+				}
+				//扩展名
+				var extname = path.extname(files.wenjian.name)
+				//改名，因为formidable天生传输的文件是没有扩展名的
+				//fs.rename 用来改名(原先名字，改成的名字)
+				fs.rename(files.wenjian.path, files.wenjian.path + extname, function(){
+					res.end('ok')
+				})
+				
+				
+			})
+			//如果匹配上已有路由，就不使用静态资源
+			return;
+		}
+	})
+	
+	serve(req, res, finalhandler(req, res));
+	
+22，express js 框架
+	传统node的缺点
+		1,路由不方便制作，尤其是正则表达式路由
+		2,静态资源服务不方便
+		3,页面呈递不方便，没有模板引擎
+	官网：http://www.expressjs.com.cn/
+	
+	npm install express --save
+	
+	var express = require('express');
+	var app = express()
+	
+	//路由清单，术语叫做 ‘中间件’
+	app.get('/', function(req, res) {
+		//res常用的函数是 send和sendFile，sendFile表示发送一个文件给用户
+		//注意：必须使用绝对路径当做参数
+		//__dirname 表示当前这个js文件的绝对路径
+		res.sendFile(__dirname + '/pbulic/haha.html')
+		res.send('首页')
+	})
+	app.get('/news', function(req, res){
+		res.send('新闻')
+	})
+	app.listen(3000)
+	
+	看一下中间件的特写
+	app.get('/news', function(req, res){
+		res.send('新闻')
+	})
+	表示当你用get请求访问/news的时候做的事情，此时输出使用res.send()而不是res.end()。好处是自动变为utf-8编码
+	并且express是自动使用pathname与 /news 进行比较的，也就是说会自动过滤querystring\hasn等
+	
+	我们可以用 : 来引导一个变量，此时特别方便做一个匹配正则的路由
+	app.get('/news/:id', function(req, res){
+		if(/^\d{6}$/.test(req.params.id)) {
+			res.send('新闻'+req.params.id)
+		} else {
+			res.send('id不正确')
+		}
+		
+	})
+	
+	使用静态文件，一般放在最下面
+	一个中间件解决问题，use表示使用中间件，刚才的get表示在get请求下使用中间件。use是无论什么请求都会使用
+	app.use(express.static('./public')) // 217.0.0.1:3000/logo.png
+	app.use('./static',express.static('public')) // 217.0.0.1:3000/static/logo.png
+	//此时我们放置在物理文件夹 public文件夹中的logo.png图片，将被路由到 127.0.0.1:3000/static/logo.png
+	
+	元测试就是单独测试某一个js文件好用不好用，排除其他文件的影响 
+	fs常用api如下 
+	fs.writeFile() 写文件 
+	fs.appendFile() 追加文件 
+	fs.readFile() 读文件 
+	fs.readdir() 读取文件夹中的所有文件名 
+	fs.rename() 改名
+	
+	
+	
+23，express中使用模板引擎
+	express可以像php一样使用后台模板引擎，此时最好用的模板引擎教唆ejs模板引擎
+	Embedded JavaScript templates  嵌入式JS模板
+	
+	api: https://npm.taobao.org/package/ejs
+	
+	cnpm install esj --save
+	
+	01.js
+		var express = require('express')
+		var app = express()
+		//设置默认的模板引擎，此时express将帮你引入ejs，所以你一定要提前 cnpm install ejs --save
+		app.set('view engine', 'ejs')
+		//罗列中间件
+		app.get('/', function(req, res){
+			res.render('shouye', {
+			    "thing": "八个手机",
+				"num": 1000 * 8,
+				"arr": [
+					{ "name": "Jack", "age": 33},
+					{ "name": "Selina", "age": 23 }
+				]
+			})
+		})
+		app.listen(3000)
+		
+	views文件夹中的shouye.ejs
+		<! DOCTYPE html>
+		<html lang="en">
+		<head>
+			<meta charset="UTF-8">
+			<title>Document</title>
+		</head>
+		<body>
+			<h1>我买了<%= thing %>,花了<%= num %>元。</h1>
+			<select name="" id="">
+				<%
+					for(let i=1922; i<2033; i++){
+				%>
+					<option value="<%= i %>"><%= i%></option>
+				<%
+					}
+				%>
+				<%
+					for(let i=0; i<arr.length; i++){
+				%>
+					<p><b><%= arr[i].name %></b><b><%= arr[i].age %></b></p>
+				<%
+					}
+				%>
+			</select>
+		</body>
+		</html>
+		有等号 = 表示输出，没有= 表示js表达式
+		任何js中用的数据结构都可以往后台传
+		
+		
+	此时当用户访问/的时候，会自动使用views文件夹中的shouye.ejs文件当做模板，字典就是后面传入的json
+		
+	模板是服务器填充的，访问者看不到源代码
+		
+		
+		
+		
+		
+		
+01，call和apply
+	call和apply是用来指定上下文运行函数的
+	我们写了一个函数，比如：
+		function fun(){}
+	此时如果运行它，可以直接加圆括号
+	fun()
+	此时函数的上下文就是window对象，所谓的上下文就是函数中出现的this对象
+	有很多时候，我们需要让函数指定上下文运行，此时就要使用call或者apply，他们两个功能完全相同
+	
+MVC
+	MVC是一种使用MVC（Model View Controller 模型-视图-控制器）设计创建Web应用程序的模式
+	Model（模型）表示应用程序核心（比如数据库记录列表）
+	View（视图）显示数据（显示数据库记录）
+	Controller（控制器）处理输入（写入数据库记录）
+	
+	Model（模型）是应用程序中用于处理应用程序数据逻辑的部分
+		通常模型对象负责在数据库中存取数据。最底层、最原子、最脏、最累的活儿要交给Model层完成
+	View（视图）是应用程序中处理数据显示的部分
+		通常视图是依据控制器汇总的模型数据创建的。模型数据由控制器来汇总
+	Controller（控制器）是应用程序中处理用户交互的部分
+		通常控制器负责从视图读取数据，控制用户输入，并向模型发送数据。模型发回的数据，控制器要汇总、分析交由视图呈递
+		
+		
+	控制器不能做特别具体的活儿，他就是用来分析数据，然后呈递视图的
+	呈递视图之前控制器要去集结所有的数据，所以要去命令model层做一些事情
+	
+	每个模块看不见全局，只能看见自己的业务（井底之蛙）。每个模块不需要了解自己的功能如何贡献给项目，但是只需要知道让自己鲁棒就行了
+		
+		
+		
+06, mongodb 芒果数据库
+	NOSQL简介
+		SQL 就是 Structor Query Language 结构化查询语言
+		MySql、Oracle、SQL Server数据都是SQL数据库，在大数据时代有些场景使用它们显得太笨重
+		SQL有一个非常大的缺点，就是限制字段。比如现在数据库中已经有10万条数据了（在今天10万条数据不算很大），如果想从下一条数据开始增加字段，此时之前的10万条数据都需要被更改
+		SQL中，表的字段是不能自由更改的，不能某一个条目有一些字段，另外的条目没有
+		
+		SQL优点：能够轻松执行复杂查找，比如寻找所有大于18岁的且是女生的人的妈妈的年龄。这里就涉及了主从查找，SQL的主从查找非常强。但是在大数据时代，这种寻找有多少呢？试想，你面对10086、10010的详单
+		你会有多少复杂查询的几率呢？基本上都是限制日期查询
+		
+		在大数据时代SQL的优势在衰减，而缺点再放大
+		NOSQL应运而生，NoSQL就是 Not Only SQL，不仅仅是SQL，菲关系型数据库
+		
+		NoSQL中没有限制字段，只有条目。每个条目可以自由设置字段
+		
+		我们学习最经典的MongoDB数据，他是NoSQL
+		
+	
+	MongoDB的安装
+		官网：https://www.mongodb.com/
+		可以下载zip或msi
+		之后配置bin文件夹到环境变量，msi不用设置环境变量
+		cmd 输入 mongo 是否安装成功
+		
+	mongodb的基本操作
+		首先需要使用 mongod 来‘开机’，表示打开数据库
+		要找一个地方存储数据库。在C盘建立mydatabase，最好在c盘，因为有的系统有安全限制
+		开机命令
+		mongod --dbpath c:\mydatabase
+		--dbpath 表示数据库路径
+		
+		开机cmd窗口不能关闭，已关闭数据库就关闭了，可以再开一个窗口来操作
+		
+		输入mongo来管理数据库，此时会进入mongo的REPL环境（Read-Eval-Print-Loop，读一句，执行一句，显示一句）
+		
+		在REPL环境中：
+			use student
+			这行语句表示使用student数据库，此时没有student数据库，mongodb会帮我们自动创建
+			此时我们试着插入一条数据
+			db.banji.insert({"name":"Jack","age":33});
+			banji称做‘集合’，可以当做‘表’
+			
+			此时我们查看全部数据
+			db.banji.find();
+			想找特定数据
+			db.banji.find({"name":"Jack"})
+			
+		node和mongodb的连接
+		我们无意在REPL环境学习太多语句，我们直接学习node和mongodb的连接，让我们的js程序操作mongodb
+		
+		01.js
+			//引入mongodb
+			var MongoClient = require('mongodb').MongoClient;
+			//mongodb的端口号和数据库名字，如果数据库不存在会被创建
+			//连接数据库
+			MongoClient.connect(url, function(err, db) {
+				
+			})
+			注意 node 01.js 之前，一定要记得
+			mongodb --dbpath c:\mydatabase
+			不能关闭cmd
+			
+		数据库由集合组成，集合就是JSON的集合，每一条JSON叫做一个文档
+		mongodb用JSON来存储数据、
+		
+		
+		
+		在REPL环境中：
+			show dbs
+			显示所有数据库列表
+			
+			use student
+			使用学生数据库
+			
+			show collections
+			显示当前数据库的所有集合列表
+			
+			db.banji.find()
+			查询banji中所有的文档
+			
+		增删改查:
+			//插入数据的标准写法
+			db.collection('banji').insertOne(
+				{
+					"name": "Jack",
+					"age": 22
+				},
+				function(err, r) {
+					if(err) {
+						console.log('插入数据失败');
+						return;
+					}
+					//r是所有的数据库变动信息，常用的r.insertedCount表示插入的条目数量
+					console.log('成功插入了' + r.insertedCount + '条数据');
+					db.close(); //关闭数据库
+				}
+				
+			)
+			insertMany([
+				{"name": "22"},
+				{"name": "33"}
+			]) 多条数据一起插入
+			//删除数据的标准写法
+			db.collection('banji').deleteMany(
+				{
+					"name": "Jack"
+					
+				},
+				function(err, r) {
+					if(err) {
+						console.log('删除数据失败');
+						return;
+					}
+					//r是所有的数据库变动信息，常用的r.deleteCount表示删除的条目数量
+					console.log('成功插入了' + r.deleteCount + '条数据');
+					db.close(); //关闭数据库
+				}
+				
+			)
+			
+			查询：
+				db.collection('banji').find({"name": "Jack", "age": 33}).toArray(function(err, results) {  寻找name为jack且age为33的条目    ,表示且
+					if(err) {
+						return;
+					}
+					console.log(results)
+					db.close()
+					
+				})
+				db.collection('banji').find({"age": {$gt: 12}}) 寻找age大于12的人   $gt 表示大于    $lt 表示小于
+				
+				
+				db.collection('banji').find({$or: [{"age": {$gt: 11}, "sex": "man"}, {"age": {$gt: 5}, "sex": "women"}]})
+				//寻找年龄大于11的男人或年龄大于5的女人
+				
+				
+			改 有两种，第一种增量改，第二种彻底改
+			
+			db.collection('banji').updateOne({"name": "Jack"}, {"age": 22}, function(err, r){})
+			这种事彻底改，工作中一点用没有，注意，举动危险，下面的语句会将jack这个数据彻底变为 age:22，其它的属性会丢失
+			
+			db.collection('banji').updateOne({"name": "Jack"}, {$set: {"age": 22}}, function(err, r){})
+			增量改，把jack的age改为22，其它属性不会丢失
+				
+				
+				
+MongoDB基本使用
+	什么是数据库，能存储数据的东西是数据库吗？不是，txt也能存储东西，但不是数据库
+	因为 数据库 = 存储东西 + 数据库操作api
+	我们不仅能够存储100个学生，而且要能快速查找其中大于15岁且成绩大于80的人，tx做不到这个事情，所以txt文本文件只是持久数据的一种方式，但不是数据库
+	MongoDB存储JSON，并且不是简单的存储JSON，而是能够非常方便的使用简单的API去检索数据
+	
+	MongoDB是NoSQL，非结构型数据库。比SQL好在哪儿？不限制字段，每个条目（MongoDB中称为文档，一个文档就是一个标准JSON）都可以有自己的字段，比如下面的4个文档是合法的
+	{"name": "Jack", "age": 22}
+	{"name": "ss", "age": 33}
+	{"name": "xx", "age": 44, "sex": "man"}
+	{"title": "ttt"}
+	第三个文档增加了一个字段，第四个文档存储的和前面三个没有关系，这在MongoDB中是合法的，不限制文档的字段
+	
+	数据库由集合（collection）组成，集合由文档（document）组成
+	也就是，一个JSON是一个文档，多个JSON就是集合
+	
+	虽然MongoDB允许我们一个集合中所有文档有不同的字段，但是最好一个集合中存储相关的数据，比如你存储学生就存储学生，不要存储歌曲，小狗chic
+	
+	
+	mongo 数据库的REPL环境
+	mongod 开机
+	mongoexport 导出文件
+	mongoimport 导入文件
+	mongorestore 重置数据库
+	mongostat 查看数据信息，比如当前占用多少磁盘
+	
+	
+	首先建立一个文件夹，存储数据库数据
+	mkdir mydatabase
+	
+	使用mongod开机
+	mongod --dbpath c:\\mydatabase
+	
+	此时需要再打开一个cmd窗口，用mongo命令进入repl环境（read读命令，eval执行命令，print打印结果，loop再来一次）
+	
+	
+	常用repl命令
+	show dbs 查看数据库列表
+	use student 使用某一个数据库，如果不存在则创建（当你插入了一个数据之后创建）
+	db.banji22.insert({...}) 插入命令，这条命令会自动创建集合banji22，也就是说创建数据库用use，创建集合没有命令。插入文档了，就创建集合了
+	db.banji22.find() 查看所有数据
+	show collections 显示所有集合
+	db.banji22.drop()删除集合
+	db.dropDatabase()删除数据库
+	
+	导入数据：
+		注意，此时不需要进入repl环境，但数据库仍要维持开机状态
+		
+		mongoimport -d xuesheng -c banji33 c:\Users\John\Desktop\1.txt
+		-d 参数表示需要往哪个数据库中导入数据
+		-c 参数 表示需要往哪个集合中导入数据
+		最后罗列需要导入的txt文档，JSON和JSON之间没有逗号
+			{"name": "Jack"}
+			{"name": "Jack"}
+			{"name": "Jack"}
+			
+			
+nodejs结合mongodb
+	首先下载依赖
+	cnpm install --save mongodb
+	
+	连接数据库并且尝试检索数据
+	
+	var MongoClient = require('mongodb').MongoClient;
+	
+	//连接数据库，最后的反斜杠表示数据库的名字
+	var url = 'mongodb://localhost:27017/xuesheng'
+	//标准动作，连接数据库之后然后对数据库进行crud操作
+	MongoClient.connect(url, function(err, db) {
+		if(err) {
+			console.log('连接失败');
+			return;
+		}
+		console.log('连接成功');
+		
+		//检索所有年龄大于15岁并且是广东的男的
+		db.collection('banji33').find(
+			{"age": {&gt: 15}, "provice": "广东", "sex": "男"}
+		).toArray(function(err, arr){
+			console.log(arr)
+			//关闭数据库
+			db.close();
+		})
+		
+		
+		
+	})
+	
+	
+	
+	
+MongoDB是反MVC开发模式的，企业中都用Mongose来操作Mongodb 
+
+
+写model层，一定要记得单元测试
+
+
+
+
+咱们工程师，这些理论知识一定要好
+	
+ 	
+	
+	
+	
+res.send()发送文本
+res.json()发送json
+	
+	
+	
+	
+	
+	
+Mongodb不方便的地方
+	1，如果集合非常多的话，控制每个不同的集合，有大量类似的代码，对每个集合都要有增删改查的操作，代码比较臃肿
+	2，数据库中永远使用的是一个没有结构的、面向过程的编程模式。我永远思考数据的事情，编程的时候要考虑的事情太多
+	
+	java中也出现了这个问题，hibernate解决了这个问题
+	hibernate是一个ORM框架，Object Relationship Map 对象关系映射。一句话，就是让程序员可以用面向对象的思维操作数据库，换句话说根本不需要考虑数据的持久化，对象改变了，数据自动改变。
+	Mongoose是配合Mongodb使用的ORM库，我们操作数据库太爽了，不需要想到有数据库这个事情，只需要操作对象，数据会被Mongoose自动持久
+	
+	//安装依赖
+	cnpm i mongoose --save
+	
+	
+	//引入mongoose，mongoose的依赖中自动有mongodb，所以不需要再次引入mongodb
+	var mongoose = require('mongoose');
+	//连接数据库，端口号不需要写，最后的反斜杠是数据库名字
+	mongoose.connect('mongodb://localhost/ceshi');
+	//用mongoose.model()函数创建一个模型，是一个类。此时你传入的第一个参数将自动大写变为小写，末尾加s，变为集合名字。
+	//第二个参数是schema，就是字段列表，用kv对表示字段名字和类型
+	var Student = mongoose.model('Student', {
+		sname: String,
+		sex: String,
+		age: Number
+	})
+	//实例化对象
+	var xiaoming = new Student({
+	
+		sname: '小明',
+		sex: '男',
+		age: 22
+	});
+	//保存对象
+	xiaoming.save()
+	
+	程序一旦运行，系统会帮我们创建ceshi数据库，创建students集合名字，保存小明这一条数据
+	此时你会发现，我们没有一条语句是明显的在操作数据库，底层操作由mongoose帮我们完成
+	
+	schema在这里可以使用普通JSON，但是建议你写全，用mongoose.Schema这个类来创建
+
+	var mongoose = require('mongoose');
+	mongoose.connect('mongodb://localhost/ceshi');
+	//创建一个schema
+	//schema可以是基本类型、数组、对象，可以用default指定默认值
+	var peopleSchema = new mongoose.Schema({
+		name: String,
+		sex: String,
+		bobby: [String],
+		scores: [{subject: String, score: Number}],
+		nation: {type: String, default: '汉族'}
+	})
+	
+	//在peopleSchema对象上定义静态方法，静态方法要定义在schema上
+	peopleSchema.statics.findByName = function(name) {
+		//静态方法中的this指代这个数据表，就是people
+		this.find({"name": name}, function(err, result) {}
+			console.log(result)
+		)
+	}
+	
+	//创建一个类，mongoose的model
+	var People = mongoose.model("People", peopleSchema)
+	//实例化
+	var xiaoming = new People({
+		name: 'Jack',
+		...
+		hobby: ['游泳','画画'],
+		scores: [
+			{subject: '语文', score: 99},
+			{subject: '数学', score: 29},
+			{subject: '英语', score: 39},
+		]
+	})
+	//持久化
+	xiaoming.save()
+	
+	//命令类打点调用静态方法
+	People.findByName('Jack')
+	
+	一旦设置了schema就要严格按照schema使用。不能犯大错误，比如人家让你传入数组，就必须是数组。否则会报错。如果人家让你传入number，此时你传入字符串，那没事，他会帮你自动隐式转换
+	schema是可以随时增加，删除，改变项。一旦改变，此时就要按照新的schema执行，以前的不用管
+
+	里面的项并不是必填的
+	两个一致：
+		如果schema中没有声明，但是你实例化的对象中有这个项，此时多余的项不会被持久化
+		schema中定义的项目不一定是必填的，可以在实例化的时候省略项目
+
+
+	静态方法定义在schema上，定义完毕之后再mongoose.model()创建model
+	静态方法中的this表示整个数据表，通常用语查询，this.find()是非常常用的
+	
+
+
+	peopleSchema.statics.changeSex = function(name) {
+		this.find({"name": name}, function(err, result) {
+			//返回result数组中都是People类的实例
+			var somebody = result[0];
+			if(somebody.sex === '男']) {
+				somebody.sex = '女'
+			} else {
+				somebody.sex = '男'
+			}
+			//持久化
+			somebody.save();
+		})
+	}
+
+	People.changeSex('Jack')
+	
+	changeSex方法，实际上数据库中在做update操作，但是mongoose中 感觉就是在操作对象，这就是mongoose的哲学，你的对象变化了，数据库就自动变化了
+
+	动态方法同样定义在schema上
+	PeopleSchema.methods.sayHello = function() {
+		//这里的this指的是这个实例
+		console.log(this.name)
+	}
+	
+	更改静态方法
+	peopleSchema.statics.findByName = function(name, callback) {
+		//静态方法中的this指代这个数据表，就是people
+		this.find({"name": name}, function(err, result) {}
+			callback(result)
+		)
+	}
+	
+	//寻找xx
+	People.findByName('xx', function(res) {
+		//得到某一个元素，这个元素是People的实例
+		var somebody = res[0];
+		//既然是实例就能调用
+		somebody.sayHello();
+	})
+	静包动，一般都是这样
+	
+	schema.methods.xxx 动态方法   实例能够使用的方法
+	schema.statics.xxx 静态方法  类能够使用的方法
+	
+	调用动态方法的时候，外层一定有一个静态方法，俗称静包动。因为只有静态方法能够返回类的实例，类的实例才能调用动态方法。
+
+	更改changeSex
+	peopleSchema.statics.changeSex = function(name) {
+		this.find({"name": name}, function(err, result) {
+			//返回result数组中都是People类的实例
+			var somebody = result[0];
+			somebody.changeSexDynamic();
+		})
+	}
+	//定义动态方法changeSexDynamic
+	PeopleSchema.methods.changeSexDynamic = function() {
+		if(this.sex === '男') {
+			this.sex = '女';
+		} else {
+			this.sex = '男';
+		}
+		this.save();
+	}
+	
+	通常动态方法和静态方法配合使用，能够让代码简洁
+	
+	总结：
+		mongoose中如果要查询数据，一般来说借用静态方法；如果要改变值，直接对象打点改变属性，然后save
+		
+		
+		
+多个类的关系
+	数据库钟不可能只有一个集合，如果要有多个集合，肯定会有多个类，此时他们之间或多或少会有一些联系
+	课程和学生之间就是这样一个n:n关系，n表示多，读作‘多对多’
+	一个学生可以选多个课程，一个课程可以被多个学生选
+	我们有一个需求：要知道这个学生选了什么课，也要知道一个课程被那些人选择了
+	我们采用的方式：互相维持数组，数组中存储对方的id。id称为主键，mongodb中每一个条目自动生成一个_id，这个是全球唯一的id
+		
+		
+		
+	静态方法是操作集合的，动态方法是操作文档的
+	我想从一个集合中寻找符合条件的数据，静态方法
+	更改一个文档的数据，动态方法
+
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+
+
+	
+	
+	
+	
+	
+	
+	
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+				
+				
+				
+				
+				
+				
+				
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	
