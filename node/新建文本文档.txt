@@ -1,16 +1,14 @@
 1，
-	library 库   jquery
+	library 库   jquery  
 	runtime 运行环境 node
 
-	LTS 最新稳定版
+	LTS 最新稳定版  LTS 是 long-term support 的缩写，意为长期支持
 	current 最新版
 
 2，
-	
-	
 	node.js 可以在任何操作系统上安装，底层都是chrome v8 引擎 使用c++开发
 	
-	cmd commond的简写
+	cmd command的简写
 	系统的环境变量中的path值，使得我们可以在cmd中的任何盘符使用node命令
 	node -v 查看node的版本号 显示版本号代表Node安装成功
 	如何运行文件：node+空格+鼠标拖拽文件进cmd+回车（拖拽时要注意文件内的相对文件路径）
@@ -19,9 +17,11 @@
 	
 	此时你拥有了第二个js运行环境，第一个是浏览器，第二个是node
 	
-	win10 win8 不允许在cmd中 cd d: 从c盘到d盘   cd   => change directory
+	win10 win8 不允许在cmd中 cd d: 从c盘到d盘   cd 是 change directory 的简写，意味更改当前目录
 	
 	tab键可以自动补全，再按一次会出现新的补全结果
+	
+	tree /f 可以以树的形式输出目录结构
 	
 3，
 	sync 同步
@@ -68,18 +68,18 @@
 	当在访问数据库数据的时候，需要一段较长的时间，在传统的处理机制中，在执行了访问数据库代码之后，整个线程都将暂停下来，等待数据库返回结果，才能执行后面的代码，也就是说，I/O阻塞了代码的执行，极大的降低了程序的执行效率
 	由于nodejs中采用了非阻塞型I/O机制，因此在执行了访问数据库的代码之后，将立即转而执行其后面的代码，把数据库返回结果的处理代码放在回调函数中，从而提高了程序的执行效率
 	当某个I/O执行完毕时，将以事件的形式通知执行I/O操作的线程，线程执行这个事件的回调函数，为了处理异步I/O，线程必须有事件循环，不断地检查有没有未处理的事件，依次予以处理
-	阻塞模式下，一个线程只能处理一项任务，要想提高吞吐量必须通过多线程，而非阻塞模式下，一个线程永远在执行计算操作，这个线程的cpu核心利用率永远是100%，所以，这是一种特别有哲理的解决方案，与其人多，但是好多人闲着，还不如一个玩命，玩死里干活儿
+	阻塞模式下，一个线程只能处理一项任务，要想提高吞吐量必须通过多线程，而非阻塞模式下，一个线程永远在执行计算操作，这个线程的cpu核心利用率永远是100%，所以，这是一种特别有哲理的解决方案，与其人多，但是好多人闲着，还不如一个玩命，往死里干活儿
 	
 	
 
 	Node.js 是没有真实物理文件映射关系的，这叫做顶层路由设计。能够制作顶层路由
-	设计的语言比较流行的仅有node和python
+	类似设计的语言比较流行的仅有node和python
 	
 	res.end('') 表示结束输出流，让网页小菊花停止转动
 
 	node.js 为单线程异步I/O，它要求有极高的鲁棒性，因为一旦有一条连接出错了，那么整个node服务就会停止，其它连接也会over
 	
-	在apache,nginx等服务器中，物理文件和url是一一对应的，比如
+	在apache, nginx等服务器中，物理文件和url是一一对应的，比如
 	D:\Learning Materials\前端学习笔记\node.js   通过这个url就能找到对应的文件
 	
 	但是在node.js中不行，Node中没有根目录的概念，url和物理文件并不是对应关系。在node中你需要给所有静态文件也加上路由
@@ -96,21 +96,21 @@
 	
 	var url = require('url');
 	var path = require('path')
-	var querystring require('querystring')
+	var querystring = require('querystring')
 	http.createServer((req, res) => {
 		/**
 		 *	根据url字符串输出一个对象，这个对象包括url的各个部分
-			window下无法识别protocol,host等属性，Linux可以
-			如果加上 url.parse(req.url,true) queryString部分将会变为一个对象
+			window 下无法识别protocol,host等属性，但 Linux 下可以
+			如果加上第二个参数 url.parse(req.url,true)， queryString部分将会变为一个对象
 		 */
-		var urlJson = url.parse(req.url)
-		//得到文件路径
+		var urlJson = url.parse(req.url) //默认urlJson.query返回的是查询参数字符串，给url.parse传入第二个参数true，urlJson.query会变为一个对象
+		// 得到文件路径
 		var pathName = urlJson.pathName;
-		//得到扩展名
+		// 得到扩展名
 		var extname = path.extname(pathName);
-		//得到查询字符串
+		// 得到查询字符串
 		var qs = urlJson.query;
-		//转为查询对象，和url.parse加上true非常类似
+		// 转为查询对象，和url.parse加上true非常类似
 		var qsjson = querystring.parse(qs)
 		console.log(pathName,extname,qsjson)
 		
@@ -183,7 +183,7 @@
 	的时候，处理C的事情....A,B,C都有回调函数
 	
 	为了让A,B,C不乱套，每个人都进行合理调度，谁先来处理谁。你不能让B一直等待，处理C,D,E....所以node使用了
-	一个机制叫做事件环，采用事件驱动来调度事件
+	一个机制叫做事件循环，采用事件驱动来调度事件
 	
 	哪条语句是正确的，为什么？
 	A语句：
@@ -198,6 +198,7 @@
 	说说http模块，他有什么功能？有哪些方法？req和res各有什么属性和方法
 	http模块用来提供http服务的，最常用的：
 		http.createServer(function(req,res){
+			...
 		});
 	创建了一个服务器
 	
@@ -253,7 +254,7 @@
 	
 13，自定义模块
 	每一个js文件就是一个模块，node.js使用CMD规范
-	require谁，就会运行谁4
+	require谁，就会运行谁
 	require('./test.js')
 	./不能省，为什么不能省，如果你省略了，表示读取 node_module 文件夹中的内容
 	
@@ -263,8 +264,8 @@
 	答案：node.js很智能，如果B重新引用了A，此时如同没有引用一样，会帮你自动抑制
 	
 14，作用域和暴露
-	再node.js中，每个js文件是单独的作用域。和DOM浏览器开发不一样，浏览器中，var a 此时自动成了window对象的属性，此时js文件和js文件可以共享作用域。
-	每个js文件是铜墙铁壁，天生隔离作用域
+	在node.js中，每个js文件是单独的作用域。和DOM浏览器开发不一样，浏览器中，var a 此时自动成了window对象的属性，此时js文件和js文件可以共享作用域。
+	在node中，每个js文件是铜墙铁壁，天生隔离作用域
 	
 	exports.xx = xx 暴露
 	使用  xx.xx
@@ -292,7 +293,7 @@
 		require('./a.js')   引用当前文件夹中的a.js文件
 		require('a.js')		引用node_modules文件夹中 a.js文件
 		require('a')		引用node_modules文件夹中a文件夹中的index.js文件
-		require('./a')		引用当前文件夹中的a文件夹中的index
+		require('./a')		引用当前文件夹中的a文件夹中的index--------------------------石锤，引用的是./a.js
 		
 		
 17，npm的世界
@@ -366,7 +367,7 @@
 			"xx": "latest"
 		}
 	
-	如果我们安装一个依赖的时候，想让他自动进入到package.json中，此时使用 --save 参数即可
+	如果我们安装一个依赖的时候，想让他自动进入到package.json中，此时使用 --save 参数即可------------------------    石锤 不加也可以
 	npm install xx --save
 	此时依赖将被安装，并且会自动将xx写入package.json中的dependencies中
 	
@@ -380,8 +381,8 @@
 	npm install xx --save //指名道姓安装，并把它写入package.json中
 	
 19，全局安装和淘宝镜像
-	npm install 包名子 -g
-	此时这个包将被安装在全局： C:\\Users\John\AppData\Roaming\npm
+	npm install 包名字 -g
+	此时这个包将被安装在全局： C:\\Users\John\AppData\Roaming\npm   				---------------------------- AppData 是个隐藏文件夹
 	一些CLI(命令行程序)、工程化的东西将被安装在全局
 	
 	淘宝为了方便中国程序员对抗GFW，此时发明了cnpm。你可以用此代替官方版本（只读），同步频率为10分钟一次，一次以保证尽量与官方服务同步
