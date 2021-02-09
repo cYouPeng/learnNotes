@@ -640,9 +640,17 @@ let 声明的变量不会跟 var 一样作为 window 对象的属性
 
 
 <el-input v-model="formDataCopy.ProvidentFundDetails[index].Base" maxlength="12" @input="changeNumber(index)" />
-changeNumber(index) {
-  this.formDataCopy.ProvidentFundDetails[index].Base = (this.formDataCopy.ProvidentFundDetails[index].Base.match(/^\d*(\.?\d{0,2})/g)[0]) || null
-},
+//changeNumber(index) {
+  //this.formDataCopy.ProvidentFundDetails[index].Base = //(this.formDataCopy.ProvidentFundDetails[index].Base.match(/^\d*(\.?\d{0,2})/g)[0]) || null
+//},
+changeNumber () {
+  let m = this.model.memberPrice.match(/^\d{1,6}(\.\d{0,2})?/g)
+  if (m) {
+	this.model.memberPrice = this.model.memberPrice.match(/^\d{1,6}(\.\d{0,2})?/g)[0]
+  } else {
+	this.model.memberPrice = null
+  }
+}, //改良之后，整数位1到6位，小数位最多2位
 12位数字，小数点后最多两位
 
 <el-input oninput="value=value.replace(/[^\d]/g,'')" maxlength="12" /> 只能输入数字
